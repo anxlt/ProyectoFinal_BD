@@ -166,15 +166,50 @@ public class CandidatoDAOImpl implements CandidatoDAO {
             try { if (con != null) { con.setAutoCommit(true); con.close(); } } catch (SQLException e) { e.printStackTrace(); }
         }
     }
+
+
     private void insertarIdiomas(Connection con, String codigo, List<String> idiomas) throws SQLException {
-        String sql = "INSERT INTO CandidatoIdioma (candidatoCodigo, idioma) VALUES (?, ?)";
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
-            for (String idioma : idiomas) {
-                ps.setString(1, codigo);
-                ps.setString(2, idioma);
-                ps.addBatch();
+
+        String buscarIdioma = "SELECT id FROM Idioma WHERE nombre = ?";
+        String insertarIdioma = "INSERT INTO Idioma(nombre) VALUES(?)";
+        String insertarRelacion = "INSERT INTO CandidatoIdioma(candidatoCodigo, idiomaId) VALUES(?, ?)";
+
+        for (String idioma : idiomas) {
+
+            int idIdioma;
+
+            try (PreparedStatement psBuscar = con.prepareStatement(buscarIdioma)) {
+                psBuscar.setString(1, idioma);
+
+                try (ResultSet rs = psBuscar.executeQuery()) {
+
+                    if (rs.next()) {
+
+                        idIdioma = rs.getInt("id");
+
+                    } else {
+
+                        try (PreparedStatement psInsert = con.prepareStatement(
+                                insertarIdioma,
+                                Statement.RETURN_GENERATED_KEYS)) {
+
+                            psInsert.setString(1, idioma);
+                            psInsert.executeUpdate();
+
+                            try (ResultSet claves = psInsert.getGeneratedKeys()) {
+                                claves.next();
+                                idIdioma = claves.getInt(1);
+                            }
+                        }
+                    }
+                }
             }
-            ps.executeBatch();
+
+            try (PreparedStatement psRelacion = con.prepareStatement(insertarRelacion)) {
+                psRelacion.setString(1, codigo);
+                psRelacion.setInt(2, idIdioma);
+                psRelacion.executeUpdate();
+            }
         }
     }
 
@@ -192,16 +227,52 @@ public class CandidatoDAOImpl implements CandidatoDAO {
 
     @Override
     public void eliminar(String codigo) {
-        // Gracias al ON DELETE CASCADE, esto también borra sus idiomas/habilidades
-        String sql = "DELETE FROM Candidato WHERE codigo = ?";
-        try (Connection con = Conexion.conectar();
-             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, codigo);
-            ps.executeUpdate();
+        Connection con = null;
+
+        try {
+
+            con = Conexion.conectar();
+            con.setAutoCommit(false);
+
+            PreparedStatement ps1 =
+                    con.prepareStatement("DELETE FROM CandidatoIdioma WHERE candidatoCodigo=?");
+            ps1.setString(1, codigo);
+            ps1.executeUpdate();
+
+            PreparedStatement ps2 =
+                    con.prepareStatement("DELETE FROM CandidatoHabilidad WHERE candidatoCodigo=?");
+            ps2.setString(1, codigo);
+            ps2.executeUpdate();
+
+            PreparedStatement ps3 =
+                    con.prepareStatement("DELETE FROM Candidato WHERE codigo=?");
+            ps3.setString(1, codigo);
+            ps3.executeUpdate();
+
+            con.commit();
 
         } catch (SQLException e) {
+
+            try {
+                if (con != null)
+                    con.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+
             e.printStackTrace();
+
+        } finally {
+
+            try {
+                if (con != null) {
+                    con.setAutoCommit(true);
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
     @Override
@@ -305,14 +376,27 @@ public class CandidatoDAOImpl implements CandidatoDAO {
     }
 
     private ArrayList<String> obtenerIdiomas(Connection con, String codigo) throws SQLException {
+
         ArrayList<String> idiomas = new ArrayList<>();
-        String sql = "SELECT idioma FROM CandidatoIdioma WHERE candidatoCodigo = ?";
+
+        String sql =
+                "SELECT I.nombre " +
+                        "FROM CandidatoIdioma CI " +
+                        "INNER JOIN Idioma I ON CI.idiomaId = I.id " +
+                        "WHERE CI.candidatoCodigo = ?";
+
         try (PreparedStatement ps = con.prepareStatement(sql)) {
+
             ps.setString(1, codigo);
+
             try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) idiomas.add(rs.getString("idioma"));
+
+                while (rs.next()) {
+                    idiomas.add(rs.getString("nombre"));
+                }
             }
         }
+
         return idiomas;
     }
 

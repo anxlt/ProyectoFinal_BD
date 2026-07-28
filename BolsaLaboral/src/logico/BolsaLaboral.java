@@ -11,6 +11,7 @@ import db.CentroEmpleadorDAOImpl;
 
 import javax.swing.JOptionPane;
 
+import db.OfertaLaboralDAOImpl;
 import exception.NotRemovableException;
 import db.UsuarioDAOImpl;
 
@@ -317,13 +318,21 @@ public class BolsaLaboral implements Serializable{
 	    return Math.max(0, puntaje);
 	}
 
-	public void eliminarOfertaTrabajo(OfertaLaboral seleccionado) throws NotRemovableException{
+	public void eliminarOfertaTrabajo(OfertaLaboral seleccionado) throws NotRemovableException {
+
 		if(ofertaEliminable(seleccionado)) {
+
 			seleccionado.getOfertador().getOfertasLaborales().remove(seleccionado);
+
 			ofertas.remove(seleccionado);
-		}
-		else {
-			throw new NotRemovableException("La oferta no es eliminable ya que esta vinculada con una solicitud.");
+
+			new OfertaLaboralDAOImpl().eliminar(seleccionado.getCodigo());
+
+		} else {
+
+			throw new NotRemovableException(
+					"La oferta no es eliminable ya que esta vinculada con una solicitud.");
+
 		}
 	}
 	
@@ -354,19 +363,34 @@ public class BolsaLaboral implements Serializable{
 		
 		return encontrado ? indice : -1;
 	}
-	
+
+	public void cargarOfertasDesdeBD() {
+		ofertas = (ArrayList<OfertaLaboral>) new OfertaLaboralDAOImpl().listarTodos();
+		genCodigoOferta = ofertas.size() + 1;
+	}
+
 	public void registrarOfertaLaboral(OfertaLaboral nuevaOferta) {
+
 		ofertas.add(nuevaOferta);
 		nuevaOferta.getOfertador().getOfertasLaborales().add(nuevaOferta);
+
+		new OfertaLaboralDAOImpl().insertar(nuevaOferta);
+
 		genCodigoOferta++;
 	}
-	
 	public boolean modificarOfertaLaboral(OfertaLaboral ofertaModificar) {
+
 		int indice = buscarIndiceOfertaByCodigo(ofertaModificar.getCodigo());
+
 		if(indice != -1) {
-			ofertas.set(indice,ofertaModificar);
+
+			ofertas.set(indice, ofertaModificar);
+
+			new OfertaLaboralDAOImpl().actualizar(ofertaModificar);
+
 			return true;
 		}
+
 		return false;
 	}
 
@@ -382,12 +406,15 @@ public class BolsaLaboral implements Serializable{
 	
 	public void regVacanteCompletada(Solicitud solicitudContratada) {
 	    solicitudContratada.setEstado("Empleado");
-	    OfertaLaboral oferta = solicitudContratada.getOfertaSolicitada();
-	    oferta.setVacantes(oferta.getVacantes() - 1);
-	    if (oferta.getVacantes() <= 0) {
-	        oferta.setEstado("Inactiva");
-	    }
+		OfertaLaboral oferta = solicitudContratada.getOfertaSolicitada();
 
+		oferta.setVacantes(oferta.getVacantes() - 1);
+
+		if (oferta.getVacantes() <= 0) {
+			oferta.setEstado("Inactiva");
+		}
+
+		new OfertaLaboralDAOImpl().actualizar(oferta);
 		Candidato candidatoContratado = solicitudContratada.getSolicitante();
 		candidatoContratado.cambiarEstadoSolicitudesAEmpleado();
 		new CandidatoDAOImpl().actualizarEstado(candidatoContratado.getCodigo(), "Empleado"); // <-- nuevo
@@ -531,6 +558,7 @@ public class BolsaLaboral implements Serializable{
 		if(solicitud.getOfertaSolicitada().getVacantes() == 0) {
 			solicitud.getOfertaSolicitada().setEstado("Completada");
 		}
+		new OfertaLaboralDAOImpl().actualizar(solicitud.getOfertaSolicitada());
 		genCodigoVacanteCompletada++;
 		vacantes.add(vacante);
 	}
