@@ -766,7 +766,7 @@ public class RegistroCandidato extends JDialog {
 
 	private void cargarArea() {
 		String nombreArea = cmbArea.getSelectedItem().toString().toLowerCase();
-		nombreArea = nombreArea.replace("ó","o");
+		nombreArea = nombreArea.replace("ï¿½","o");
 		nombreArea = nombreArea.replace(" ","");
 
 		lblIcoArea.setIcon(new ImageIcon("recursos/" + nombreArea + ".png"));
@@ -780,7 +780,7 @@ public class RegistroCandidato extends JDialog {
 
 	private void cargarModalidad() {
 		String nombreModalidad = cmbModalidad.getSelectedItem().toString().toLowerCase();
-		nombreModalidad = nombreModalidad.replace("í","i");
+		nombreModalidad = nombreModalidad.replace("ï¿½","i");
 		lblIcoModalidad.setIcon(new ImageIcon("recursos/" + nombreModalidad + ".png"));
 	}
 
@@ -962,8 +962,10 @@ public class RegistroCandidato extends JDialog {
 						((Obrero)candidatoAct).setHabilidades(((Obrero)nuevoCandidato).getHabilidades());
 					}
 
-					JOptionPane.showMessageDialog(this, "Candidato modificado exitosamente", 
-							"Modificación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+					BolsaLaboral.getInstancia().modificarCandidato(candidatoAct);   // <-- nuevo: persiste el cambio
+
+					JOptionPane.showMessageDialog(this, "Candidato modificado exitosamente",
+							"ModificaciÃ³n Exitosa", JOptionPane.INFORMATION_MESSAGE);
 					dispose();
 					ConsultarCandidatos.cargarCandidatos();
 				}
@@ -1001,15 +1003,15 @@ public class RegistroCandidato extends JDialog {
 
 			for (String idioma : candidatoAct.getIdiomas()) {
 				switch (idioma) {
-				case "Inglés": chckbxIngles.setSelected(true); break;
+				case "Inglï¿½s": chckbxIngles.setSelected(true); break;
 				case "Italiano": chckbxItaliano.setSelected(true); break;
-				case "Español": chckbxEspanol.setSelected(true); break;
-				case "Francés": chckbxFrances.setSelected(true); break;
-				case "Portugués": chckbxPortugues.setSelected(true); break;
-				case "Alemán": chckbxAleman.setSelected(true); break;
+				case "Espaï¿½ol": chckbxEspanol.setSelected(true); break;
+				case "Francï¿½s": chckbxFrances.setSelected(true); break;
+				case "Portuguï¿½s": chckbxPortugues.setSelected(true); break;
+				case "Alemï¿½n": chckbxAleman.setSelected(true); break;
 				case "Chino": chckbxMandarin.setSelected(true); break;
 				case "Coreano": chckbxCoreano.setSelected(true); break;
-				case "Japonés": chckbxJapones.setSelected(true); break;
+				case "Japonï¿½s": chckbxJapones.setSelected(true); break;
 				}
 			}
 
@@ -1046,18 +1048,18 @@ public class RegistroCandidato extends JDialog {
 				Obrero obrero = (Obrero) candidatoAct;
 				for (String habilidad : obrero.getHabilidades()) {
 					switch (habilidad) {
-					case "Plomería": chkPlomeria.setSelected(true); break;
-					case "Carpintería": chkCarpintero.setSelected(true); break;
-					case "Gestión Financiera": chkCajero.setSelected(true); break;
+					case "Plomerï¿½a": chkPlomeria.setSelected(true); break;
+					case "Carpinterï¿½a": chkCarpintero.setSelected(true); break;
+					case "Gestiï¿½n Financiera": chkCajero.setSelected(true); break;
 					case "Soldadura": chkSoldadura.setSelected(true); break;
-					case "Instalación Eléctrica": chkElectrica.setSelected(true); break;
-					case "Mecánica": chkMecanica.setSelected(true); break;
-					case "Albañilería": chkAlbanileria.setSelected(true); break;
+					case "Instalaciï¿½n Elï¿½ctrica": chkElectrica.setSelected(true); break;
+					case "Mecï¿½nica": chkMecanica.setSelected(true); break;
+					case "Albaï¿½ilerï¿½a": chkAlbanileria.setSelected(true); break;
 					case "Redes Sociales": chkRedes.setSelected(true); break;
-					case "Conducción": chkConduccion.setSelected(true); break;
-					case "Reparación de Electrónicos": chkReparacion.setSelected(true); break;
+					case "Conducciï¿½n": chkConduccion.setSelected(true); break;
+					case "Reparaciï¿½n de Electrï¿½nicos": chkReparacion.setSelected(true); break;
 					case "Ventas": chkVentas.setSelected(true); break;
-					case "Fotografía": chkFotografia.setSelected(true); break;
+					case "Fotografï¿½a": chkFotografia.setSelected(true); break;
 					case "Cocina": chkCocina.setSelected(true); break;
 					case "Limpieza": chkLimpieza.setSelected(true); break;
 					case "Pintura": chkPintura.setSelected(true); break;
@@ -1081,7 +1083,7 @@ public class RegistroCandidato extends JDialog {
 		}
 		String cedula = txtCedula.getText().trim().replaceAll("[^0-9]", "");
 		if(cedula.length() != 11) {
-			throw new FormatException("La cédula debe tener 11 dígitos");
+			throw new FormatException("La cï¿½dula debe tener 11 dï¿½gitos");
 		}
 
 		Date fechaNacimiento = (Date) spnFechaNac.getValue();
@@ -1094,7 +1096,7 @@ public class RegistroCandidato extends JDialog {
 
 		cal.add(Calendar.YEAR, -16);
 		if(fechaNacimiento.after(cal.getTime())) {
-			throw new FormatException("El candidato debe tener al menos 16 años");
+			throw new FormatException("El candidato debe tener al menos 16 aï¿½os");
 		}
 
 		cal = Calendar.getInstance();
@@ -1105,11 +1107,11 @@ public class RegistroCandidato extends JDialog {
 
 		if(cmbGenero == null || cmbGenero.getSelectedItem() == null || 
 				cmbGenero.getSelectedItem().toString().trim().isEmpty()) {
-			throw new FormatException("El género es obligatoria");
+			throw new FormatException("El gï¿½nero es obligatoria");
 		}
 
 		if(txtTelefono.getText().trim().isEmpty()) {
-			throw new FormatException("El teléfono es obligatorio");
+			throw new FormatException("El telï¿½fono es obligatorio");
 		}
 
 		if(txtCorreo.getText().trim().isEmpty()) {
@@ -1124,12 +1126,12 @@ public class RegistroCandidato extends JDialog {
 		}
 
 		if(!txtCorreo.getText().contains("@") || !txtCorreo.getText().contains(".")) {
-			throw new FormatException("Formato del correo inválido. Ejemplo: usuario@dominio.com\"");
+			throw new FormatException("Formato del correo invï¿½lido. Ejemplo: usuario@dominio.com\"");
 		}
 
 		String telefono = txtTelefono.getText().trim().replaceAll("[^0-9]", ""); 
 		if(telefono.length() != 10) {
-			throw new FormatException("El teléfono debe tener 10 dígitos");
+			throw new FormatException("El telï¿½fono debe tener 10 dï¿½gitos");
 		}
 
 		if(rdUniversitario.isSelected()) {
@@ -1139,7 +1141,7 @@ public class RegistroCandidato extends JDialog {
 
 		} else if(rdTecnico.isSelected()) {
 			if(cmbAreaTecnica.getSelectedIndex() < 0) {
-				throw new FormatException("El área técnica es obligatoria para técnicos superiores");
+				throw new FormatException("El ï¿½rea tï¿½cnica es obligatoria para tï¿½cnicos superiores");
 			}
 
 		} else if(rdObrero.isSelected()) {
@@ -1164,7 +1166,7 @@ public class RegistroCandidato extends JDialog {
 		}
 		if(cmbArea == null || cmbArea.getSelectedItem() == null || 
 				cmbArea.getSelectedItem().toString().trim().isEmpty()) {
-			throw new FormatException("Debe seleccionar un área");
+			throw new FormatException("Debe seleccionar un ï¿½rea");
 		}
 
 		if(cmbJornada == null || cmbJornada.getSelectedItem() == null || 

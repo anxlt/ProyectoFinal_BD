@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import db.CandidatoDAOImpl;
 import db.CentroEmpleadorDAOImpl;
 
 import javax.swing.JOptionPane;
@@ -151,17 +152,25 @@ public class BolsaLaboral implements Serializable{
 			throw new NotRemovableException("El centro de trabajo no puede ser eliminado ya que posee ofertas existentes.");
 		}
 	}
-	
+
+	public void cargarCandidatosDesdeBD() {
+		candidatos = (ArrayList<Candidato>) new CandidatoDAOImpl().listarTodos();
+		genCodigoCandidato = candidatos.size() + 1;
+	}
+
 	public void registrarCandidato(Candidato nuevoCandidato) {
 		candidatos.add(nuevoCandidato);
 		genCodigoCandidato++;
+		new CandidatoDAOImpl().insertar(nuevoCandidato);
 	}
-	
-	public void eliminarCandidato(Candidato candidatoEliminar) throws NotRemovableException{
+	public void modificarCandidato(Candidato candidatoModificar) {
+		new CandidatoDAOImpl().actualizar(candidatoModificar);
+	}
+	public void eliminarCandidato(Candidato candidatoEliminar) throws NotRemovableException {
 		if(candidatoEliminable(candidatoEliminar)) {
 			candidatos.remove(candidatoEliminar);
-		}
-		else {
+			new CandidatoDAOImpl().eliminar(candidatoEliminar.getCodigo());
+		} else {
 			throw new NotRemovableException("El candidato no puede ser eliminado ya que esta vinculado con una solicitud.");
 		}
 	}
@@ -378,9 +387,10 @@ public class BolsaLaboral implements Serializable{
 	    if (oferta.getVacantes() <= 0) {
 	        oferta.setEstado("Inactiva");
 	    }
-	  
-	    Candidato candidatoContratado = solicitudContratada.getSolicitante();
-	    candidatoContratado.cambiarEstadoSolicitudesAEmpleado();
+
+		Candidato candidatoContratado = solicitudContratada.getSolicitante();
+		candidatoContratado.cambiarEstadoSolicitudesAEmpleado();
+		new CandidatoDAOImpl().actualizarEstado(candidatoContratado.getCodigo(), "Empleado"); // <-- nuevo
 	    
 	    String codigoVacante = "VAC-" + genCodigoVacanteCompletada;
 	    VacanteCompletada nuevaVacante = new VacanteCompletada(codigoVacante, solicitudContratada, oferta,LocalDate.now());
@@ -509,25 +519,27 @@ public class BolsaLaboral implements Serializable{
 		
 		return aux;
 	}
-	
+
 	public void contratarCandidato(Solicitud solicitud) {
-		VacanteCompletada vacante = new VacanteCompletada("VAC-" + genCodigoVacanteCompletada,solicitud,solicitud.getOfertaSolicitada(),LocalDate.now());
+		VacanteCompletada vacante = new VacanteCompletada("VAC-" + genCodigoVacanteCompletada, solicitud, solicitud.getOfertaSolicitada(), LocalDate.now());
 		solicitud.setEstado("Aprobada");
 		solicitud.getOfertaSolicitada().setVacantes(solicitud.getOfertaSolicitada().getVacantes() - 1);
 		solicitud.getSolicitante().setEstado("Empleado");
 		solicitud.getSolicitante().cambiarEstadoSolicitudesAEmpleado();
-		
+		new CandidatoDAOImpl().actualizarEstado(solicitud.getSolicitante().getCodigo(), "Empleado"); // <-- nuevo
+
 		if(solicitud.getOfertaSolicitada().getVacantes() == 0) {
 			solicitud.getOfertaSolicitada().setEstado("Completada");
 		}
 		genCodigoVacanteCompletada++;
 		vacantes.add(vacante);
 	}
-	
+
 	public void rechazarCandidato(Solicitud solicitud) {
 		solicitud.setEstado("Rechazada");
 		solicitud.getSolicitante().setEstado("Desempleado");
 		solicitud.getSolicitante().cambiarEstadoSolicitudesADesempleado();
+		new CandidatoDAOImpl().actualizarEstado(solicitud.getSolicitante().getCodigo(), "Desempleado"); // <-- nuevo
 	}
 
 	public Solicitud buscarSolicitudByCodigo(String codigo) {

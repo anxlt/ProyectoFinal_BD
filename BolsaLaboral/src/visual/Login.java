@@ -52,6 +52,7 @@ public class Login extends JFrame {
 					cn.close();
 
 					BolsaLaboral.getInstancia().cargarCentrosDesdeBD();
+					BolsaLaboral.getInstancia().cargarCandidatosDesdeBD();
 
 					Login frame = new Login();
 					frame.setVisible(true);
