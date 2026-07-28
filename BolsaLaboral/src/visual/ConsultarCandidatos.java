@@ -36,9 +36,9 @@ public class ConsultarCandidatos extends JDialog {
 	public static JTable table;
 	public static DefaultTableModel modelo = new DefaultTableModel() {
 		@Override
-        public boolean isCellEditable(int row, int column) {
-            return false;
-        }
+		public boolean isCellEditable(int row, int column) {
+			return false;
+		}
 	};
 	public static Object[] row;
 	private Candidato seleccionado = null;
@@ -46,7 +46,7 @@ public class ConsultarCandidatos extends JDialog {
 	private JButton btnDelete;
 	private JTextField txtFiltro;
 	private JButton btnVisualizar;
-	
+
 	/**
 	 * Create the dialog.
 	 */
@@ -86,7 +86,7 @@ public class ConsultarCandidatos extends JDialog {
 							}
 						}
 					});
-					String [] headers = {"Código", "Nombre", "Cédula", "Nivel Académico"};
+					String [] headers = {"CÃ³digo", "Nombre", "CÃ©dula", "Nivel AcadÃ©mico"};
 					modelo.setColumnIdentifiers(headers);
 					table.setModel(modelo);
 					scrollPane.setViewportView(table);
@@ -101,7 +101,7 @@ public class ConsultarCandidatos extends JDialog {
 				JLabel lblIconFiltrar = new JLabel("");
 				lblIconFiltrar.setIcon(new ImageIcon("recursos/filtrar.png"));
 				pnlFiltro.add(lblIconFiltrar);
-				
+
 			}
 			{
 				JLabel lblNewLabel = new JLabel("Criterio del Filtro: ");
@@ -135,12 +135,12 @@ public class ConsultarCandidatos extends JDialog {
 				btnUpdate.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						RegistroCandidato registro = new RegistroCandidato(seleccionado);
-						registro.setModal(true); 
-						registro.setLocationRelativeTo(ConsultarCandidatos.this); 
+						registro.setModal(true);
+						registro.setLocationRelativeTo(ConsultarCandidatos.this);
 						registro.setVisible(true);
-						
+
 						cargarCandidatos();
-						
+
 						seleccionado = null;
 						btnDelete.setEnabled(false);
 						btnUpdate.setEnabled(false);
@@ -177,7 +177,7 @@ public class ConsultarCandidatos extends JDialog {
 				btnDelete.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						if(seleccionado != null) {
-							int option = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea eliminar al candidato " + seleccionado.getNombres() + " " + seleccionado.getApellidos() + " que posee el ID: "+seleccionado.getCodigo()+"?", "Eliminar", JOptionPane.WARNING_MESSAGE);
+							int option = JOptionPane.showConfirmDialog(null, "Â¿EstÃ¡ seguro que desea eliminar al candidato " + seleccionado.getNombres() + " " + seleccionado.getApellidos() + " que posee el ID: "+seleccionado.getCodigo()+"?", "Eliminar", JOptionPane.WARNING_MESSAGE);
 							if(option == JOptionPane.OK_OPTION){
 								try {
 									BolsaLaboral.getInstancia().eliminarCandidato(seleccionado);
@@ -189,7 +189,7 @@ public class ConsultarCandidatos extends JDialog {
 								}
 								catch (NotRemovableException ex) {
 									JOptionPane.showMessageDialog(null,ex.getMessage(),"Advertencia",JOptionPane.ERROR_MESSAGE);
-								}	
+								}
 							}
 						}
 					}
@@ -217,51 +217,51 @@ public class ConsultarCandidatos extends JDialog {
 		table.getTableHeader().setReorderingAllowed(false);
 		table.setBackground(new Color(228, 228, 228));
 	}
-	
+
 	private void visualizarCandidato(Candidato candidato) {
 		CV visualizar = new CV(candidato);
 		visualizar.setModal(true);
 		visualizar.setVisible(true);
 	}
-	
+
 	public void filtrar() {
-	    String filtro = txtFiltro.getText().toLowerCase();
-	    modelo.setRowCount(0);
-	    row = new Object[table.getColumnCount()];
-	    
-	    seleccionado = null;
-	    btnDelete.setEnabled(false);
-	    btnUpdate.setEnabled(false);
-	    btnVisualizar.setEnabled(false);
-	    
-	    for (Candidato aux : BolsaLaboral.getInstancia().getCandidatos()) {
-	        boolean coincide = 
-	            aux.getCodigo().toLowerCase().contains(filtro) ||
-	            (aux.getNombres() + " " + aux.getApellidos()).toLowerCase().contains(filtro) ||
-	            aux.getIdentificacion().toLowerCase().contains(filtro) ||
-	            getNivelAcademico(aux).toLowerCase().contains(filtro);
-	        
-	        if (coincide) {
-	            row[0] = aux.getCodigo();
-	            row[1] = aux.getNombres() + " " + aux.getApellidos();
-	            row[2] = aux.getIdentificacion();
-	            row[3] = getNivelAcademico(aux);
-	            modelo.addRow(row);
-	        }
-	    }
+		String filtro = txtFiltro.getText().toLowerCase();
+		modelo.setRowCount(0);
+		row = new Object[table.getColumnCount()];
+
+		seleccionado = null;
+		btnDelete.setEnabled(false);
+		btnUpdate.setEnabled(false);
+		btnVisualizar.setEnabled(false);
+
+		for (Candidato aux : BolsaLaboral.getInstancia().getCandidatos()) {
+			boolean coincide =
+					aux.getCodigo().toLowerCase().contains(filtro) ||
+							(aux.getNombres() + " " + aux.getApellidos()).toLowerCase().contains(filtro) ||
+							aux.getIdentificacion().toLowerCase().contains(filtro) ||
+							getNivelAcademico(aux).toLowerCase().contains(filtro);
+
+			if (coincide) {
+				row[0] = aux.getCodigo();
+				row[1] = aux.getNombres() + " " + aux.getApellidos();
+				row[2] = aux.getIdentificacion();
+				row[3] = getNivelAcademico(aux);
+				modelo.addRow(row);
+			}
+		}
 	}
 
 	private static String getNivelAcademico(Candidato candidato) {
-	    if (candidato instanceof Universitario) {
-	        return "Estudiante Universitario";
-	    } else if (candidato instanceof TecnicoSuperior) {
-	        return "Estudiante Técnico";
-	    } else if (candidato instanceof Obrero) {
-	        return "Obrero";
-	    }
-	    return "";
+		if (candidato instanceof Universitario) {
+			return "Estudiante Universitario";
+		} else if (candidato instanceof TecnicoSuperior) {
+			return "Estudiante TÃ©cnico";
+		} else if (candidato instanceof Obrero) {
+			return "Obrero";
+		}
+		return "";
 	}
-	
+
 	public static void cargarCandidatos() {
 		modelo.setRowCount(0);
 		row = new Object[table.getColumnCount()];

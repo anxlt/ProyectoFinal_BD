@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import db.Conexion;
 import exception.AuthException;
 import exception.FormatException;
 import logico.BolsaLaboral;
@@ -38,6 +39,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.sql.Connection;
 import javax.swing.JPasswordField;
 
 public class Login extends JFrame {
@@ -51,13 +53,21 @@ public class Login extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				bolsaIO();
-				codigoIO();
+
 				try {
+					Connection cn = Conexion.conectar();
+					System.out.println("Conexión exitosa con la base de datos.");
+					cn.close();
+
+					bolsaIO();
+					codigoIO();
+
 					Login frame = new Login();
 					frame.setVisible(true);
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
