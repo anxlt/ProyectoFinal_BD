@@ -1,105 +1,126 @@
 package db;
 
-import logico.*;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VacanteCompletadaDAOImpl implements VacanteCompletadaDAO{
+import logico.OfertaLaboral;
+import logico.Solicitud;
+import logico.VacanteCompletada;
 
-    @Override
-    public void insertar(VacanteCompletada v){
+public class VacanteCompletadaDAOImpl {
 
-        String sql="""
-                INSERT INTO VacanteCompletada
-                (codigo,fecha,solicitudCodigo,ofertaCodigo)
-                VALUES(?,?,?,?)
-                """;
+    public boolean insertar(VacanteCompletada v) {
+        String sql = """
+            INSERT INTO VacanteCompletada (codigo, fechaContratacion, solicitudCodigo, ofertaCodigo)
+            VALUES (?, ?, ?, ?)
+        """;
 
-        try(Connection con=Conexion.conectar();
-            PreparedStatement ps=con.prepareStatement(sql)){
+        try (Connection conn = Conexion.conectar();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1,v.getCodigo());
-            ps.setDate(2,Date.valueOf(v.getFecha()));
-            ps.setString(3,v.getSolicitud().getCodigo());
-            ps.setString(4,v.getOferta().getCodigo());
+            ps.setString(1, v.getCodigo());
+            ps.setDate(2, Date.valueOf(v.getFechaContratacion()));
+            ps.setString(3, v.getSolicitudAceptada().getCodigo());
+            ps.setString(4, v.getOfertaOcupada().getCodigo());
 
-            ps.executeUpdate();
-
-        }catch(SQLException e){
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-
     }
 
-    @Override
-    public VacanteCompletada buscarPorCodigo(String codigo){
+    public VacanteCompletada buscarPorCodigo(String codigo) {
+        String sql = "SELECT * FROM VacanteCompletada WHERE codigo = ?";
+        VacanteCompletada v = null;
 
-        String sql="SELECT * FROM VacanteCompletada WHERE codigo=?";
+        try (Connection conn = Conexion.conectar();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        try(Connection con=Conexion.conectar();
-            PreparedStatement ps=con.prepareStatement(sql)){
+            ps.setString(1, codigo);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Solicitud sol = new SolicitudDAOImpl().buscarPorCodigo(rs.getString("solicitudCodigo"));
+                    OfertaLaboral ofer = new OfertaLaboralDAOImpl().buscarPorCodigo(rs.getString("ofertaCodigo"));
 
-            ps.setString(1,codigo);
+                    v = new VacanteCompletada(
+                            rs.getString("codigo"),
+                            sol,
+                            ofer,
+                            rs.getDate("fechaContratacion").toLocalDate()
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return v;
+    }
 
-            ResultSet rs=ps.executeQuery();
+    public List<VacanteCompletada> listarTodos() {
+        List<VacanteCompletada> lista = new ArrayList<>();
+        String sql = "SELECT * FROM VacanteCompletada";
 
-            if(rs.next()){
+        try (Connection conn = Conexion.conectar();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-                Solicitud solicitud=
-                        new SolicitudDAOImpl().buscarPorCodigo(rs.getString("solicitudCodigo"));
+            while (rs.next()) {
+                Solicitud sol = new SolicitudDAOImpl().buscarPorCodigo(rs.getString("solicitudCodigo"));
+                OfertaLaboral ofer = new OfertaLaboralDAOImpl().buscarPorCodigo(rs.getString("ofertaCodigo"));
 
-                OfertaLaboral oferta=
-                        new OfertaLaboralDAOImpl().buscarPorCodigo(rs.getString("ofertaCodigo"));
-
-                return new VacanteCompletada(
+                VacanteCompletada v = new VacanteCompletada(
                         rs.getString("codigo"),
-                        solicitud,
-                        oferta,
-                        rs.getDate("fecha").toLocalDate()
+                        sol,
+                        ofer,
+                        rs.getDate("fechaContratacion").toLocalDate()
                 );
+                lista.add(v);
             }
-
-        }catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return null;
-    }
-
-    @Override
-    public List<VacanteCompletada> listarTodos(){
-
-        ArrayList<VacanteCompletada> lista=new ArrayList<>();
-
-        String sql="SELECT * FROM VacanteCompletada";
-
-        try(Connection con=Conexion.conectar();
-            Statement st=con.createStatement();
-            ResultSet rs=st.executeQuery(sql)){
-
-            while(rs.next()){
-
-                Solicitud solicitud=
-                        new SolicitudDAOImpl().buscarPorCodigo(rs.getString("solicitudCodigo"));
-
-                OfertaLaboral oferta=
-                        new OfertaLaboralDAOImpl().buscarPorCodigo(rs.getString("ofertaCodigo"));
-
-                lista.add(new VacanteCompletada(
-                        rs.getString("codigo"),
-                        solicitud,
-                        oferta,
-                        rs.getDate("fecha").toLocalDate()
-                ));
-            }
-
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
-
         return lista;
     }
 
+    public boolean actualizar(VacanteCompletada v) {
+        String sql = """
+            UPDATE VacanteCompletada 
+            SET fechaContratacion = ?, solicitudCodigo = ?, ofertaCodigo = ? 
+            WHERE codigo = ?
+        """;
+
+        try (Connection conn = Conexion.conectar();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setDate(1, Date.valueOf(v.getFechaContratacion()));
+            ps.setString(2, v.getSolicitudAceptada().getCodigo());
+            ps.setString(3, v.getOfertaOcupada().getCodigo());
+            ps.setString(4, v.getCodigo());
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean eliminar(String codigo) {
+        String sql = "DELETE FROM VacanteCompletada WHERE codigo = ?";
+
+        try (Connection conn = Conexion.conectar();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, codigo);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

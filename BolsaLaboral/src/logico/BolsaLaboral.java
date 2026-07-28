@@ -14,6 +14,10 @@ import javax.swing.JOptionPane;
 import db.OfertaLaboralDAOImpl;
 import exception.NotRemovableException;
 import db.UsuarioDAOImpl;
+import db.SolicitudDAOImpl;
+import db.VacanteCompletadaDAOImpl;
+import db.CandidatoDAOImpl;
+import db.OfertaLaboralDAOImpl;
 
 public class BolsaLaboral implements Serializable{
 	
@@ -175,7 +179,32 @@ public class BolsaLaboral implements Serializable{
 			throw new NotRemovableException("El candidato no puede ser eliminado ya que esta vinculado con una solicitud.");
 		}
 	}
-	
+	public Candidato buscarCandidatoPorCodigo(String codigo) {
+		for (Candidato c : candidatos) {
+			if (c.getCodigo().equalsIgnoreCase(codigo)) {
+				return c;
+			}
+		}
+		return null;
+	}
+
+	public OfertaLaboral buscarOfertaPorCodigo(String codigo) {
+		for (OfertaLaboral o : ofertas) {
+			if (o.getCodigo().equalsIgnoreCase(codigo)) {
+				return o;
+			}
+		}
+		return null;
+	}
+
+	public Solicitud buscarSolicitudPorCodigo(String codigo) {
+		for (Solicitud s : solicitudes) {
+			if (s.getCodigo().equalsIgnoreCase(codigo)) {
+				return s;
+			}
+		}
+		return null;
+	}
 	public Candidato buscarCandidatoByCodigo(String codigo) {
 		Candidato encontrado = null;
 		int indice = 0;
@@ -335,6 +364,50 @@ public class BolsaLaboral implements Serializable{
 
 		}
 	}
+
+	public void cargarSolicitudesDesdeBD() {
+		List<Solicitud> listaBD = new SolicitudDAOImpl().listarTodos();
+		solicitudes = new ArrayList<>();
+
+		for (Solicitud sol : listaBD) {
+			// Enlazar con el objeto Candidato exacto que está en la lista general
+			Candidato cand = buscarCandidatoPorCodigo(sol.getSolicitante().getCodigo());
+			if (cand != null) {
+				sol.setSolicitante(cand);
+				if (!cand.getMisSolicitudes().contains(sol)) {
+					cand.addSolicitud(sol);
+				}
+			}
+
+			// Enlazar con el objeto OfertaLaboral exacto que está en la lista general
+			OfertaLaboral ofer = buscarOfertaPorCodigo(sol.getOfertaSolicitada().getCodigo());
+			if (ofer != null) {
+				sol.setOfertaSolicitada(ofer);
+			}
+
+			solicitudes.add(sol);
+		}
+		genCodigoSolicitud = solicitudes.size() + 1;
+	}
+	public void cargarVacantesDesdeBD() {
+		List<VacanteCompletada> listaBD = new VacanteCompletadaDAOImpl().listarTodos();
+		vacantes = new ArrayList<>();
+
+		for (VacanteCompletada vac : listaBD) {
+			Solicitud sol = buscarSolicitudPorCodigo(vac.getSolicitudAceptada().getCodigo());
+			OfertaLaboral ofer = buscarOfertaPorCodigo(vac.getOfertaOcupada().getCodigo());
+
+			if (sol != null) {
+				vac.setSolicitudAceptada(sol);
+			}
+			if (ofer != null) {
+				vac.setOfertaOcupada(ofer);
+			}
+
+			vacantes.add(vac);
+		}
+		genCodigoVacanteCompletada = vacantes.size() + 1;
+	}
 	
 	public OfertaLaboral buscarOfertaByCodigo(String codigo) {
 		OfertaLaboral encontrado = null;
@@ -403,27 +476,27 @@ public class BolsaLaboral implements Serializable{
 		}
 		return aux;
 	}
-	
+
 	public void regVacanteCompletada(Solicitud solicitudContratada) {
-	    solicitudContratada.setEstado("Empleado");
+		solicitudContratada.setEstado("Empleado");
 		OfertaLaboral oferta = solicitudContratada.getOfertaSolicitada();
-
 		oferta.setVacantes(oferta.getVacantes() - 1);
-
 		if (oferta.getVacantes() <= 0) {
 			oferta.setEstado("Inactiva");
 		}
 
+		// Actualizaciones en la Base de Datos
 		new OfertaLaboralDAOImpl().actualizar(oferta);
 		Candidato candidatoContratado = solicitudContratada.getSolicitante();
 		candidatoContratado.cambiarEstadoSolicitudesAEmpleado();
-		new CandidatoDAOImpl().actualizarEstado(candidatoContratado.getCodigo(), "Empleado"); // <-- nuevo
-	    
-	    String codigoVacante = "VAC-" + genCodigoVacanteCompletada;
-	    VacanteCompletada nuevaVacante = new VacanteCompletada(codigoVacante, solicitudContratada, oferta,LocalDate.now());
-	    
-	    vacantes.add(nuevaVacante);
-	    genCodigoVacanteCompletada++;
+		new CandidatoDAOImpl().actualizarEstado(candidatoContratado.getCodigo(), "Empleado");
+		new SolicitudDAOImpl().actualizar(solicitudContratada);
+
+		String codigoVacante = "VAC-" + genCodigoVacanteCompletada;
+		VacanteCompletada nuevaVacante = new VacanteCompletada(codigoVacante, solicitudContratada, oferta, LocalDate.now());
+		vacantes.add(nuevaVacante);
+		new VacanteCompletadaDAOImpl().insertar(nuevaVacante);
+		genCodigoVacanteCompletada++;
 	}
 
 	public void regUsuario(Usuario user) {
@@ -511,12 +584,17 @@ public class BolsaLaboral implements Serializable{
 
 	public boolean vincularOferta(ResultadoMatcheo resMatchSelec) {
 		boolean aux = false;
-		if(resMatchSelec.getOferta().getVacantes() > 0) {
-			Solicitud sol = new Solicitud("SOL-" + genCodigoSolicitud, LocalDate.now(),"Enviada",resMatchSelec.getSolicitante(),resMatchSelec.getOferta());
-			if(verificarSolicitud(sol)) {
+		if (resMatchSelec.getOferta().getVacantes() > 0) {
+			Solicitud sol = new Solicitud("SOL-" + genCodigoSolicitud, LocalDate.now(), "Enviada",
+					resMatchSelec.getSolicitante(), resMatchSelec.getOferta());
+			if (verificarSolicitud(sol)) {
 				solicitudes.add(sol);
 				resMatchSelec.getSolicitante().addSolicitud(sol);
 				resMatchSelec.getSolicitante().setEstado("En Espera");
+
+				// Persistir Solicitud en la BD
+				new SolicitudDAOImpl().insertar(sol);
+
 				genCodigoSolicitud++;
 				aux = true;
 			}
@@ -553,12 +631,17 @@ public class BolsaLaboral implements Serializable{
 		solicitud.getOfertaSolicitada().setVacantes(solicitud.getOfertaSolicitada().getVacantes() - 1);
 		solicitud.getSolicitante().setEstado("Empleado");
 		solicitud.getSolicitante().cambiarEstadoSolicitudesAEmpleado();
-		new CandidatoDAOImpl().actualizarEstado(solicitud.getSolicitante().getCodigo(), "Empleado"); // <-- nuevo
 
-		if(solicitud.getOfertaSolicitada().getVacantes() == 0) {
+		// Actualizaciones en la Base de Datos
+		new CandidatoDAOImpl().actualizarEstado(solicitud.getSolicitante().getCodigo(), "Empleado");
+
+		if (solicitud.getOfertaSolicitada().getVacantes() == 0) {
 			solicitud.getOfertaSolicitada().setEstado("Completada");
 		}
 		new OfertaLaboralDAOImpl().actualizar(solicitud.getOfertaSolicitada());
+		new SolicitudDAOImpl().actualizar(solicitud);
+		new VacanteCompletadaDAOImpl().insertar(vacante);
+
 		genCodigoVacanteCompletada++;
 		vacantes.add(vacante);
 	}
@@ -567,7 +650,10 @@ public class BolsaLaboral implements Serializable{
 		solicitud.setEstado("Rechazada");
 		solicitud.getSolicitante().setEstado("Desempleado");
 		solicitud.getSolicitante().cambiarEstadoSolicitudesADesempleado();
-		new CandidatoDAOImpl().actualizarEstado(solicitud.getSolicitante().getCodigo(), "Desempleado"); // <-- nuevo
+
+		// Actualizaciones en la Base de Datos
+		new CandidatoDAOImpl().actualizarEstado(solicitud.getSolicitante().getCodigo(), "Desempleado");
+		new SolicitudDAOImpl().actualizar(solicitud);
 	}
 
 	public Solicitud buscarSolicitudByCodigo(String codigo) {
