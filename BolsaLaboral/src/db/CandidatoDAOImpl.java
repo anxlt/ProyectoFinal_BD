@@ -11,10 +11,10 @@ public class CandidatoDAOImpl implements CandidatoDAO {
 
     @Override
     public void insertar(Candidato c) {
-        String sql = "INSERT INTO Candidato (codigo, identificacion, nombres, apellidos, fechaNacimiento, "
-                + "genero, provincia, municipio, telefono, correo, jornada, modalidad, areaDeInteres, "
-                + "aspiracionSalarial, licenciaConducir, disposicionMudarse, estado, tipo, "
-                + "universidad, carrera, nivelAcademico, areaTecnica, aniosExperiencia) "
+        String sql = "INSERT INTO Candidato (id_candidato, identificacion, nombres, apellidos, fecha_nacimiento, "
+                + "genero, provincia, municipio, telefono, correo, jornada, modalidad, area_interes, "
+                + "aspiracion_salarial, licencia_conducir, disposicion_mudarse, estado, tipo_candidato, "
+                + "universidad, carrera, nivel_academico, area_tecnica, anios_experiencia) "
                 + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         Connection con = null;
@@ -81,16 +81,16 @@ public class CandidatoDAOImpl implements CandidatoDAO {
             try { if (con != null) con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             e.printStackTrace();
         } finally {
-            try { if (con != null) con.setAutoCommit(true); con.close(); } catch (SQLException e) { e.printStackTrace(); }
+            try { if (con != null) { con.setAutoCommit(true); con.close(); } } catch (SQLException e) { e.printStackTrace(); }
         }
     }
     @Override
     public void actualizar(Candidato c) {
-        String sql = "UPDATE Candidato SET identificacion = ?, nombres = ?, apellidos = ?, fechaNacimiento = ?, "
+        String sql = "UPDATE Candidato SET identificacion = ?, nombres = ?, apellidos = ?, fecha_nacimiento = ?, "
                 + "genero = ?, provincia = ?, municipio = ?, telefono = ?, correo = ?, jornada = ?, modalidad = ?, "
-                + "areaDeInteres = ?, aspiracionSalarial = ?, licenciaConducir = ?, disposicionMudarse = ?, "
-                + "estado = ?, universidad = ?, carrera = ?, nivelAcademico = ?, areaTecnica = ?, aniosExperiencia = ? "
-                + "WHERE codigo = ?";
+                + "area_interes = ?, aspiracion_salarial = ?, licencia_conducir = ?, disposicion_mudarse = ?, "
+                + "estado = ?, universidad = ?, carrera = ?, nivel_academico = ?, area_tecnica = ?, anios_experiencia = ? "
+                + "WHERE id_candidato = ?";
 
         Connection con = null;
         try {
@@ -141,7 +141,7 @@ public class CandidatoDAOImpl implements CandidatoDAO {
 
             // Idiomas: se borran y se reinsertan tal como quedaron
             try (PreparedStatement del = con.prepareStatement(
-                    "DELETE FROM CandidatoIdioma WHERE candidatoCodigo = ?")) {
+                    "DELETE FROM CandidatoIdioma WHERE id_candidato = ?")) {
                 del.setString(1, c.getCodigo());
                 del.executeUpdate();
             }
@@ -149,7 +149,7 @@ public class CandidatoDAOImpl implements CandidatoDAO {
 
             // Habilidades: solo aplica si es Obrero
             try (PreparedStatement del = con.prepareStatement(
-                    "DELETE FROM CandidatoHabilidad WHERE candidatoCodigo = ?")) {
+                    "DELETE FROM CandidatoHabilidad WHERE id_candidato = ?")) {
                 del.setString(1, c.getCodigo());
                 del.executeUpdate();
             }
@@ -170,9 +170,9 @@ public class CandidatoDAOImpl implements CandidatoDAO {
 
     private void insertarIdiomas(Connection con, String codigo, List<String> idiomas) throws SQLException {
 
-        String buscarIdioma = "SELECT id FROM Idioma WHERE nombre = ?";
-        String insertarIdioma = "INSERT INTO Idioma(nombre) VALUES(?)";
-        String insertarRelacion = "INSERT INTO CandidatoIdioma(candidatoCodigo, idiomaId) VALUES(?, ?)";
+        String buscarIdioma = "SELECT id_idioma FROM Idioma WHERE nombre_idioma = ?";
+        String insertarIdioma = "INSERT INTO Idioma(nombre_idioma) VALUES(?)";
+        String insertarRelacion = "INSERT INTO CandidatoIdioma(id_candidato, id_idioma) VALUES(?, ?)";
 
         for (String idioma : idiomas) {
 
@@ -185,7 +185,7 @@ public class CandidatoDAOImpl implements CandidatoDAO {
 
                     if (rs.next()) {
 
-                        idIdioma = rs.getInt("id");
+                        idIdioma = rs.getInt("id_idioma");
 
                     } else {
 
@@ -214,7 +214,7 @@ public class CandidatoDAOImpl implements CandidatoDAO {
     }
 
     private void insertarHabilidades(Connection con, String codigo, List<String> habilidades) throws SQLException {
-        String sql = "INSERT INTO CandidatoHabilidad (candidatoCodigo, habilidad) VALUES (?, ?)";
+        String sql = "INSERT INTO CandidatoHabilidad (id_candidato, habilidad) VALUES (?, ?)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             for (String hab : habilidades) {
                 ps.setString(1, codigo);
@@ -236,17 +236,17 @@ public class CandidatoDAOImpl implements CandidatoDAO {
             con.setAutoCommit(false);
 
             PreparedStatement ps1 =
-                    con.prepareStatement("DELETE FROM CandidatoIdioma WHERE candidatoCodigo=?");
+                    con.prepareStatement("DELETE FROM CandidatoIdioma WHERE id_candidato=?");
             ps1.setString(1, codigo);
             ps1.executeUpdate();
 
             PreparedStatement ps2 =
-                    con.prepareStatement("DELETE FROM CandidatoHabilidad WHERE candidatoCodigo=?");
+                    con.prepareStatement("DELETE FROM CandidatoHabilidad WHERE id_candidato=?");
             ps2.setString(1, codigo);
             ps2.executeUpdate();
 
             PreparedStatement ps3 =
-                    con.prepareStatement("DELETE FROM Candidato WHERE codigo=?");
+                    con.prepareStatement("DELETE FROM Candidato WHERE id_candidato=?");
             ps3.setString(1, codigo);
             ps3.executeUpdate();
 
@@ -277,7 +277,7 @@ public class CandidatoDAOImpl implements CandidatoDAO {
     }
     @Override
     public void actualizarEstado(String codigo, String estado) {
-        String sql = "UPDATE Candidato SET estado = ? WHERE codigo = ?";
+        String sql = "UPDATE Candidato SET estado = ? WHERE id_candidato = ?";
         try (Connection con = Conexion.conectar();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -291,7 +291,7 @@ public class CandidatoDAOImpl implements CandidatoDAO {
     }
     @Override
     public Candidato buscarPorCodigo(String codigo) {
-        String sql = "SELECT * FROM Candidato WHERE codigo = ?";
+        String sql = "SELECT * FROM Candidato WHERE id_candidato = ?";
         try (Connection con = Conexion.conectar();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -327,11 +327,11 @@ public class CandidatoDAOImpl implements CandidatoDAO {
     }
 
     private Candidato mapear(Connection con, ResultSet rs) throws SQLException {
-        String codigo = rs.getString("codigo");
+        String codigo = rs.getString("id_candidato");
         String identificacion = rs.getString("identificacion");
         String nombres = rs.getString("nombres");
         String apellidos = rs.getString("apellidos");
-        LocalDate fechaNacimiento = rs.getDate("fechaNacimiento").toLocalDate();
+        LocalDate fechaNacimiento = rs.getDate("fecha_nacimiento").toLocalDate();
         String genero = rs.getString("genero");
         String provincia = rs.getString("provincia");
         String municipio = rs.getString("municipio");
@@ -339,12 +339,12 @@ public class CandidatoDAOImpl implements CandidatoDAO {
         String correo = rs.getString("correo");
         String jornada = rs.getString("jornada");
         String modalidad = rs.getString("modalidad");
-        String areaDeInteres = rs.getString("areaDeInteres");
-        float aspiracionSalarial = rs.getFloat("aspiracionSalarial");
-        boolean licenciaConducir = rs.getBoolean("licenciaConducir");
-        boolean disposicionMudarse = rs.getBoolean("disposicionMudarse");
+        String areaDeInteres = rs.getString("area_interes");
+        float aspiracionSalarial = rs.getFloat("aspiracion_salarial");
+        boolean licenciaConducir = rs.getBoolean("licencia_conducir");
+        boolean disposicionMudarse = rs.getBoolean("disposicion_mudarse");
         String estado = rs.getString("estado");
-        String tipo = rs.getString("tipo");
+        String tipo = rs.getString("tipo_candidato");
 
         ArrayList<String> idiomas = obtenerIdiomas(con, codigo);
 
@@ -354,14 +354,14 @@ public class CandidatoDAOImpl implements CandidatoDAO {
                 c = new Universitario(codigo, identificacion, nombres, apellidos, fechaNacimiento, genero,
                         provincia, municipio, telefono, correo, jornada, modalidad, areaDeInteres,
                         aspiracionSalarial, licenciaConducir, disposicionMudarse, idiomas,
-                        rs.getString("universidad"), rs.getString("carrera"), rs.getString("nivelAcademico"), estado);
+                        rs.getString("universidad"), rs.getString("carrera"), rs.getString("nivel_academico"), estado);
                 break;
 
             case "TECNICO":
                 c = new TecnicoSuperior(codigo, identificacion, nombres, apellidos, fechaNacimiento, genero,
                         provincia, municipio, telefono, correo, jornada, modalidad, areaDeInteres,
                         aspiracionSalarial, licenciaConducir, disposicionMudarse, idiomas,
-                        rs.getString("areaTecnica"), rs.getInt("aniosExperiencia"), estado);
+                        rs.getString("area_tecnica"), rs.getInt("anios_experiencia"), estado);
                 break;
 
             default: // OBRERO
@@ -380,10 +380,10 @@ public class CandidatoDAOImpl implements CandidatoDAO {
         ArrayList<String> idiomas = new ArrayList<>();
 
         String sql =
-                "SELECT I.nombre " +
+                "SELECT I.nombre_idioma " +
                         "FROM CandidatoIdioma CI " +
-                        "INNER JOIN Idioma I ON CI.idiomaId = I.id " +
-                        "WHERE CI.candidatoCodigo = ?";
+                        "INNER JOIN Idioma I ON CI.id_idioma = I.id_idioma " +
+                        "WHERE CI.id_candidato = ?";
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -392,7 +392,7 @@ public class CandidatoDAOImpl implements CandidatoDAO {
             try (ResultSet rs = ps.executeQuery()) {
 
                 while (rs.next()) {
-                    idiomas.add(rs.getString("nombre"));
+                    idiomas.add(rs.getString("nombre_idioma"));
                 }
             }
         }
@@ -402,7 +402,7 @@ public class CandidatoDAOImpl implements CandidatoDAO {
 
     private ArrayList<String> obtenerHabilidades(Connection con, String codigo) throws SQLException {
         ArrayList<String> habilidades = new ArrayList<>();
-        String sql = "SELECT habilidad FROM CandidatoHabilidad WHERE candidatoCodigo = ?";
+        String sql = "SELECT habilidad FROM CandidatoHabilidad WHERE id_candidato = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, codigo);
             try (ResultSet rs = ps.executeQuery()) {

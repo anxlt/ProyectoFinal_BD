@@ -14,7 +14,8 @@ public class CentroEmpleadorDAOImpl implements CentroEmpleadorDAO {
 
     @Override
     public void insertar(CentroEmpleador c) {
-        String sql = "INSERT INTO CentroEmpleador (codigo, rnc, nombre, sector, provincia, municipio, telefono, correo) "
+        // CAMBIO: 'codigo' por 'id_centro' y 'nombre' por 'nombre_centro'
+        String sql = "INSERT INTO CentroEmpleador (id_centro, rnc, nombre_centro, sector, provincia, municipio, telefono, correo) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection con = Conexion.conectar();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -36,8 +37,9 @@ public class CentroEmpleadorDAOImpl implements CentroEmpleadorDAO {
 
     @Override
     public void actualizar(CentroEmpleador c) {
-        String sql = "UPDATE CentroEmpleador SET rnc = ?, nombre = ?, sector = ?, provincia = ?, "
-                + "municipio = ?, telefono = ?, correo = ? WHERE codigo = ?";
+        // CAMBIO: 'nombre' por 'nombre_centro' y 'codigo' por 'id_centro'
+        String sql = "UPDATE CentroEmpleador SET rnc = ?, nombre_centro = ?, sector = ?, provincia = ?, "
+                + "municipio = ?, telefono = ?, correo = ? WHERE id_centro = ?";
         try (Connection con = Conexion.conectar();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -58,7 +60,8 @@ public class CentroEmpleadorDAOImpl implements CentroEmpleadorDAO {
 
     @Override
     public void eliminar(String codigo) {
-        String sql = "DELETE FROM CentroEmpleador WHERE codigo = ?";
+        // CAMBIO: 'codigo' por 'id_centro'
+        String sql = "DELETE FROM CentroEmpleador WHERE id_centro = ?";
         try (Connection con = Conexion.conectar();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -72,7 +75,8 @@ public class CentroEmpleadorDAOImpl implements CentroEmpleadorDAO {
 
     @Override
     public CentroEmpleador buscarPorCodigo(String codigo) {
-        String sql = "SELECT * FROM CentroEmpleador WHERE codigo = ?";
+        // CAMBIO: 'codigo' por 'id_centro'
+        String sql = "SELECT * FROM CentroEmpleador WHERE id_centro = ?";
         try (Connection con = Conexion.conectar();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -110,8 +114,9 @@ public class CentroEmpleadorDAOImpl implements CentroEmpleadorDAO {
 
     private CentroEmpleador mapear(ResultSet rs) throws SQLException {
         return new CentroEmpleador(
-                rs.getString("codigo"),
-                rs.getString("nombre"),
+                // CAMBIO: extraer los datos usando los nuevos nombres de columna
+                rs.getString("id_centro"),
+                rs.getString("nombre_centro"),
                 rs.getString("sector"),
                 rs.getString("provincia"),
                 rs.getString("municipio"),

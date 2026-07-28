@@ -15,8 +15,9 @@ import logico.VacanteCompletada;
 public class VacanteCompletadaDAOImpl {
 
     public boolean insertar(VacanteCompletada v) {
+        // CAMBIO: Se actualizaron los 4 nombres de las columnas
         String sql = """
-            INSERT INTO VacanteCompletada (codigo, fechaContratacion, solicitudCodigo, ofertaCodigo)
+            INSERT INTO VacanteCompletada (id_vacante, fecha_contratacion, id_solicitud, id_oferta)
             VALUES (?, ?, ?, ?)
         """;
 
@@ -36,7 +37,8 @@ public class VacanteCompletadaDAOImpl {
     }
 
     public VacanteCompletada buscarPorCodigo(String codigo) {
-        String sql = "SELECT * FROM VacanteCompletada WHERE codigo = ?";
+        // CAMBIO: codigo por id_vacante
+        String sql = "SELECT * FROM VacanteCompletada WHERE id_vacante = ?";
         VacanteCompletada v = null;
 
         try (Connection conn = Conexion.conectar();
@@ -45,14 +47,15 @@ public class VacanteCompletadaDAOImpl {
             ps.setString(1, codigo);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    Solicitud sol = new SolicitudDAOImpl().buscarPorCodigo(rs.getString("solicitudCodigo"));
-                    OfertaLaboral ofer = new OfertaLaboralDAOImpl().buscarPorCodigo(rs.getString("ofertaCodigo"));
+                    // CAMBIO: llaves del ResultSet actualizadas (id_solicitud, id_oferta, id_vacante, fecha_contratacion)
+                    Solicitud sol = new SolicitudDAOImpl().buscarPorCodigo(rs.getString("id_solicitud"));
+                    OfertaLaboral ofer = new OfertaLaboralDAOImpl().buscarPorCodigo(rs.getString("id_oferta"));
 
                     v = new VacanteCompletada(
-                            rs.getString("codigo"),
+                            rs.getString("id_vacante"),
                             sol,
                             ofer,
-                            rs.getDate("fechaContratacion").toLocalDate()
+                            rs.getDate("fecha_contratacion").toLocalDate()
                     );
                 }
             }
@@ -71,14 +74,15 @@ public class VacanteCompletadaDAOImpl {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                Solicitud sol = new SolicitudDAOImpl().buscarPorCodigo(rs.getString("solicitudCodigo"));
-                OfertaLaboral ofer = new OfertaLaboralDAOImpl().buscarPorCodigo(rs.getString("ofertaCodigo"));
+                // CAMBIO: llaves del ResultSet actualizadas
+                Solicitud sol = new SolicitudDAOImpl().buscarPorCodigo(rs.getString("id_solicitud"));
+                OfertaLaboral ofer = new OfertaLaboralDAOImpl().buscarPorCodigo(rs.getString("id_oferta"));
 
                 VacanteCompletada v = new VacanteCompletada(
-                        rs.getString("codigo"),
+                        rs.getString("id_vacante"),
                         sol,
                         ofer,
-                        rs.getDate("fechaContratacion").toLocalDate()
+                        rs.getDate("fecha_contratacion").toLocalDate()
                 );
                 lista.add(v);
             }
@@ -89,10 +93,11 @@ public class VacanteCompletadaDAOImpl {
     }
 
     public boolean actualizar(VacanteCompletada v) {
+        // CAMBIO: Nombres de columnas actualizados en el SET y WHERE
         String sql = """
             UPDATE VacanteCompletada 
-            SET fechaContratacion = ?, solicitudCodigo = ?, ofertaCodigo = ? 
-            WHERE codigo = ?
+            SET fecha_contratacion = ?, id_solicitud = ?, id_oferta = ? 
+            WHERE id_vacante = ?
         """;
 
         try (Connection conn = Conexion.conectar();
@@ -111,7 +116,8 @@ public class VacanteCompletadaDAOImpl {
     }
 
     public boolean eliminar(String codigo) {
-        String sql = "DELETE FROM VacanteCompletada WHERE codigo = ?";
+        // CAMBIO: codigo por id_vacante
+        String sql = "DELETE FROM VacanteCompletada WHERE id_vacante = ?";
 
         try (Connection conn = Conexion.conectar();
              PreparedStatement ps = conn.prepareStatement(sql)) {

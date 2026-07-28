@@ -14,7 +14,8 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     @Override
     public void insertar(Usuario u) {
-        String sql = "INSERT INTO Usuario (nombreUsuario, contrasena, tipo) VALUES (?, ?, ?)";
+        // CAMBIO: 'nombreUsuario' por 'nombre_usuario' y 'tipo' por 'tipo_usuario'
+        String sql = "INSERT INTO Usuario (nombre_usuario, contrasena, tipo_usuario) VALUES (?, ?, ?)";
         try (Connection con = Conexion.conectar();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -30,7 +31,8 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     @Override
     public Usuario buscarPorNombre(String nombre) {
-        String sql = "SELECT nombreUsuario, contrasena, tipo FROM Usuario WHERE nombreUsuario = ?";
+        // CAMBIO: Se actualizaron los nombres de las columnas en el SELECT y en el WHERE
+        String sql = "SELECT nombre_usuario, contrasena, tipo_usuario FROM Usuario WHERE nombre_usuario = ?";
         try (Connection con = Conexion.conectar();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -50,7 +52,8 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     @Override
     public List<Usuario> listarTodos() {
         List<Usuario> lista = new ArrayList<>();
-        String sql = "SELECT nombreUsuario, contrasena, tipo FROM Usuario";
+        // CAMBIO: Se actualizaron los nombres de las columnas
+        String sql = "SELECT nombre_usuario, contrasena, tipo_usuario FROM Usuario";
 
         try (Connection con = Conexion.conectar();
              Statement st = con.createStatement();
@@ -68,9 +71,10 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     private Usuario mapear(ResultSet rs) throws SQLException {
         return new Usuario(
-                rs.getString("nombreUsuario"),
+                // CAMBIO: Extraer datos con los nuevos nombres de las columnas
+                rs.getString("nombre_usuario"),
                 rs.getString("contrasena"),
-                rs.getString("tipo")
+                rs.getString("tipo_usuario")
         );
     }
 }
