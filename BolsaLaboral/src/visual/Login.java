@@ -24,17 +24,6 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
@@ -62,8 +51,7 @@ public class Login extends JFrame {
 					System.out.println("Conexión exitosa con la base de datos.");
 					cn.close();
 
-					bolsaIO();
-					codigoIO();
+					BolsaLaboral.getInstancia().cargarCentrosDesdeBD();
 
 					Login frame = new Login();
 					frame.setVisible(true);
@@ -197,73 +185,14 @@ public class Login extends JFrame {
 		contentPane.add(btnCerrar);
 	}
 
-	private static void bolsaIO() {
-		FileInputStream bolsaInput;
-		FileOutputStream bolsaOut;
-		ObjectInputStream bolsaRead;
-		ObjectOutputStream bolsaWrite;
-		try {
-			bolsaInput = new FileInputStream("bolsa.dat");
-			bolsaRead = new ObjectInputStream(bolsaInput);
-			BolsaLaboral temp = (BolsaLaboral)bolsaRead.readObject();
-			BolsaLaboral.setInstancia(temp);
-			bolsaInput.close();
-			bolsaRead.close();
-		} catch (FileNotFoundException e) {
-			try {
-				bolsaOut = new FileOutputStream("bolsa.dat");
-				bolsaWrite = new ObjectOutputStream(bolsaOut);
-				Usuario admin = new Usuario("Admin", "Admin", "Admin");
-				Usuario empleado = new Usuario("Empleado", "Empleado", "Empleado");
-				BolsaLaboral.getInstancia().regUsuario(admin);
-				BolsaLaboral.getInstancia().regUsuario(empleado);
-				bolsaWrite.writeObject(BolsaLaboral.getInstancia());
-				bolsaOut.close();
-				bolsaWrite.close();
-			} catch (IOException ex) {
-	            ex.printStackTrace();
-	        }
-		} catch (IOException | ClassNotFoundException e) {
-	        e.printStackTrace();
-	    }
-	}
-	
-	private static void codigoIO() {
-		
-		try (DataInputStream codigoRead = new DataInputStream(new FileInputStream("codigos.dat"))) {
-
-			BolsaLaboral.genCodigoCandidato = codigoRead.readInt();
-			BolsaLaboral.genCodigoSolicitud = codigoRead.readInt();
-			BolsaLaboral.genCodigoOferta = codigoRead.readInt();
-			BolsaLaboral.genCodigoCentro = codigoRead.readInt();
-			BolsaLaboral.genCodigoVacanteCompletada = codigoRead.readInt();
-			
-		} catch (IOException e) {
-			try (DataOutputStream codigoWrite = new DataOutputStream(new FileOutputStream("codigos.dat"))) {
-
-				codigoWrite.writeInt(BolsaLaboral.genCodigoCandidato);
-				codigoWrite.writeInt(BolsaLaboral.genCodigoSolicitud);
-				codigoWrite.writeInt(BolsaLaboral.genCodigoOferta);
-				codigoWrite.writeInt(BolsaLaboral.genCodigoCentro);
-				codigoWrite.writeInt(BolsaLaboral.genCodigoVacanteCompletada);
-				
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-		}
-	}
-	
 	private Usuario verificar() throws AuthException {
-		
-		Usuario aux = null;
-		
-		for(Usuario user : BolsaLaboral.getInstancia().getUsuarios()) {
-			if(user.match(txtUsuario.getText(), new String(txtContrasena.getPassword()))) {
-				aux = user;
-			}
-		}
-		
-		if(aux == null) {
+
+		String nombre = txtUsuario.getText();
+		String clave = new String(txtContrasena.getPassword());
+
+		Usuario aux = BolsaLaboral.getInstancia().login(nombre, clave);
+
+		if (aux == null) {
 			throw new AuthException();
 		}
 

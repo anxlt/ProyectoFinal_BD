@@ -4,10 +4,14 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+
+import db.CentroEmpleadorDAOImpl;
 
 import javax.swing.JOptionPane;
 
 import exception.NotRemovableException;
+import db.UsuarioDAOImpl;
 
 public class BolsaLaboral implements Serializable{
 	
@@ -102,12 +106,16 @@ public class BolsaLaboral implements Serializable{
 	public static void setInstancia(BolsaLaboral bolsa) {
 		instancia = bolsa;
 	}
-	
+
+	public void cargarCentrosDesdeBD() {
+		centros = (ArrayList<CentroEmpleador>) new CentroEmpleadorDAOImpl().listarTodos();
+		genCodigoCentro = centros.size() + 1;
+	}
 	public void registrarCentroTrabajo(CentroEmpleador nuevoCentro) {
 		centros.add(nuevoCentro);
 		genCodigoCentro++;
+		new CentroEmpleadorDAOImpl().insertar(nuevoCentro);
 	}
-	
 	public int buscarIndiceCentroByCodigo(String codigo) {
 		int indice = 0;
 		boolean encontrado = false;
@@ -123,19 +131,21 @@ public class BolsaLaboral implements Serializable{
 		
 		return encontrado ? indice : -1;
 	}
-	
+
 	public boolean modificarCentroTrabajo(CentroEmpleador centroModificar) {
 		int indice = buscarIndiceCentroByCodigo(centroModificar.getCodigo());
 		if(indice != -1) {
 			centros.set(indice,centroModificar);
+			new CentroEmpleadorDAOImpl().actualizar(centroModificar);
 			return true;
 		}
 		return false;
 	}
-	
+
 	public void eliminarCentroTrabajo(CentroEmpleador centroEliminar) throws NotRemovableException{
 		if(centroEliminable(centroEliminar)) {
 			centros.remove(centroEliminar);
+			new CentroEmpleadorDAOImpl().eliminar(centroEliminar.getCodigo());
 		}
 		else {
 			throw new NotRemovableException("El centro de trabajo no puede ser eliminado ya que posee ofertas existentes.");
@@ -378,21 +388,18 @@ public class BolsaLaboral implements Serializable{
 	    vacantes.add(nuevaVacante);
 	    genCodigoVacanteCompletada++;
 	}
-	
+
 	public void regUsuario(Usuario user) {
-		usuarios.add(user);
+		new UsuarioDAOImpl().insertar(user);
 	}
 
 	public Usuario login(String nombre, String clave) {
-		Usuario aux = null;
-		for(Usuario user : usuarios) {
-			if(user.match(nombre, clave)) {
-				aux = user;
-			}
+		Usuario user = new UsuarioDAOImpl().buscarPorNombre(nombre);
+		if (user != null && user.match(nombre, clave)) {
+			return user;
 		}
-		return aux;
+		return null;
 	}
-	
 	public boolean centroEliminable(CentroEmpleador centro) {
 		if(centro.getOfertasLaborales().size() != 0) {
 			return false;
