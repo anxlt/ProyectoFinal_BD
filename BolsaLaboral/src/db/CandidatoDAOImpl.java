@@ -58,14 +58,14 @@ public class CandidatoDAOImpl implements CandidatoDAO {
                     ps.executeUpdate();
                 }
             } else if (c instanceof TecnicoSuperior t) {
-                String sql = "INSERT INTO TecnicoSuperior (id_candidato, area_tecnica, anios_experiencia) VALUES (?,?,?)";
+                String sql = "INSERT INTO TecnicoSuperior (id_candidato, id_area_tecnica, anios_experiencia) VALUES (?,?,?)";
                 try (PreparedStatement ps = con.prepareStatement(sql)) {
                     ps.setString(1, t.getCodigo());
-                    ps.setString(2, t.getAreaTecnica());
+                    ps.setInt(2, t.getIdAreaTecnica());
                     ps.setInt(3, t.getAniosExperiencia());
                     ps.executeUpdate();
                 }
-            } else if (c instanceof Obrero o) {
+            }else if (c instanceof Obrero o) {
                 String sql = "INSERT INTO Obrero (id_candidato) VALUES (?)";
                 try (PreparedStatement ps = con.prepareStatement(sql)) {
                     ps.setString(1, o.getCodigo());
@@ -128,9 +128,9 @@ public class CandidatoDAOImpl implements CandidatoDAO {
                     ps.executeUpdate();
                 }
             } else if (c instanceof TecnicoSuperior t) {
-                String sql = "UPDATE TecnicoSuperior SET area_tecnica=?, anios_experiencia=? WHERE id_candidato=?";
+                String sql = "UPDATE TecnicoSuperior SET id_area_tecnica=?, anios_experiencia=? WHERE id_candidato=?";
                 try (PreparedStatement ps = con.prepareStatement(sql)) {
-                    ps.setString(1, t.getAreaTecnica());
+                    ps.setInt(1, t.getIdAreaTecnica());
                     ps.setInt(2, t.getAniosExperiencia());
                     ps.setString(3, t.getCodigo());
                     ps.executeUpdate();
@@ -348,14 +348,14 @@ public class CandidatoDAOImpl implements CandidatoDAO {
                 break;
             }
             case "TECNICO": {
-                String areaTecnica = "";
+                int idAreaTecnica = 0;
                 int anios = 0;
-                String sqlT = "SELECT area_tecnica, anios_experiencia FROM TecnicoSuperior WHERE id_candidato=?";
+                String sqlT = "SELECT id_area_tecnica, anios_experiencia FROM TecnicoSuperior WHERE id_candidato=?";
                 try (PreparedStatement ps = con.prepareStatement(sqlT)) {
                     ps.setString(1, codigo);
                     try (ResultSet rt = ps.executeQuery()) {
                         if (rt.next()) {
-                            areaTecnica = rt.getString("area_tecnica");
+                            idAreaTecnica = rt.getInt("id_area_tecnica");
                             anios = rt.getInt("anios_experiencia");
                         }
                     }
@@ -363,7 +363,7 @@ public class CandidatoDAOImpl implements CandidatoDAO {
                 c = new TecnicoSuperior(codigo, identificacion, nombres, apellidos, fechaNacimiento, genero,
                         idProvincia, idMunicipio, telefono, correo, jornada, modalidad, areaDeInteres,
                         aspiracionSalarial, licenciaConducir, disposicionMudarse, idiomas,
-                        areaTecnica, anios, estado);
+                        idAreaTecnica, anios, estado);
                 break;
             }
             default: { // OBRERO

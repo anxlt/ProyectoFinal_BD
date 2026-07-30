@@ -39,6 +39,9 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
+import db.AreaTecnicaDAO;
+import db.AreaTecnicaDAOImpl;
+import logico.AreaTecnica;
 
 public class RegistroCandidato extends JDialog {
 
@@ -60,8 +63,10 @@ public class RegistroCandidato extends JDialog {
 	private JSpinner spnFechaNac;
 	private JTextField txtTelefono;
 	private JComboBox<Universidad> cmbUniversidad;
+	private JComboBox<AreaTecnica> cmbAreaTecnica;
 	private UniversidadDAO universidadDAO = new UniversidadDAOImpl();
 	private CarreraDAO carreraDAO = new CarreraDAOImpl();
+	private AreaTecnicaDAO areaTecnicaDAO = new AreaTecnicaDAOImpl();
 	private JPanel pnlTipoCand;
 	private JPanel pnlEstudiante;
 	private JPanel pnlTecnico;
@@ -107,7 +112,6 @@ public class RegistroCandidato extends JDialog {
 	private JCheckBox chkCocina;
 	private JCheckBox chkLimpieza;
 	private JCheckBox chkPintura;
-	private JComboBox cmbAreaTecnica;
 	private JComboBox cmbGenero;
 	private JComboBox cmbEstadoLab;
 	/**
@@ -316,9 +320,13 @@ public class RegistroCandidato extends JDialog {
 		spnAniosExp.setBounds(177, 86, 258, 22);
 		pnlTecnico.add(spnAniosExp);
 
-		cmbAreaTecnica = new JComboBox();
-		cmbAreaTecnica.setModel(new DefaultComboBoxModel(new String[] {"Gesti\u00F3n de Talento Humano", "Impuestos y Contabilidad", "Publicidad", "Gesti\u00F3n Comercial", "Higiene y Seguridad Industrial", "Mantenimiento de Instalaciones", "Protecci\u00F3n Civil", "Protecci\u00F3n Industrial", "Redes de Datos", "Desarrollo de Software", "Log\u00EDstica Industrial", "Gesti\u00F3n Empresarial", "Atenci\u00F3n Comercial", "Automatizaci\u00F3n", "Dise\u00F1o Gr\u00E1fico", "Ciberseguridad", "Rob\u00F3tica", "Medios Digitales"}));
-		cmbAreaTecnica.setSelectedIndex(0);
+		cmbAreaTecnica = new JComboBox<>();
+		for (AreaTecnica a : areaTecnicaDAO.listarTodas()) {
+			cmbAreaTecnica.addItem(a);
+		}
+		if (cmbAreaTecnica.getItemCount() > 0) {
+			cmbAreaTecnica.setSelectedIndex(0);
+		}
 		cmbAreaTecnica.setMaximumRowCount(11);
 		cmbAreaTecnica.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		cmbAreaTecnica.setBounds(130, 25, 305, 29);
@@ -912,16 +920,16 @@ public class RegistroCandidato extends JDialog {
 						universidadSel.getIdUniversidad(), carreraSel.getIdCarrera(),
 						nivelAcademico, estadoLaboral);
 
-			} else if(rdTecnico.isSelected()) {
-				String areaTecnica = cmbAreaTecnica.getSelectedItem().toString();
+			} else if (rdTecnico.isSelected()) {
+				AreaTecnica areaSel = (AreaTecnica) cmbAreaTecnica.getSelectedItem();
 				int aniosExperiencia = ((Number) spnAniosExp.getValue()).intValue();
 
 				nuevoCandidato = new TecnicoSuperior(codigo, cedula, nombres, apellidos,
-						fechaNacimiento, genero,idProvincia, idMunicipio, telefono, correo, jornada,
+						fechaNacimiento, genero, idProvincia, idMunicipio, telefono, correo, jornada,
 						modalidad, areaInteres, salarioEsperado, licenciaConducir, mudarse,
-						idiomas, areaTecnica, aniosExperiencia,estadoLaboral);
+						idiomas, areaSel.getIdAreaTecnica(), aniosExperiencia, estadoLaboral);
 
-			} else if(rdObrero.isSelected()) {
+			} else if (rdObrero.isSelected()) {
 				ArrayList<String> habilidades = new ArrayList<>();
 
 				for(Component cmp : pnlObrero.getComponents()) {
@@ -974,8 +982,8 @@ public class RegistroCandidato extends JDialog {
 						uAct.setIdCarrera(uNuevo.getIdCarrera());
 						uAct.setNivelAcademico(uNuevo.getNivelAcademico());
 					} else if (candidatoAct instanceof TecnicoSuperior && nuevoCandidato instanceof TecnicoSuperior) {
-						((TecnicoSuperior)candidatoAct).setAreaTecnica(((TecnicoSuperior)nuevoCandidato).getAreaTecnica());
-						((TecnicoSuperior)candidatoAct).setAniosExperiencia(((TecnicoSuperior)nuevoCandidato).getAniosExperiencia());
+						((TecnicoSuperior) candidatoAct).setIdAreaTecnica(((TecnicoSuperior) nuevoCandidato).getIdAreaTecnica());
+						((TecnicoSuperior) candidatoAct).setAniosExperiencia(((TecnicoSuperior) nuevoCandidato).getAniosExperiencia());
 					} else if (candidatoAct instanceof Obrero && nuevoCandidato instanceof Obrero) {
 						((Obrero)candidatoAct).setHabilidades(((Obrero)nuevoCandidato).getHabilidades());
 					}
@@ -1043,15 +1051,15 @@ public class RegistroCandidato extends JDialog {
 
 			for (String idioma : candidatoAct.getIdiomas()) {
 				switch (idioma) {
-					case "Ingl s": chckbxIngles.setSelected(true); break;
+					case "Inglés": chckbxIngles.setSelected(true); break;
 					case "Italiano": chckbxItaliano.setSelected(true); break;
-					case "Espa ol": chckbxEspanol.setSelected(true); break;
-					case "Franc s": chckbxFrances.setSelected(true); break;
-					case "Portugu s": chckbxPortugues.setSelected(true); break;
-					case "Alem n": chckbxAleman.setSelected(true); break;
+					case "Español": chckbxEspanol.setSelected(true); break;
+					case "Francés": chckbxFrances.setSelected(true); break;
+					case "Portugués": chckbxPortugues.setSelected(true); break;
+					case "Alemán": chckbxAleman.setSelected(true); break;
 					case "Chino": chckbxMandarin.setSelected(true); break;
 					case "Coreano": chckbxCoreano.setSelected(true); break;
-					case "Japon s": chckbxJapones.setSelected(true); break;
+					case "Japonés": chckbxJapones.setSelected(true); break;
 				}
 			}
 
@@ -1086,7 +1094,12 @@ public class RegistroCandidato extends JDialog {
 				cambiarEspecializacion("Estudiante Tecnico");
 
 				TecnicoSuperior tecnico = (TecnicoSuperior) candidatoAct;
-				cmbAreaTecnica.setSelectedItem(tecnico.getAreaTecnica());
+				for (int i = 0; i < cmbAreaTecnica.getItemCount(); i++) {
+					if (cmbAreaTecnica.getItemAt(i).getIdAreaTecnica() == tecnico.getIdAreaTecnica()) {
+						cmbAreaTecnica.setSelectedIndex(i);
+						break;
+					}
+				}
 				spnAniosExp.setValue(tecnico.getAniosExperiencia());
 
 			} else if (candidatoAct instanceof Obrero) {
@@ -1099,18 +1112,18 @@ public class RegistroCandidato extends JDialog {
 				Obrero obrero = (Obrero) candidatoAct;
 				for (String habilidad : obrero.getHabilidades()) {
 					switch (habilidad) {
-						case "Plomer a": chkPlomeria.setSelected(true); break;
-						case "Carpinter a": chkCarpintero.setSelected(true); break;
-						case "Gesti n Financiera": chkCajero.setSelected(true); break;
+						case "Plomería": chkPlomeria.setSelected(true); break;
+						case "Carpintería": chkCarpintero.setSelected(true); break;
+						case "Gestión Financiera": chkCajero.setSelected(true); break;
 						case "Soldadura": chkSoldadura.setSelected(true); break;
-						case "Instalaci n El ctrica": chkElectrica.setSelected(true); break;
-						case "Mec nica": chkMecanica.setSelected(true); break;
-						case "Alba iler a": chkAlbanileria.setSelected(true); break;
+						case "Instalación Eléctrica": chkElectrica.setSelected(true); break;
+						case "Mecánica": chkMecanica.setSelected(true); break;
+						case "Albañilería": chkAlbanileria.setSelected(true); break;
 						case "Redes Sociales": chkRedes.setSelected(true); break;
-						case "Conducci n": chkConduccion.setSelected(true); break;
-						case "Reparaci n de Electr nicos": chkReparacion.setSelected(true); break;
+						case "Conducción": chkConduccion.setSelected(true); break;
+						case "Reparación de Electrónicos": chkReparacion.setSelected(true); break;
 						case "Ventas": chkVentas.setSelected(true); break;
-						case "Fotograf a": chkFotografia.setSelected(true); break;
+						case "Fotografía": chkFotografia.setSelected(true); break;
 						case "Cocina": chkCocina.setSelected(true); break;
 						case "Limpieza": chkLimpieza.setSelected(true); break;
 						case "Pintura": chkPintura.setSelected(true); break;
@@ -1193,24 +1206,22 @@ public class RegistroCandidato extends JDialog {
 				throw new FormatException("La carrera es obligatoria para estudiantes universitarios");
 			}
 
-		} else if(rdTecnico.isSelected()) {
-			if(cmbAreaTecnica.getSelectedIndex() < 0) {
-				throw new FormatException("El  rea t cnica es obligatoria para t cnicos superiores");
+		} else if (rdTecnico.isSelected()) {
+			if (cmbAreaTecnica.getSelectedItem() == null) {
+				throw new FormatException("El área técnica es obligatoria para técnicos superiores");
 			}
-
-		} else if(rdObrero.isSelected()) {
+		} else if (rdObrero.isSelected()) {
 			boolean tieneHabilidad = false;
-
-			for(Component cmp : pnlIdiomas.getComponents()) {
-				if(cmp instanceof JCheckBox) {
-					JCheckBox chk = (JCheckBox)cmp;
-					if(chk.isSelected()) {
+			for (Component cmp : pnlObrero.getComponents()) {
+				if (cmp instanceof JCheckBox) {
+					JCheckBox chk = (JCheckBox) cmp;
+					if (chk.isSelected()) {
 						tieneHabilidad = true;
+						break;
 					}
 				}
 			}
-
-			if(!tieneHabilidad) {
+			if (!tieneHabilidad) {
 				throw new FormatException("Debe seleccionar al menos una habilidad para obreros");
 			}
 		}

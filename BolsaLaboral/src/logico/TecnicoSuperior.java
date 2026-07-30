@@ -4,30 +4,34 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class TecnicoSuperior extends Candidato implements Serializable{
+import db.AreaTecnicaDAOImpl;
+
+public class TecnicoSuperior extends Candidato implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String areaTecnica;
+	private int idAreaTecnica;
 	private int aniosExperiencia;
 
 	public TecnicoSuperior(String codigo, String identificacion, String nombres, String apellidos,
-	                       LocalDate fechaNacimiento, String genero, int idProvincia, int idMunicipio, String telefono,
-	                       String correo, String jornada, String modalidad, String areaDeInteres, float aspiracionSalarial,
-	                       boolean licenciaConducir, boolean disposicionMudarse, ArrayList<String> idiomas, String areaTecnica, int aniosExperiencia, String estado) {
-		super(codigo, identificacion, nombres, apellidos, fechaNacimiento, genero, idProvincia, idMunicipio, telefono,
-				correo, jornada, modalidad, areaDeInteres, aspiracionSalarial, licenciaConducir, disposicionMudarse,
-				idiomas,estado);
-		this.areaTecnica = areaTecnica;
+	                       LocalDate fechaNacimiento, String genero, int idProvincia, int idMunicipio,
+	                       String telefono, String correo, String jornada, String modalidad,
+	                       String areaDeInteres, float aspiracionSalarial, boolean licenciaConducir,
+	                       boolean disposicionMudarse, ArrayList<String> idiomas,
+	                       int idAreaTecnica, int aniosExperiencia, String estado) {
+		super(codigo, identificacion, nombres, apellidos, fechaNacimiento, genero, idProvincia, idMunicipio,
+				telefono, correo, jornada, modalidad, areaDeInteres, aspiracionSalarial, licenciaConducir,
+				disposicionMudarse, idiomas, estado);
+		this.idAreaTecnica = idAreaTecnica;
 		this.aniosExperiencia = aniosExperiencia;
 	}
 
-	public String getAreaTecnica() {
-		return areaTecnica;
+	public int getIdAreaTecnica() {
+		return idAreaTecnica;
 	}
 
-	public void setAreaTecnica(String areaTecnica) {
-		this.areaTecnica = areaTecnica;
+	public void setIdAreaTecnica(int idAreaTecnica) {
+		this.idAreaTecnica = idAreaTecnica;
 	}
 
 	public int getAniosExperiencia() {
@@ -38,20 +42,30 @@ public class TecnicoSuperior extends Candidato implements Serializable{
 		this.aniosExperiencia = aniosExperiencia;
 	}
 
+	/** Nombre resuelto desde BD (para UI y matching por texto si hace falta). */
+	public String getAreaTecnica() {
+		AreaTecnica a = new AreaTecnicaDAOImpl().buscarPorId(idAreaTecnica);
+		return (a != null) ? a.getNombreArea() : "";
+	}
+	@Override
+	public String getFormacion() {
+		return "Técnico Superior en " + getAreaTecnica()
+				+ " (" + aniosExperiencia + (aniosExperiencia == 1 ? " año" : " años") + " de experiencia)";
+	}
 	@Override
 	public String getSobreMi() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Soy t cnico en ").append(areaTecnica.toLowerCase())
+		sb.append("Soy técnico en ").append(getAreaTecnica().toLowerCase())
 				.append(" con ").append(aniosExperiencia)
-				.append(aniosExperiencia == 1 ? " a o" : " a os").append(" de experiencia laboral. ");
-		sb.append("Mi  rea de inter s principal es ").append(getAreaDeInteres().toLowerCase()).append(". ");
+				.append(aniosExperiencia == 1 ? " año" : " años").append(" de experiencia laboral. ");
+		sb.append("Mi área de interés principal es ").append(getAreaDeInteres().toLowerCase()).append(". ");
 
 		if (isLicenciaConducir()) sb.append("Cuento con licencia de conducir. ");
 		if (isDisposicionMudarse()) sb.append("Tengo disponibilidad para mudarme si el trabajo lo requiere. ");
 
 		sb.append("Estoy interesado en una modalidad ").append(getModalidad().toLowerCase())
 				.append(" y jornada ").append(getJornada().toLowerCase())
-				.append(", con una aspiraci n salarial de RD$").append(getAspiracionSalarial()).append(". ");
+				.append(", con una aspiración salarial de RD$").append(getAspiracionSalarial()).append(". ");
 
 		if (!getIdiomas().isEmpty()) {
 			sb.append("Manejo los siguientes idiomas: ");
@@ -62,17 +76,6 @@ public class TecnicoSuperior extends Candidato implements Serializable{
 			}
 			sb.append(". ");
 		}
-
-		return sb.toString().trim();
-	}
-
-	@Override
-	public String getFormacion() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Soy t cnico superior en el  rea de ").append(areaTecnica.toLowerCase()).append(". ");
-		sb.append("He complementado mi formaci n con ").append(aniosExperiencia)
-				.append(aniosExperiencia == 1 ? " a o" : " a os").append(" de experiencia en el campo. ");
-
 		return sb.toString().trim();
 	}
 }

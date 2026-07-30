@@ -1,7 +1,6 @@
 package db;
 
-import logico.CentroEmpleador;
-import logico.OfertaLaboral;
+import logico.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,10 +10,10 @@ public class OfertaLaboralDAOImpl implements OfertaLaboralDAO {
 
     @Override
     public void insertar(OfertaLaboral o) {
-        // CAMBIO: Se actualizaron los nombres de las columnas al formato de la nueva base de datos
         String sql = "INSERT INTO OfertaLaboral (id_oferta, puesto, descripcion, area, modalidad, jornada, estado, "
                 + "salario, experiencia_minima, vacantes, id_centro, ofrece_reubicacion, obligatorio_mayor_edad, "
-                + "obligatorio_licencia, nivel_academico, porcentaje_minimo) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                + "obligatorio_licencia, nivel_academico, porcentaje_minimo, id_carrera, id_area_tecnica, id_habilidad) "
+                + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         Connection con = null;
         try {
@@ -35,16 +34,18 @@ public class OfertaLaboralDAOImpl implements OfertaLaboralDAO {
                 ps.setString(11, o.getOfertador().getCodigo());
                 ps.setBoolean(12, o.isOfreceReubicacion());
                 ps.setBoolean(13, o.isObligatorioMayorDeEdad());
-                ps.setBoolean(14, o.isobligatorioLicencia());
+                ps.setBoolean(14, o.isObligatorioLicencia());
                 ps.setString(15, o.getNivelAcademico());
                 ps.setInt(16, o.getPorcentajeMinimo());
+                setNullableInt(ps, 17, o.getIdCarrera());
+                setNullableInt(ps, 18, o.getIdAreaTecnica());
+                setNullableInt(ps, 19, o.getIdHabilidad());
                 ps.executeUpdate();
             }
 
-            insertarRequisitos(con, o.getCodigo(), o.getRequisitos());
             insertarIdiomas(con, o.getCodigo(), o.getIdiomasRequeridas());
-
             con.commit();
+
         } catch (SQLException e) {
             try { if (con != null) con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             e.printStackTrace();
@@ -55,10 +56,10 @@ public class OfertaLaboralDAOImpl implements OfertaLaboralDAO {
 
     @Override
     public void actualizar(OfertaLaboral o) {
-        // CAMBIO: Se actualizaron los nombres de las columnas
         String sql = "UPDATE OfertaLaboral SET puesto=?, descripcion=?, area=?, modalidad=?, jornada=?, estado=?, "
                 + "salario=?, experiencia_minima=?, vacantes=?, id_centro=?, ofrece_reubicacion=?, "
-                + "obligatorio_mayor_edad=?, obligatorio_licencia=?, nivel_academico=?, porcentaje_minimo=? WHERE id_oferta=?";
+                + "obligatorio_mayor_edad=?, obligatorio_licencia=?, nivel_academico=?, porcentaje_minimo=?, "
+                + "id_carrera=?, id_area_tecnica=?, id_habilidad=? WHERE id_oferta=?";
 
         Connection con = null;
         try {
@@ -78,28 +79,24 @@ public class OfertaLaboralDAOImpl implements OfertaLaboralDAO {
                 ps.setString(10, o.getOfertador().getCodigo());
                 ps.setBoolean(11, o.isOfreceReubicacion());
                 ps.setBoolean(12, o.isObligatorioMayorDeEdad());
-                ps.setBoolean(13, o.isobligatorioLicencia());
+                ps.setBoolean(13, o.isObligatorioLicencia());
                 ps.setString(14, o.getNivelAcademico());
                 ps.setInt(15, o.getPorcentajeMinimo());
-                ps.setString(16, o.getCodigo());
+                setNullableInt(ps, 16, o.getIdCarrera());
+                setNullableInt(ps, 17, o.getIdAreaTecnica());
+                setNullableInt(ps, 18, o.getIdHabilidad());
+                ps.setString(19, o.getCodigo());
                 ps.executeUpdate();
             }
 
-            // CAMBIO: id_oferta en lugar de ofertaCodigo
-            try (PreparedStatement del = con.prepareStatement("DELETE FROM OfertaRequisito WHERE id_oferta = ?")) {
-                del.setString(1, o.getCodigo());
-                del.executeUpdate();
-            }
-            insertarRequisitos(con, o.getCodigo(), o.getRequisitos());
-
-            // CAMBIO: id_oferta en lugar de ofertaCodigo
-            try (PreparedStatement del = con.prepareStatement("DELETE FROM OfertaIdioma WHERE id_oferta = ?")) {
+            try (PreparedStatement del = con.prepareStatement("DELETE FROM OfertaIdioma WHERE id_oferta=?")) {
                 del.setString(1, o.getCodigo());
                 del.executeUpdate();
             }
             insertarIdiomas(con, o.getCodigo(), o.getIdiomasRequeridas());
 
             con.commit();
+
         } catch (SQLException e) {
             try { if (con != null) con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             e.printStackTrace();
@@ -108,42 +105,17 @@ public class OfertaLaboralDAOImpl implements OfertaLaboralDAO {
         }
     }
 
-    private void insertarRequisitos(Connection con, String codigo, List<String> requisitos) throws SQLException {
-        // CAMBIO: id_requisito, descripcion_requisito y id_oferta
-        String buscar = "SELECT id_requisito FROM Requisito WHERE descripcion_requisito = ?";
-        String insertar = "INSERT INTO Requisito(descripcion_requisito) VALUES(?)";
-        String relacion = "INSERT INTO OfertaRequisito(id_oferta, id_requisito) VALUES(?, ?)";
-
-        for (String requisito : requisitos) {
-            int idRequisito;
-            try (PreparedStatement ps = con.prepareStatement(buscar)) {
-                ps.setString(1, requisito);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        idRequisito = rs.getInt("id_requisito"); // CAMBIO
-                    } else {
-                        try (PreparedStatement psInsert = con.prepareStatement(insertar, Statement.RETURN_GENERATED_KEYS)) {
-                            psInsert.setString(1, requisito);
-                            psInsert.executeUpdate();
-                            try (ResultSet claves = psInsert.getGeneratedKeys()) {
-                                claves.next();
-                                idRequisito = claves.getInt(1);
-                            }
-                        }
-                    }
-                }
-            }
-
-            try (PreparedStatement ps = con.prepareStatement(relacion)) {
-                ps.setString(1, codigo);
-                ps.setInt(2, idRequisito);
-                ps.executeUpdate();
-            }
+    private void setNullableInt(PreparedStatement ps, int index, Integer value) throws SQLException {
+        if (value == null) {
+            ps.setNull(index, Types.INTEGER);
+        } else {
+            ps.setInt(index, value);
         }
     }
 
     private void insertarIdiomas(Connection con, String codigo, List<String> idiomas) throws SQLException {
-        // CAMBIO: id_idioma, nombre_idioma y id_oferta
+        if (idiomas == null) return;
+
         String buscar = "SELECT id_idioma FROM Idioma WHERE nombre_idioma = ?";
         String insertar = "INSERT INTO Idioma(nombre_idioma) VALUES(?)";
         String relacion = "INSERT INTO OfertaIdioma(id_oferta, id_idioma) VALUES(?, ?)";
@@ -154,12 +126,12 @@ public class OfertaLaboralDAOImpl implements OfertaLaboralDAO {
                 ps.setString(1, idioma);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        idIdioma = rs.getInt("id_idioma"); // CAMBIO
+                        idIdioma = rs.getInt("id_idioma");
                     } else {
-                        try (PreparedStatement psInsert = con.prepareStatement(insertar, Statement.RETURN_GENERATED_KEYS)) {
-                            psInsert.setString(1, idioma);
-                            psInsert.executeUpdate();
-                            try (ResultSet claves = psInsert.getGeneratedKeys()) {
+                        try (PreparedStatement psIns = con.prepareStatement(insertar, Statement.RETURN_GENERATED_KEYS)) {
+                            psIns.setString(1, idioma);
+                            psIns.executeUpdate();
+                            try (ResultSet claves = psIns.getGeneratedKeys()) {
                                 claves.next();
                                 idIdioma = claves.getInt(1);
                             }
@@ -167,11 +139,10 @@ public class OfertaLaboralDAOImpl implements OfertaLaboralDAO {
                     }
                 }
             }
-
-            try (PreparedStatement ps = con.prepareStatement(relacion)) {
-                ps.setString(1, codigo);
-                ps.setInt(2, idIdioma);
-                ps.executeUpdate();
+            try (PreparedStatement psRel = con.prepareStatement(relacion)) {
+                psRel.setString(1, codigo);
+                psRel.setInt(2, idIdioma);
+                psRel.executeUpdate();
             }
         }
     }
@@ -183,18 +154,10 @@ public class OfertaLaboralDAOImpl implements OfertaLaboralDAO {
             con = Conexion.conectar();
             con.setAutoCommit(false);
 
-            // CAMBIO: ofertaCodigo por id_oferta
             try (PreparedStatement ps = con.prepareStatement("DELETE FROM OfertaIdioma WHERE id_oferta=?")) {
                 ps.setString(1, codigo);
                 ps.executeUpdate();
             }
-
-            try (PreparedStatement ps = con.prepareStatement("DELETE FROM OfertaRequisito WHERE id_oferta=?")) {
-                ps.setString(1, codigo);
-                ps.executeUpdate();
-            }
-
-            // CAMBIO: codigo por id_oferta
             try (PreparedStatement ps = con.prepareStatement("DELETE FROM OfertaLaboral WHERE id_oferta=?")) {
                 ps.setString(1, codigo);
                 ps.executeUpdate();
@@ -211,7 +174,6 @@ public class OfertaLaboralDAOImpl implements OfertaLaboralDAO {
 
     @Override
     public OfertaLaboral buscarPorCodigo(String codigo) {
-        // CAMBIO: codigo por id_oferta
         String sql = "SELECT * FROM OfertaLaboral WHERE id_oferta = ?";
         try (Connection con = Conexion.conectar();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -230,9 +192,11 @@ public class OfertaLaboralDAOImpl implements OfertaLaboralDAO {
         List<OfertaLaboral> lista = new ArrayList<>();
         String sql = "SELECT * FROM OfertaLaboral";
         try (Connection con = Conexion.conectar();
-             Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) lista.add(mapear(con, rs));
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                lista.add(mapear(con, rs));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -240,13 +204,15 @@ public class OfertaLaboralDAOImpl implements OfertaLaboralDAO {
     }
 
     private OfertaLaboral mapear(Connection con, ResultSet rs) throws SQLException {
-        // CAMBIO: Se actualizaron los nombres con los que se obtiene la informacion en la BD
         String codigo = rs.getString("id_oferta");
-        String ofertadorCodigo = rs.getString("id_centro");
-        CentroEmpleador ofertador = new CentroEmpleadorDAOImpl().buscarPorCodigo(ofertadorCodigo);
+        String idCentro = rs.getString("id_centro");
 
-        ArrayList<String> requisitos = obtenerRequisitos(con, codigo);
+        CentroEmpleador centro = new CentroEmpleadorDAOImpl().buscarPorCodigo(idCentro);
         ArrayList<String> idiomas = obtenerIdiomas(con, codigo);
+
+        Integer idCarrera = (Integer) rs.getObject("id_carrera");
+        Integer idAreaTecnica = (Integer) rs.getObject("id_area_tecnica");
+        Integer idHabilidad = (Integer) rs.getObject("id_habilidad");
 
         return new OfertaLaboral(
                 codigo,
@@ -259,54 +225,27 @@ public class OfertaLaboralDAOImpl implements OfertaLaboralDAO {
                 rs.getFloat("salario"),
                 rs.getInt("experiencia_minima"),
                 rs.getInt("vacantes"),
-                ofertador,
+                centro,
                 rs.getBoolean("ofrece_reubicacion"),
                 rs.getBoolean("obligatorio_mayor_edad"),
                 rs.getBoolean("obligatorio_licencia"),
                 rs.getString("nivel_academico"),
-                requisitos,
+                idCarrera,
+                idAreaTecnica,
+                idHabilidad,
                 idiomas,
                 rs.getInt("porcentaje_minimo")
         );
     }
 
-    private ArrayList<String> obtenerRequisitos(Connection con, String codigo) throws SQLException {
-        ArrayList<String> lista = new ArrayList<>();
-
-        // CAMBIO: id_requisito, descripcion_requisito y id_oferta
-        String sql =
-                "SELECT R.descripcion_requisito " +
-                        "FROM OfertaRequisito ORQ " +
-                        "INNER JOIN Requisito R ON ORQ.id_requisito = R.id_requisito " +
-                        "WHERE ORQ.id_oferta = ?";
-
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, codigo);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    lista.add(rs.getString("descripcion_requisito")); // CAMBIO
-                }
-            }
-        }
-        return lista;
-    }
-
     private ArrayList<String> obtenerIdiomas(Connection con, String codigo) throws SQLException {
         ArrayList<String> lista = new ArrayList<>();
-
-        // CAMBIO: id_idioma, nombre_idioma y id_oferta
-        String sql =
-                "SELECT I.nombre_idioma " +
-                        "FROM OfertaIdioma OI " +
-                        "INNER JOIN Idioma I ON OI.id_idioma = I.id_idioma " +
-                        "WHERE OI.id_oferta = ?";
-
+        String sql = "SELECT I.nombre_idioma FROM OfertaIdioma OI "
+                + "INNER JOIN Idioma I ON OI.id_idioma = I.id_idioma WHERE OI.id_oferta = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, codigo);
             try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    lista.add(rs.getString("nombre_idioma")); // CAMBIO
-                }
+                while (rs.next()) lista.add(rs.getString("nombre_idioma"));
             }
         }
         return lista;
