@@ -59,7 +59,9 @@ public class RegistroCandidato extends JDialog {
 	private JRadioButton rdObrero;
 	private JSpinner spnFechaNac;
 	private JTextField txtTelefono;
-	private JTextField txtUniversidad;
+	private JComboBox<Universidad> cmbUniversidad;
+	private UniversidadDAO universidadDAO = new UniversidadDAOImpl();
+	private CarreraDAO carreraDAO = new CarreraDAOImpl();
 	private JPanel pnlTipoCand;
 	private JPanel pnlEstudiante;
 	private JPanel pnlTecnico;
@@ -75,7 +77,7 @@ public class RegistroCandidato extends JDialog {
 	private JPanel pnlIdiomas;
 	private JSpinner spnSalarioEsperado;
 	private JSpinner spnAniosExp;
-	private JComboBox cmbCarrera;
+	private JComboBox<Carrera> cmbCarrera;
 	private JComboBox cmbNivel;
 	private JCheckBox chkLicenciaConducir;
 	private JCheckBox chkMudarse;
@@ -482,11 +484,13 @@ public class RegistroCandidato extends JDialog {
 		lblUniversidad.setBounds(12, 82, 106, 29);
 		pnlEstudiante.add(lblUniversidad);
 
-		txtUniversidad = new JTextField();
-		txtUniversidad.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		txtUniversidad.setColumns(10);
-		txtUniversidad.setBounds(116, 86, 305, 22);
-		pnlEstudiante.add(txtUniversidad);
+		cmbUniversidad = new JComboBox<>();
+		for (Universidad u : universidadDAO.listarTodas()) {
+			cmbUniversidad.addItem(u);
+		}
+		cmbUniversidad.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		cmbUniversidad.setBounds(116, 86, 305, 22);
+		pnlEstudiante.add(cmbUniversidad);
 
 		JLabel lblNivelAcadmico = new JLabel("Nivel Acad\u00E9mico:");
 		lblNivelAcadmico.setFont(new Font("Segoe UI", Font.BOLD, 16));
@@ -501,9 +505,10 @@ public class RegistroCandidato extends JDialog {
 		cmbNivel.setBounds(158, 145, 263, 29);
 		pnlEstudiante.add(cmbNivel);
 
-		cmbCarrera = new JComboBox();
-		cmbCarrera.setModel(new DefaultComboBoxModel(new String[] {"Arquitectura", "Ingenier\u00EDa Civil", "Ingenier\u00EDa El\u00E9ctrica", "Ingenier\u00EDa Telem\u00E1tica", "Ingenier\u00EDa Industrial", "Ingenier\u00EDa Agron\u00F3mica", "Ingenier\u00EDa de Sistemas", "Educaci\u00F3n", "Psicolog\u00EDa", "Comunicaci\u00F3n", "Derecho", "Contabilidad", "Hoteler\u00EDa", "Medicina", "Econom\u00EDa", "Direcci\u00F3n Empresarial"}));
-		cmbCarrera.setSelectedIndex(0);
+		cmbCarrera = new JComboBox<>();
+		for (Carrera c : carreraDAO.listarTodas()) {
+			cmbCarrera.addItem(c);
+		}
 		cmbCarrera.setMaximumRowCount(11);
 		cmbCarrera.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		cmbCarrera.setBounds(116, 30, 305, 29);
@@ -811,8 +816,8 @@ public class RegistroCandidato extends JDialog {
 		cal.add(Calendar.YEAR, -25);
 		spnFechaNac.setValue(cal.getTime());
 
-		txtUniversidad.setText("");
-		if(cmbCarrera != null) cmbCarrera.setSelectedIndex(0);
+		if(cmbUniversidad != null && cmbUniversidad.getItemCount() > 0) cmbUniversidad.setSelectedIndex(0);
+		if(cmbCarrera != null && cmbCarrera.getItemCount() > 0) cmbCarrera.setSelectedIndex(0);
 		if(cmbNivel != null) cmbNivel.setSelectedIndex(0);
 
 		cmbAreaTecnica.setSelectedIndex(0);
@@ -897,15 +902,15 @@ public class RegistroCandidato extends JDialog {
 			Candidato nuevoCandidato = null;
 
 			if(rdUniversitario.isSelected()) {
-				String universidad = txtUniversidad.getText().trim();
-				String carrera = cmbCarrera.getSelectedItem().toString();
+				Universidad universidadSel = (Universidad) cmbUniversidad.getSelectedItem();
+				Carrera carreraSel = (Carrera) cmbCarrera.getSelectedItem();
 				String nivelAcademico = cmbNivel.getSelectedItem().toString();
 
 				nuevoCandidato = new Universitario(codigo, cedula, nombres, apellidos,
 						fechaNacimiento, genero, idProvincia, idMunicipio, telefono, correo, jornada,
-						modalidad, areaInteres, salarioEsperado, licenciaConducir, mudarse,
-						idiomas, universidad, carrera, nivelAcademico,estadoLaboral);
-
+						modalidad, areaInteres, salarioEsperado, licenciaConducir, mudarse, idiomas,
+						universidadSel.getIdUniversidad(), carreraSel.getIdCarrera(),
+						nivelAcademico, estadoLaboral);
 
 			} else if(rdTecnico.isSelected()) {
 				String areaTecnica = cmbAreaTecnica.getSelectedItem().toString();
@@ -963,9 +968,11 @@ public class RegistroCandidato extends JDialog {
 					candidatoAct.setEstado(nuevoCandidato.getEstado());
 
 					if (candidatoAct instanceof Universitario && nuevoCandidato instanceof Universitario) {
-						((Universitario)candidatoAct).setUniversidad(((Universitario)nuevoCandidato).getUniversidad());
-						((Universitario)candidatoAct).setCarrera(((Universitario)nuevoCandidato).getCarrera());
-						((Universitario)candidatoAct).setNivelAcademico(((Universitario)nuevoCandidato).getNivelAcademico());
+						Universitario uAct = (Universitario) candidatoAct;
+						Universitario uNuevo = (Universitario) nuevoCandidato;
+						uAct.setIdUniversidad(uNuevo.getIdUniversidad());
+						uAct.setIdCarrera(uNuevo.getIdCarrera());
+						uAct.setNivelAcademico(uNuevo.getNivelAcademico());
 					} else if (candidatoAct instanceof TecnicoSuperior && nuevoCandidato instanceof TecnicoSuperior) {
 						((TecnicoSuperior)candidatoAct).setAreaTecnica(((TecnicoSuperior)nuevoCandidato).getAreaTecnica());
 						((TecnicoSuperior)candidatoAct).setAniosExperiencia(((TecnicoSuperior)nuevoCandidato).getAniosExperiencia());
@@ -1056,8 +1063,19 @@ public class RegistroCandidato extends JDialog {
 				cambiarEspecializacion("Estudiante Universitario");
 
 				Universitario uni = (Universitario) candidatoAct;
-				txtUniversidad.setText(uni.getUniversidad());
-				cmbCarrera.setSelectedItem(uni.getCarrera());
+
+				for (int i = 0; i < cmbUniversidad.getItemCount(); i++) {
+					if (cmbUniversidad.getItemAt(i).getIdUniversidad() == uni.getIdUniversidad()) {
+						cmbUniversidad.setSelectedIndex(i);
+						break;
+					}
+				}
+				for (int i = 0; i < cmbCarrera.getItemCount(); i++) {
+					if (cmbCarrera.getItemAt(i).getIdCarrera() == uni.getIdCarrera()) {
+						cmbCarrera.setSelectedIndex(i);
+						break;
+					}
+				}
 				cmbNivel.setSelectedItem(uni.getNivelAcademico());
 
 			} else if (candidatoAct instanceof TecnicoSuperior) {
@@ -1168,8 +1186,11 @@ public class RegistroCandidato extends JDialog {
 		}
 
 		if(rdUniversitario.isSelected()) {
-			if(txtUniversidad.getText().trim().isEmpty()) {
+			if(cmbUniversidad.getSelectedItem() == null) {
 				throw new FormatException("La universidad es obligatoria para estudiantes universitarios");
+			}
+			if(cmbCarrera.getSelectedItem() == null) {
+				throw new FormatException("La carrera es obligatoria para estudiantes universitarios");
 			}
 
 		} else if(rdTecnico.isSelected()) {
