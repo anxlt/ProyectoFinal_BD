@@ -3,7 +3,9 @@ package visual;
 import java.awt.BorderLayout;
 import exception.*;
 import logico.*;
+import db.*;
 import java.awt.FlowLayout;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -32,8 +34,10 @@ public class RegistroCentro extends JDialog {
 	private JTextField txtNombre;
 	private JTextField txtTelefono;
 	private JTextField txtCorreo;
-	private JTextField txtProvincia;
-	private JTextField txtMunicipio;
+	private JComboBox<Provincia> cmbProvincia;
+	private JComboBox<Municipio> cmbMunicipio;
+	private ProvinciaDAO provinciaDAO = new ProvinciaDAOImpl();
+	private MunicipioDAO municipioDAO = new MunicipioDAOImpl();
 	private JComboBox cmbSector;
 	private JLabel lblIcono;
 	private JTextField txtRNC;
@@ -146,11 +150,13 @@ public class RegistroCentro extends JDialog {
 			txtCorreo.setBounds(108, 81, 305, 22);
 			pnlContactos.add(txtCorreo);
 
-			txtProvincia = new JTextField();
-			txtProvincia.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-			txtProvincia.setColumns(10);
-			txtProvincia.setBounds(108, 133, 305, 22);
-			pnlContactos.add(txtProvincia);
+			cmbProvincia = new JComboBox<>();
+			for (Provincia p : provinciaDAO.listarTodas()) {
+				cmbProvincia.addItem(p);
+			}
+			cmbProvincia.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+			cmbProvincia.setBounds(108, 133, 305, 22);
+			pnlContactos.add(cmbProvincia);
 
 			JLabel lblProvincia = new JLabel("Provincia:");
 			lblProvincia.setFont(new Font("Segoe UI", Font.BOLD, 16));
@@ -162,11 +168,17 @@ public class RegistroCentro extends JDialog {
 			lblMunicipio.setBounds(12, 179, 84, 29);
 			pnlContactos.add(lblMunicipio);
 
-			txtMunicipio = new JTextField();
-			txtMunicipio.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-			txtMunicipio.setColumns(10);
-			txtMunicipio.setBounds(108, 182, 305, 22);
-			pnlContactos.add(txtMunicipio);
+			cmbMunicipio = new JComboBox<>();
+			cmbMunicipio.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+			cmbMunicipio.setBounds(108, 182, 305, 22);
+			pnlContactos.add(cmbMunicipio);
+
+			cmbProvincia.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					cargarMunicipios();
+				}
+			});
+			cargarMunicipios();
 
 			JLabel lblRnc = new JLabel("RNC:");
 			lblRnc.setFont(new Font("Segoe UI", Font.BOLD, 16));
@@ -193,25 +205,25 @@ public class RegistroCentro extends JDialog {
 							if(verificar()) {
 								if(centroAct != null) {
 									centroAct.setCorreo(txtCorreo.getText());
-									centroAct.setMunicipio(txtMunicipio.getText());
+									centroAct.setIdMunicipio(((Municipio) cmbMunicipio.getSelectedItem()).getIdMunicipio());
 									centroAct.setNombre(txtNombre.getText());
-									centroAct.setProvincia(txtProvincia.getText());
+									centroAct.setIdProvincia(((Provincia) cmbProvincia.getSelectedItem()).getIdProvincia());
 									centroAct.setRnc(txtRNC.getText());
 									centroAct.setSector(cmbSector.getSelectedItem().toString());
 									centroAct.setTelefono(txtTelefono.getText());
 									if(BolsaLaboral.getInstancia().modificarCentroTrabajo(centroAct)) {
 										ConsultarCentros.cargarCentros();
-										JOptionPane.showMessageDialog(null,"El centro " + txtNombre.getText() + " ha sido modificado exitosamente.","Información",JOptionPane.INFORMATION_MESSAGE);
+										JOptionPane.showMessageDialog(null,"El centro " + txtNombre.getText() + " ha sido modificado exitosamente.","Informaci n",JOptionPane.INFORMATION_MESSAGE);
 										dispose();
 									}
 									else {
-										JOptionPane.showMessageDialog(null,"El centro " + txtNombre.getText() + " no logró ser modificado.");
+										JOptionPane.showMessageDialog(null,"El centro " + txtNombre.getText() + " no logr  ser modificado.");
 									}
 								}
 								else {
-									CentroEmpleador nuevoCentro = new CentroEmpleador(txtCodigo.getText(),txtNombre.getText(),cmbSector.getSelectedItem().toString(),txtProvincia.getText(),txtMunicipio.getText(),txtTelefono.getText(),txtCorreo.getText(),txtRNC.getText());
+									CentroEmpleador nuevoCentro = new CentroEmpleador(txtCodigo.getText(),txtNombre.getText(),cmbSector.getSelectedItem().toString(),((Provincia) cmbProvincia.getSelectedItem()).getIdProvincia(),((Municipio) cmbMunicipio.getSelectedItem()).getIdMunicipio(),txtTelefono.getText(),txtCorreo.getText(),txtRNC.getText());
 									BolsaLaboral.getInstancia().registrarCentroTrabajo(nuevoCentro);
-									JOptionPane.showMessageDialog(null,"El centro de trabajo ha sido agregado correctamente.","Inforamción",JOptionPane.INFORMATION_MESSAGE);
+									JOptionPane.showMessageDialog(null,"El centro de trabajo ha sido agregado correctamente.","Inforamci n",JOptionPane.INFORMATION_MESSAGE);
 									txtCodigo.setText("CEN-" + BolsaLaboral.genCodigoCentro);
 									limpiar();
 
@@ -270,33 +282,33 @@ public class RegistroCentro extends JDialog {
 
 	private boolean verificar() throws FormatException {
 		if(txtNombre.getText().isEmpty()) {
-			throw new FormatException("El nombre no puede estar vacío.");
+			throw new FormatException("El nombre no puede estar vac o.");
 		}
 		else if(txtRNC.getText().isEmpty()) {
-			throw new FormatException("El RNC no puede estar vacío.");
+			throw new FormatException("El RNC no puede estar vac o.");
 		}
 		else if (txtRNC.getText().length() != 9 || !txtRNC.getText().matches("\\d+")) {
-			throw new FormatException("El RNC debe tener 9 dígitos.");
+			throw new FormatException("El RNC debe tener 9 d gitos.");
 		}
 		else if(txtTelefono.getText().isEmpty()) {
-			throw new FormatException("El teléfono no puede estar vacío.");
+			throw new FormatException("El tel fono no puede estar vac o.");
 		}
 		else if(!txtTelefono.getText().matches("\\d{10}")) {
-			throw new FormatException("El teléfono debe tener 10 dígitos.");
+			throw new FormatException("El tel fono debe tener 10 d gitos.");
 		}
 		else if(txtCorreo.getText().isEmpty()) {
-			throw new FormatException("El correo no puede estar vacío.");
+			throw new FormatException("El correo no puede estar vac o.");
 		}
 		else if(!txtCorreo.getText().contains("@") || !txtCorreo.getText().contains(".")) {
-			throw new FormatException("Formato del correo inválido. Ejemplo: usuario@dominio.com");
+			throw new FormatException("Formato del correo inv lido. Ejemplo: usuario@dominio.com");
 		}
-		else if(txtProvincia.getText().isEmpty()) {
-			throw new FormatException("La provincia no puede estar vacía.");
+		else if(cmbProvincia.getSelectedItem() == null) {
+			throw new FormatException("La provincia no puede estar vac a.");
 		}
-		else if(txtMunicipio.getText().isEmpty()) {
-			throw new FormatException("El municipio no puede estar vacío.");
+		else if(cmbMunicipio.getSelectedItem() == null) {
+			throw new FormatException("El municipio no puede estar vac o.");
 		}
-		
+
 
 		return true;
 	}
@@ -304,12 +316,12 @@ public class RegistroCentro extends JDialog {
 
 	private void limpiar() {
 		txtCorreo.setText("");
-		txtMunicipio.setText("");
 		txtNombre.setText("");
-		txtProvincia.setText("");
 		txtRNC.setText("");
 		txtTelefono.setText("");
 		cmbSector.setSelectedIndex(0);
+		if (cmbProvincia.getItemCount() > 0) cmbProvincia.setSelectedIndex(0);
+		cargarMunicipios();
 	}
 
 	private void cargarDatos() {
@@ -318,18 +330,40 @@ public class RegistroCentro extends JDialog {
 			cmbSector.setSelectedItem(centroAct.getSector());
 			txtCodigo.setText(centroAct.getCodigo());
 			txtCorreo.setText(centroAct.getCorreo());
-			txtMunicipio.setText(centroAct.getMunicipio());
 			txtNombre.setText(centroAct.getNombre());
-			txtProvincia.setText(centroAct.getProvincia());
 			txtRNC.setText(centroAct.getRnc());
 			txtTelefono.setText(centroAct.getTelefono());
+
+			for (int i = 0; i < cmbProvincia.getItemCount(); i++) {
+				if (cmbProvincia.getItemAt(i).getIdProvincia() == centroAct.getIdProvincia()) {
+					cmbProvincia.setSelectedIndex(i);
+					break;
+				}
+			}
+			cargarMunicipios();
+			for (int i = 0; i < cmbMunicipio.getItemCount(); i++) {
+				if (cmbMunicipio.getItemAt(i).getIdMunicipio() == centroAct.getIdMunicipio()) {
+					cmbMunicipio.setSelectedIndex(i);
+					break;
+				}
+			}
+		}
+	}
+
+	private void cargarMunicipios() {
+		cmbMunicipio.removeAllItems();
+		Provincia seleccionada = (Provincia) cmbProvincia.getSelectedItem();
+		if (seleccionada != null) {
+			for (Municipio m : municipioDAO.listarPorProvincia(seleccionada.getIdProvincia())) {
+				cmbMunicipio.addItem(m);
+			}
 		}
 	}
 
 	private void cargarSector() {
 		String nombreSector = cmbSector.getSelectedItem().toString().toLowerCase();
-		nombreSector = nombreSector.replace("í","i");
-		nombreSector = nombreSector.replace("ó","o");
+		nombreSector = nombreSector.replace(" ","i");
+		nombreSector = nombreSector.replace(" ","o");
 		nombreSector = nombreSector.replace(" ","");
 		lblIcono.setIcon(new ImageIcon("recursos/" + nombreSector + ".png"));
 	}

@@ -4,26 +4,26 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class CentroEmpleador implements Serializable{
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private String codigo;
 	private String rnc;
 	private String nombre;
 	private String sector;
-	private String provincia;
-	private String municipio;
+	private int idProvincia;
+	private int idMunicipio;
 	private String telefono;
 	private String correo;
 	private ArrayList<OfertaLaboral> ofertasLaborales;
 
-	public CentroEmpleador(String codigo, String nombre, String sector, String provincia, String municipio, String telefono, String correo, String rnc) {
+	public CentroEmpleador(String codigo, String nombre, String sector, int idProvincia, int idMunicipio, String telefono, String correo, String rnc) {
 		super();
 		this.codigo = codigo;
 		this.nombre = nombre;
 		this.sector = sector;
-		this.provincia = provincia;
-		this.municipio = municipio;
+		this.idProvincia = idProvincia;
+		this.idMunicipio = idMunicipio;
 		this.telefono = telefono;
 		this.correo = correo;
 		this.rnc = rnc;
@@ -54,20 +54,20 @@ public class CentroEmpleador implements Serializable{
 		this.sector = sector;
 	}
 
-	public String getProvincia() {
-		return provincia;
+	public int getIdProvincia() {
+		return idProvincia;
 	}
 
-	public void setProvincia(String ciudad) {
-		this.provincia = ciudad;
+	public void setIdProvincia(int idProvincia) {
+		this.idProvincia = idProvincia;
 	}
 
-	public String getMunicipio() {
-		return municipio;
+	public int getIdMunicipio() {
+		return idMunicipio;
 	}
 
-	public void setMunicipio(String direccion) {
-		this.municipio = direccion;
+	public void setIdMunicipio(int idMunicipio) {
+		this.idMunicipio = idMunicipio;
 	}
 
 	public ArrayList<OfertaLaboral> getOfertasLaborales() {

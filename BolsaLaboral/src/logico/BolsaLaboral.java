@@ -20,9 +20,9 @@ import db.CandidatoDAOImpl;
 import db.OfertaLaboralDAOImpl;
 
 public class BolsaLaboral implements Serializable{
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	public static int genCodigoCandidato = 1;
 	public static int genCodigoSolicitud = 1;
 	public static int genCodigoOferta = 1;
@@ -85,7 +85,7 @@ public class BolsaLaboral implements Serializable{
 	public void setVacantes(ArrayList<VacanteCompletada> vacantes) {
 		this.vacantes = vacantes;
 	}
-	
+
 	public ArrayList<Usuario> getUsuarios() {
 		return usuarios;
 	}
@@ -93,7 +93,7 @@ public class BolsaLaboral implements Serializable{
 	public void setUsuarios(ArrayList<Usuario> usuarios) {
 		this.usuarios = usuarios;
 	}
-	
+
 	public Usuario getUsuarioActual() {
 		return usuarioActual;
 	}
@@ -108,7 +108,7 @@ public class BolsaLaboral implements Serializable{
 		}
 		return instancia;
 	}
-	
+
 	public static void setInstancia(BolsaLaboral bolsa) {
 		instancia = bolsa;
 	}
@@ -125,7 +125,7 @@ public class BolsaLaboral implements Serializable{
 	public int buscarIndiceCentroByCodigo(String codigo) {
 		int indice = 0;
 		boolean encontrado = false;
-		
+
 		while(encontrado == false && indice < centros.size()) {
 			if(centros.get(indice).getCodigo().equalsIgnoreCase(codigo)) {
 				encontrado = true;
@@ -134,7 +134,7 @@ public class BolsaLaboral implements Serializable{
 				indice++;
 			}
 		}
-		
+
 		return encontrado ? indice : -1;
 	}
 
@@ -216,7 +216,7 @@ public class BolsaLaboral implements Serializable{
 		}
 		return encontrado;
 	}
-	
+
 	public CentroEmpleador buscarCentroByCodigo(String codigo) {
 		CentroEmpleador encontrado = null;
 		int indice = 0;
@@ -228,123 +228,123 @@ public class BolsaLaboral implements Serializable{
 		}
 		return encontrado;
 	}
-	
+
 	public ArrayList<ResultadoMatcheo> obtenerCandidatosOrdenadosParaOferta(OfertaLaboral oferta) {
-	    ArrayList<ResultadoMatcheo> ordenados = new ArrayList<>();
+		ArrayList<ResultadoMatcheo> ordenados = new ArrayList<>();
 
-	    for (Candidato candidato : candidatos) {
-	    	if(candidato.getEstado().equals("Desempleado")) {
-		        int puntaje = calcularPuntaje(candidato, oferta);
-		        
-		        if (puntaje >= oferta.getPorcentajeMinimo()) {
-		            String condicion = obtenerCondicion(puntaje, oferta.getPorcentajeMinimo());
+		for (Candidato candidato : candidatos) {
+			if(candidato.getEstado().equals("Desempleado")) {
+				int puntaje = calcularPuntaje(candidato, oferta);
 
-		            ResultadoMatcheo resultadoMatcheo = new ResultadoMatcheo(oferta, candidato, puntaje, condicion);
+				if (puntaje >= oferta.getPorcentajeMinimo()) {
+					String condicion = obtenerCondicion(puntaje, oferta.getPorcentajeMinimo());
 
-		            ordenados.add(resultadoMatcheo);
-		        }
-	    	}
-	    }
-	    
-	    Comparator<ResultadoMatcheo> c = (a, b) -> b.getPorcentaje() - a.getPorcentaje();
-	    
-	    ordenados.sort(c);
+					ResultadoMatcheo resultadoMatcheo = new ResultadoMatcheo(oferta, candidato, puntaje, condicion);
 
-	    return ordenados;
+					ordenados.add(resultadoMatcheo);
+				}
+			}
+		}
+
+		Comparator<ResultadoMatcheo> c = (a, b) -> b.getPorcentaje() - a.getPorcentaje();
+
+		ordenados.sort(c);
+
+		return ordenados;
 	}
 
-	
-	private int calcularPuntaje(Candidato candidato, OfertaLaboral oferta) {
-	    int puntaje = 0;
-	    
-	    if (candidato.getModalidad().equalsIgnoreCase(oferta.getModalidad())) {
-	        puntaje += 10;
-	    }
-	    
-	    if (candidato.getJornada().equalsIgnoreCase(oferta.getJornada())) {
-	        puntaje += 10;
-	    }
-	    
-	    if (candidato.getAreaDeInteres().equalsIgnoreCase(oferta.getArea())) {
-	        puntaje += 20;
-	    }
-	    
-	    if (candidato.getProvincia().equalsIgnoreCase(oferta.getOfertador().getProvincia())) {
-	        puntaje += 10;
-	    } else if (candidato.isDisposicionMudarse() || oferta.isOfreceReubicacion()) {
-	        puntaje += 5;
-	    }
-	    
-	    if (candidato.getAspiracionSalarial() <= oferta.getSalario()) {
-	        puntaje += 10;
-	    } else {
-	        float exceso = candidato.getAspiracionSalarial() - oferta.getSalario();
-	        float porcentajeExceso = exceso / oferta.getSalario();
 
-	        if (porcentajeExceso <= 0.35f) {
-	            puntaje += Math.round(10 * (1 - porcentajeExceso / 0.35f));
-	        }
-	    }
-	    
-	    int idiomasRequeridos = oferta.getCantIdiomas();
-	    int idiomasPuntos = 0;
-	    for (String idioma : oferta.getIdiomasRequeridas()) {
-	        if (candidato.getIdiomas().contains(idioma)) {
-	            idiomasPuntos++;
-	        }
-	    }
-	    
-	    puntaje += Math.min(10, (idiomasPuntos*10)/Math.max(1, idiomasRequeridos));
-	    
-	    if (candidato instanceof Universitario && oferta.getNivelAcademico().equalsIgnoreCase("Estudiante Universitario")) {
-	    	Universitario u = (Universitario) candidato;
-	    	puntaje += 5;
-	    	if(u.getCarrera().equals(oferta.getRequisitos().get(0))) {
-	    		puntaje += 15;
-	    	}
-	    } else if (candidato instanceof TecnicoSuperior && oferta.getNivelAcademico().equalsIgnoreCase("Estudiante Tecnico")) {
-	        TecnicoSuperior t = (TecnicoSuperior) candidato;
-	        puntaje += 5;
-	        if(t.getAreaTecnica().equals(oferta.getRequisitos().get(0))) {
-	        	puntaje += 10;
-	        }
-	        if (t.getAniosExperiencia() >= oferta.getExperienciaMinima()) {
-	            puntaje += 5;
-	        }
-	    } else if (candidato instanceof Obrero && oferta.getNivelAcademico().equalsIgnoreCase("Obrero")) {
-	        Obrero o = (Obrero) candidato;
-	        puntaje += 10;
-	        int habilidadPuntos = 0;
-	        int habilidadesRequeridas = oferta.getCantRequisitos();
-	        for (String habilidad : oferta.getRequisitos()) {
-	            if (o.getHabilidades().contains(habilidad)) {
-	                habilidadPuntos++;
-	            }
-	        }
-	        puntaje+= Math.min(10, (habilidadPuntos*10)/Math.max(1, habilidadesRequeridas));
-	    }
-	    
-	    if (oferta.isobligatorioLicencia()) {
-	        if (candidato.isLicenciaConducir()) {
-	            puntaje += 5;
-	        } else {
-	            puntaje -= 20;
-	        }
-	    } else if (candidato.isLicenciaConducir()) {
-	        puntaje += 2;
-	    }
-	    
-	    if(oferta.isObligatorioMayorDeEdad()) {
-	    	if(candidato.getEdad() >= 18) {
-	    		puntaje += 5;
-	    	} else {
-	    		puntaje -= 25;
-	    	}
-	    } else {
-	    	puntaje += 5;
-	    }
-	    
-	    return Math.max(0, puntaje);
+	private int calcularPuntaje(Candidato candidato, OfertaLaboral oferta) {
+		int puntaje = 0;
+
+		if (candidato.getModalidad().equalsIgnoreCase(oferta.getModalidad())) {
+			puntaje += 10;
+		}
+
+		if (candidato.getJornada().equalsIgnoreCase(oferta.getJornada())) {
+			puntaje += 10;
+		}
+
+		if (candidato.getAreaDeInteres().equalsIgnoreCase(oferta.getArea())) {
+			puntaje += 20;
+		}
+
+		if (candidato.getIdProvincia() == oferta.getOfertador().getIdProvincia()) {
+			puntaje += 10;
+		} else if (candidato.isDisposicionMudarse() || oferta.isOfreceReubicacion()) {
+			puntaje += 5;
+		}
+
+		if (candidato.getAspiracionSalarial() <= oferta.getSalario()) {
+			puntaje += 10;
+		} else {
+			float exceso = candidato.getAspiracionSalarial() - oferta.getSalario();
+			float porcentajeExceso = exceso / oferta.getSalario();
+
+			if (porcentajeExceso <= 0.35f) {
+				puntaje += Math.round(10 * (1 - porcentajeExceso / 0.35f));
+			}
+		}
+
+		int idiomasRequeridos = oferta.getCantIdiomas();
+		int idiomasPuntos = 0;
+		for (String idioma : oferta.getIdiomasRequeridas()) {
+			if (candidato.getIdiomas().contains(idioma)) {
+				idiomasPuntos++;
+			}
+		}
+
+		puntaje += Math.min(10, (idiomasPuntos*10)/Math.max(1, idiomasRequeridos));
+
+		if (candidato instanceof Universitario && oferta.getNivelAcademico().equalsIgnoreCase("Estudiante Universitario")) {
+			Universitario u = (Universitario) candidato;
+			puntaje += 5;
+			if(u.getCarrera().equals(oferta.getRequisitos().get(0))) {
+				puntaje += 15;
+			}
+		} else if (candidato instanceof TecnicoSuperior && oferta.getNivelAcademico().equalsIgnoreCase("Estudiante Tecnico")) {
+			TecnicoSuperior t = (TecnicoSuperior) candidato;
+			puntaje += 5;
+			if(t.getAreaTecnica().equals(oferta.getRequisitos().get(0))) {
+				puntaje += 10;
+			}
+			if (t.getAniosExperiencia() >= oferta.getExperienciaMinima()) {
+				puntaje += 5;
+			}
+		} else if (candidato instanceof Obrero && oferta.getNivelAcademico().equalsIgnoreCase("Obrero")) {
+			Obrero o = (Obrero) candidato;
+			puntaje += 10;
+			int habilidadPuntos = 0;
+			int habilidadesRequeridas = oferta.getCantRequisitos();
+			for (String habilidad : oferta.getRequisitos()) {
+				if (o.getHabilidades().contains(habilidad)) {
+					habilidadPuntos++;
+				}
+			}
+			puntaje+= Math.min(10, (habilidadPuntos*10)/Math.max(1, habilidadesRequeridas));
+		}
+
+		if (oferta.isobligatorioLicencia()) {
+			if (candidato.isLicenciaConducir()) {
+				puntaje += 5;
+			} else {
+				puntaje -= 20;
+			}
+		} else if (candidato.isLicenciaConducir()) {
+			puntaje += 2;
+		}
+
+		if(oferta.isObligatorioMayorDeEdad()) {
+			if(candidato.getEdad() >= 18) {
+				puntaje += 5;
+			} else {
+				puntaje -= 25;
+			}
+		} else {
+			puntaje += 5;
+		}
+
+		return Math.max(0, puntaje);
 	}
 
 	public void eliminarOfertaTrabajo(OfertaLaboral seleccionado) throws NotRemovableException {
@@ -408,7 +408,7 @@ public class BolsaLaboral implements Serializable{
 		}
 		genCodigoVacanteCompletada = vacantes.size() + 1;
 	}
-	
+
 	public OfertaLaboral buscarOfertaByCodigo(String codigo) {
 		OfertaLaboral encontrado = null;
 		int indice = 0;
@@ -420,11 +420,11 @@ public class BolsaLaboral implements Serializable{
 		}
 		return encontrado;
 	}
-	
+
 	public int buscarIndiceOfertaByCodigo(String codigo) {
 		int indice = 0;
 		boolean encontrado = false;
-		
+
 		while(encontrado == false && indice < ofertas.size()) {
 			if(ofertas.get(indice).getCodigo().equalsIgnoreCase(codigo)) {
 				encontrado = true;
@@ -433,7 +433,7 @@ public class BolsaLaboral implements Serializable{
 				indice++;
 			}
 		}
-		
+
 		return encontrado ? indice : -1;
 	}
 
@@ -516,14 +516,14 @@ public class BolsaLaboral implements Serializable{
 		}
 		return true;
 	}
-	
+
 	public boolean candidatoEliminable(Candidato candidato) {
 		if(candidato.getMisSolicitudes().size() != 0) {
 			return false;
 		}
 		return true;
 	}
-	
+
 	private boolean ofertaEliminable(OfertaLaboral seleccionado) {
 		boolean aux = true;
 		for(Solicitud sol : solicitudes) {
@@ -533,7 +533,7 @@ public class BolsaLaboral implements Serializable{
 		}
 		return aux;
 	}
-	
+
 	public ArrayList<OfertaLaboral> ofertasDisponibles(){
 		ArrayList<OfertaLaboral> ofertasDisponibles = new ArrayList<>();
 		for(OfertaLaboral ofr: ofertas) {
@@ -543,7 +543,7 @@ public class BolsaLaboral implements Serializable{
 		}
 		return ofertasDisponibles;
 	}
-	
+
 	public ArrayList<ResultadoMatcheo> procesamientoAvanzando(){
 		ArrayList<ResultadoMatcheo> resultados = new ArrayList<>();
 		for(OfertaLaboral ofr : ofertas) {
@@ -551,25 +551,25 @@ public class BolsaLaboral implements Serializable{
 				resultados.addAll(obtenerCandidatosOrdenadosParaOferta(ofr));
 			}
 		}
-		
+
 		return resultados;
 	}
-	
-	public String obtenerCondicion(int puntaje, int limitePuntaje) {
-	    double noRecomendadoMax = Math.max(Math.min(limitePuntaje * 1.3, 65), 50);
-	    double aceptableMax = Math.max(Math.min(limitePuntaje * 1.6, 85), 65);
 
-	    if (puntaje < noRecomendadoMax) {
-	        return "No recomendado";
-	    } else if (puntaje < aceptableMax) {
-	        return "Aceptable";
-	    } 
-	    return "Recomendado";
+	public String obtenerCondicion(int puntaje, int limitePuntaje) {
+		double noRecomendadoMax = Math.max(Math.min(limitePuntaje * 1.3, 65), 50);
+		double aceptableMax = Math.max(Math.min(limitePuntaje * 1.6, 85), 65);
+
+		if (puntaje < noRecomendadoMax) {
+			return "No recomendado";
+		} else if (puntaje < aceptableMax) {
+			return "Aceptable";
+		}
+		return "Recomendado";
 	}
-	
+
 	public ResultadoMatcheo buscarResultado(ArrayList<ResultadoMatcheo> resultados, String codigoOferta, String codigoCandidato) {
 		ResultadoMatcheo resultado = null;
-		
+
 		int indice = 0;
 		while(indice < resultados.size() && resultado == null) {
 			if(resultados.get(indice).getOferta().getCodigo().equals(codigoOferta) && resultados.get(indice).getSolicitante().getCodigo().equals(codigoCandidato)) {
@@ -601,27 +601,27 @@ public class BolsaLaboral implements Serializable{
 		}
 		return aux;
 	}
-	
+
 	public boolean verificarSolicitud(Solicitud solicitud) {
 		boolean aux = true;
-		
+
 		for(Solicitud sol : solicitudes) {
 			if(matchSolicitud(sol, solicitud)) {
 				aux = false;
 			}
 		}
-		
+
 		return aux;
 	}
-	
+
 	public boolean matchSolicitud(Solicitud s1, Solicitud s2) {
 		boolean aux = true;
-		
+
 		aux &= s1.getFechaSolicitud().equals(s2.getFechaSolicitud());
 		aux &= s1.getEstado().equals(s2.getEstado());
 		aux &= s1.getSolicitante().equals(s2.getSolicitante());
 		aux &= s1.getOfertaSolicitada().equals(s2.getOfertaSolicitada());
-		
+
 		return aux;
 	}
 
@@ -674,7 +674,7 @@ public class BolsaLaboral implements Serializable{
 		}
 		return true;
 	}
-	
+
 	public ArrayList<Solicitud> obtenerSolicitudesVinculadas(OfertaLaboral oferta){
 		ArrayList<Solicitud> solicitudesV = new ArrayList<Solicitud>();
 		for(Solicitud sol : solicitudes) {
@@ -682,16 +682,16 @@ public class BolsaLaboral implements Serializable{
 				solicitudesV.add(sol);
 			}
 		}
-			
+
 		return solicitudesV;
 	}
-	
+
 	public int calcularTasaCovertura() {
 		int cantVacantes = 0;
 		for(OfertaLaboral ofr : ofertas) {
 			cantVacantes += ofr.getVacantes();
 		}
-		
+
 		if(ofertas.size() > 0) {
 			return Math.round(((float)cantVacantes / (float)ofertas.size()) * 100);
 		}
@@ -699,15 +699,15 @@ public class BolsaLaboral implements Serializable{
 			return 0;
 		}
 	}
-	
-	
+
+
 	public int obtenerOfertasVacias() {
 		int cantidad = 0;
 		for(OfertaLaboral ofr: ofertas) {
 			boolean encontrado = false;
-			
+
 			int indice = 0;
-			while(indice < solicitudes.size() && encontrado == false) {	
+			while(indice < solicitudes.size() && encontrado == false) {
 				if(solicitudes.get(indice).getOfertaSolicitada().equals(ofr)) {
 					encontrado = true;
 				}
@@ -715,12 +715,12 @@ public class BolsaLaboral implements Serializable{
 					indice++;
 				}
 			}
-			
+
 			if(encontrado == false) {
 				cantidad++;
 			}
 		}
-		
+
 		return cantidad;
 	}
 }

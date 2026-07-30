@@ -15,7 +15,7 @@ public class CentroEmpleadorDAOImpl implements CentroEmpleadorDAO {
     @Override
     public void insertar(CentroEmpleador c) {
         // CAMBIO: 'codigo' por 'id_centro' y 'nombre' por 'nombre_centro'
-        String sql = "INSERT INTO CentroEmpleador (id_centro, rnc, nombre_centro, sector, provincia, municipio, telefono, correo) "
+        String sql = "INSERT INTO CentroEmpleador (id_centro, rnc, nombre_centro, sector, id_provincia, id_municipio, telefono, correo) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection con = Conexion.conectar();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -24,8 +24,8 @@ public class CentroEmpleadorDAOImpl implements CentroEmpleadorDAO {
             ps.setString(2, c.getRnc());
             ps.setString(3, c.getNombre());
             ps.setString(4, c.getSector());
-            ps.setString(5, c.getProvincia());
-            ps.setString(6, c.getMunicipio());
+            ps.setInt(5, c.getIdProvincia());
+            ps.setInt(6, c.getIdMunicipio());
             ps.setString(7, c.getTelefono());
             ps.setString(8, c.getCorreo());
             ps.executeUpdate();
@@ -38,16 +38,16 @@ public class CentroEmpleadorDAOImpl implements CentroEmpleadorDAO {
     @Override
     public void actualizar(CentroEmpleador c) {
         // CAMBIO: 'nombre' por 'nombre_centro' y 'codigo' por 'id_centro'
-        String sql = "UPDATE CentroEmpleador SET rnc = ?, nombre_centro = ?, sector = ?, provincia = ?, "
-                + "municipio = ?, telefono = ?, correo = ? WHERE id_centro = ?";
+        String sql = "UPDATE CentroEmpleador SET rnc = ?, nombre_centro = ?, sector = ?, id_provincia = ?, "
+                + "id_municipio = ?, telefono = ?, correo = ? WHERE id_centro = ?";
         try (Connection con = Conexion.conectar();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, c.getRnc());
             ps.setString(2, c.getNombre());
             ps.setString(3, c.getSector());
-            ps.setString(4, c.getProvincia());
-            ps.setString(5, c.getMunicipio());
+            ps.setInt(4, c.getIdProvincia());
+            ps.setInt(5, c.getIdMunicipio());
             ps.setString(6, c.getTelefono());
             ps.setString(7, c.getCorreo());
             ps.setString(8, c.getCodigo());
@@ -118,8 +118,8 @@ public class CentroEmpleadorDAOImpl implements CentroEmpleadorDAO {
                 rs.getString("id_centro"),
                 rs.getString("nombre_centro"),
                 rs.getString("sector"),
-                rs.getString("provincia"),
-                rs.getString("municipio"),
+                rs.getInt("id_provincia"),
+                rs.getInt("id_municipio"),
                 rs.getString("telefono"),
                 rs.getString("correo"),
                 rs.getString("rnc")

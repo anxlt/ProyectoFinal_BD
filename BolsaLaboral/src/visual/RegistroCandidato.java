@@ -3,6 +3,7 @@ package visual;
 import java.awt.BorderLayout;
 import exception.*;
 import logico.*;
+import db.*;
 import java.awt.FlowLayout;
 
 import javax.swing.JButton;
@@ -49,8 +50,10 @@ public class RegistroCandidato extends JDialog {
 	private JTextField txtApellido;
 	private JTextField txtCedula;
 	private JTextField txtCorreo;
-	private JTextField txtProvincia;
-	private JTextField txtMunicipio;
+	private JComboBox<Provincia> cmbProvincia;
+	private JComboBox<Municipio> cmbMunicipio;
+	private ProvinciaDAO provinciaDAO = new ProvinciaDAOImpl();
+	private MunicipioDAO municipioDAO = new MunicipioDAOImpl();
 	private JRadioButton rdTecnico;
 	private JRadioButton rdUniversitario;
 	private JRadioButton rdObrero;
@@ -72,8 +75,8 @@ public class RegistroCandidato extends JDialog {
 	private JPanel pnlIdiomas;
 	private JSpinner spnSalarioEsperado;
 	private JSpinner spnAniosExp;
-	private JComboBox cmbCarrera; 
-	private JComboBox cmbNivel; 
+	private JComboBox cmbCarrera;
+	private JComboBox cmbNivel;
 	private JCheckBox chkLicenciaConducir;
 	private JCheckBox chkMudarse;
 
@@ -240,11 +243,13 @@ public class RegistroCandidato extends JDialog {
 		txtCorreo.setBounds(108, 81, 305, 22);
 		pnlContactos.add(txtCorreo);
 
-		txtProvincia = new JTextField();
-		txtProvincia.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		txtProvincia.setColumns(10);
-		txtProvincia.setBounds(108, 133, 305, 22);
-		pnlContactos.add(txtProvincia);
+		cmbProvincia = new JComboBox<>();
+		for (Provincia p : provinciaDAO.listarTodas()) {
+			cmbProvincia.addItem(p);
+		}
+		cmbProvincia.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		cmbProvincia.setBounds(108, 133, 305, 22);
+		pnlContactos.add(cmbProvincia);
 
 		JLabel label_3 = new JLabel("Provincia:");
 		label_3.setFont(new Font("Segoe UI", Font.BOLD, 16));
@@ -256,11 +261,17 @@ public class RegistroCandidato extends JDialog {
 		label_4.setBounds(12, 179, 84, 29);
 		pnlContactos.add(label_4);
 
-		txtMunicipio = new JTextField();
-		txtMunicipio.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		txtMunicipio.setColumns(10);
-		txtMunicipio.setBounds(108, 182, 305, 22);
-		pnlContactos.add(txtMunicipio);
+		cmbMunicipio = new JComboBox<>();
+		cmbMunicipio.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		cmbMunicipio.setBounds(108, 182, 305, 22);
+		pnlContactos.add(cmbMunicipio);
+
+		cmbProvincia.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cargarMunicipios();
+			}
+		});
+		cargarMunicipios();
 
 		cmbGenero = new JComboBox();
 		cmbGenero.setModel(new DefaultComboBoxModel(new String[] {"Femenino", "Masculino"}));
@@ -733,7 +744,7 @@ public class RegistroCandidato extends JDialog {
 		lblposeeTrabajoActualmente.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblposeeTrabajoActualmente.setBounds(12, 296, 128, 29);
 		pnlPreferencias.add(lblposeeTrabajoActualmente);
-		
+
 		cmbEstadoLab = new JComboBox();
 		cmbEstadoLab.setModel(new DefaultComboBoxModel(new String[] {"Desempleado", "Empleado", "En Espera"}));
 		cmbEstadoLab.setSelectedIndex(0);
@@ -766,7 +777,7 @@ public class RegistroCandidato extends JDialog {
 
 	private void cargarArea() {
 		String nombreArea = cmbArea.getSelectedItem().toString().toLowerCase();
-		nombreArea = nombreArea.replace("�","o");
+		nombreArea = nombreArea.replace(" ","o");
 		nombreArea = nombreArea.replace(" ","");
 
 		lblIcoArea.setIcon(new ImageIcon("recursos/" + nombreArea + ".png"));
@@ -780,7 +791,7 @@ public class RegistroCandidato extends JDialog {
 
 	private void cargarModalidad() {
 		String nombreModalidad = cmbModalidad.getSelectedItem().toString().toLowerCase();
-		nombreModalidad = nombreModalidad.replace("�","i");
+		nombreModalidad = nombreModalidad.replace(" ","i");
 		lblIcoModalidad.setIcon(new ImageIcon("recursos/" + nombreModalidad + ".png"));
 	}
 
@@ -793,8 +804,8 @@ public class RegistroCandidato extends JDialog {
 		txtCedula.setText("");
 		txtCorreo.setText("");
 		txtTelefono.setText("");
-		txtProvincia.setText("");
-		txtMunicipio.setText("");
+		if (cmbProvincia.getItemCount() > 0) cmbProvincia.setSelectedIndex(0);
+		cargarMunicipios();
 
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.YEAR, -25);
@@ -855,8 +866,8 @@ public class RegistroCandidato extends JDialog {
 			String cedula = txtCedula.getText().trim();
 			String correo = txtCorreo.getText().trim();
 			String telefono = txtTelefono.getText().trim();
-			String provincia = txtProvincia.getText().trim();
-			String municipio = txtMunicipio.getText().trim();
+			int idProvincia = ((Provincia) cmbProvincia.getSelectedItem()).getIdProvincia();
+			int idMunicipio = ((Municipio) cmbMunicipio.getSelectedItem()).getIdMunicipio();
 
 			Date fechaNacSpinner = (Date) spnFechaNac.getValue();
 			LocalDate fechaNacimiento = fechaNacSpinner.toInstant()
@@ -890,9 +901,9 @@ public class RegistroCandidato extends JDialog {
 				String carrera = cmbCarrera.getSelectedItem().toString();
 				String nivelAcademico = cmbNivel.getSelectedItem().toString();
 
-				nuevoCandidato = new Universitario(codigo, cedula, nombres, apellidos, 
-						fechaNacimiento, genero, provincia, municipio, telefono, correo, jornada, 
-						modalidad, areaInteres, salarioEsperado, licenciaConducir, mudarse, 
+				nuevoCandidato = new Universitario(codigo, cedula, nombres, apellidos,
+						fechaNacimiento, genero, idProvincia, idMunicipio, telefono, correo, jornada,
+						modalidad, areaInteres, salarioEsperado, licenciaConducir, mudarse,
 						idiomas, universidad, carrera, nivelAcademico,estadoLaboral);
 
 
@@ -900,9 +911,9 @@ public class RegistroCandidato extends JDialog {
 				String areaTecnica = cmbAreaTecnica.getSelectedItem().toString();
 				int aniosExperiencia = ((Number) spnAniosExp.getValue()).intValue();
 
-				nuevoCandidato = new TecnicoSuperior(codigo, cedula, nombres, apellidos, 
-						fechaNacimiento, genero,provincia, municipio, telefono, correo, jornada, 
-						modalidad, areaInteres, salarioEsperado, licenciaConducir, mudarse, 
+				nuevoCandidato = new TecnicoSuperior(codigo, cedula, nombres, apellidos,
+						fechaNacimiento, genero,idProvincia, idMunicipio, telefono, correo, jornada,
+						modalidad, areaInteres, salarioEsperado, licenciaConducir, mudarse,
 						idiomas, areaTecnica, aniosExperiencia,estadoLaboral);
 
 			} else if(rdObrero.isSelected()) {
@@ -917,16 +928,16 @@ public class RegistroCandidato extends JDialog {
 					}
 				}
 
-				nuevoCandidato = new Obrero(codigo, cedula, nombres, apellidos, 
-						fechaNacimiento, genero,provincia, municipio, telefono, correo, jornada, 
-						modalidad, areaInteres, salarioEsperado, licenciaConducir, mudarse, 
+				nuevoCandidato = new Obrero(codigo, cedula, nombres, apellidos,
+						fechaNacimiento, genero,idProvincia, idMunicipio, telefono, correo, jornada,
+						modalidad, areaInteres, salarioEsperado, licenciaConducir, mudarse,
 						idiomas, habilidades,estadoLaboral);
 			}
 
 			if(nuevoCandidato != null) {
 				if(candidatoAct == null) {
 					BolsaLaboral.getInstancia().registrarCandidato(nuevoCandidato);
-					JOptionPane.showMessageDialog(this, "Candidato registrado exitosamente", 
+					JOptionPane.showMessageDialog(this, "Candidato registrado exitosamente",
 							"Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
 
 					limpiar();
@@ -938,8 +949,8 @@ public class RegistroCandidato extends JDialog {
 					candidatoAct.setIdentificacion(nuevoCandidato.getIdentificacion());
 					candidatoAct.setCorreo(nuevoCandidato.getCorreo());
 					candidatoAct.setTelefono(nuevoCandidato.getTelefono());
-					candidatoAct.setProvincia(nuevoCandidato.getProvincia());
-					candidatoAct.setMunicipio(nuevoCandidato.getMunicipio());
+					candidatoAct.setIdProvincia(nuevoCandidato.getIdProvincia());
+					candidatoAct.setIdMunicipio(nuevoCandidato.getIdMunicipio());
 					candidatoAct.setFechaNacimiento(nuevoCandidato.getFechaNacimiento());
 					candidatoAct.setGenero(nuevoCandidato.getGenero());
 					candidatoAct.setJornada(nuevoCandidato.getJornada());
@@ -972,8 +983,18 @@ public class RegistroCandidato extends JDialog {
 			}
 
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(this, "Error al procesar los datos: " + e.getMessage(), 
+			JOptionPane.showMessageDialog(this, "Error al procesar los datos: " + e.getMessage(),
 					"Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	private void cargarMunicipios() {
+		cmbMunicipio.removeAllItems();
+		Provincia seleccionada = (Provincia) cmbProvincia.getSelectedItem();
+		if (seleccionada != null) {
+			for (Municipio m : municipioDAO.listarPorProvincia(seleccionada.getIdProvincia())) {
+				cmbMunicipio.addItem(m);
+			}
 		}
 	}
 
@@ -985,8 +1006,20 @@ public class RegistroCandidato extends JDialog {
 			txtCedula.setText(candidatoAct.getIdentificacion());
 			txtCorreo.setText(candidatoAct.getCorreo());
 			txtTelefono.setText(candidatoAct.getTelefono());
-			txtProvincia.setText(candidatoAct.getProvincia());
-			txtMunicipio.setText(candidatoAct.getMunicipio());
+
+			for (int i = 0; i < cmbProvincia.getItemCount(); i++) {
+				if (cmbProvincia.getItemAt(i).getIdProvincia() == candidatoAct.getIdProvincia()) {
+					cmbProvincia.setSelectedIndex(i);
+					break;
+				}
+			}
+			cargarMunicipios();
+			for (int i = 0; i < cmbMunicipio.getItemCount(); i++) {
+				if (cmbMunicipio.getItemAt(i).getIdMunicipio() == candidatoAct.getIdMunicipio()) {
+					cmbMunicipio.setSelectedIndex(i);
+					break;
+				}
+			}
 
 			Date fechaNac = Date.from(candidatoAct.getFechaNacimiento()
 					.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant());
@@ -1003,15 +1036,15 @@ public class RegistroCandidato extends JDialog {
 
 			for (String idioma : candidatoAct.getIdiomas()) {
 				switch (idioma) {
-				case "Ingl�s": chckbxIngles.setSelected(true); break;
-				case "Italiano": chckbxItaliano.setSelected(true); break;
-				case "Espa�ol": chckbxEspanol.setSelected(true); break;
-				case "Franc�s": chckbxFrances.setSelected(true); break;
-				case "Portugu�s": chckbxPortugues.setSelected(true); break;
-				case "Alem�n": chckbxAleman.setSelected(true); break;
-				case "Chino": chckbxMandarin.setSelected(true); break;
-				case "Coreano": chckbxCoreano.setSelected(true); break;
-				case "Japon�s": chckbxJapones.setSelected(true); break;
+					case "Ingl s": chckbxIngles.setSelected(true); break;
+					case "Italiano": chckbxItaliano.setSelected(true); break;
+					case "Espa ol": chckbxEspanol.setSelected(true); break;
+					case "Franc s": chckbxFrances.setSelected(true); break;
+					case "Portugu s": chckbxPortugues.setSelected(true); break;
+					case "Alem n": chckbxAleman.setSelected(true); break;
+					case "Chino": chckbxMandarin.setSelected(true); break;
+					case "Coreano": chckbxCoreano.setSelected(true); break;
+					case "Japon s": chckbxJapones.setSelected(true); break;
 				}
 			}
 
@@ -1048,21 +1081,21 @@ public class RegistroCandidato extends JDialog {
 				Obrero obrero = (Obrero) candidatoAct;
 				for (String habilidad : obrero.getHabilidades()) {
 					switch (habilidad) {
-					case "Plomer�a": chkPlomeria.setSelected(true); break;
-					case "Carpinter�a": chkCarpintero.setSelected(true); break;
-					case "Gesti�n Financiera": chkCajero.setSelected(true); break;
-					case "Soldadura": chkSoldadura.setSelected(true); break;
-					case "Instalaci�n El�ctrica": chkElectrica.setSelected(true); break;
-					case "Mec�nica": chkMecanica.setSelected(true); break;
-					case "Alba�iler�a": chkAlbanileria.setSelected(true); break;
-					case "Redes Sociales": chkRedes.setSelected(true); break;
-					case "Conducci�n": chkConduccion.setSelected(true); break;
-					case "Reparaci�n de Electr�nicos": chkReparacion.setSelected(true); break;
-					case "Ventas": chkVentas.setSelected(true); break;
-					case "Fotograf�a": chkFotografia.setSelected(true); break;
-					case "Cocina": chkCocina.setSelected(true); break;
-					case "Limpieza": chkLimpieza.setSelected(true); break;
-					case "Pintura": chkPintura.setSelected(true); break;
+						case "Plomer a": chkPlomeria.setSelected(true); break;
+						case "Carpinter a": chkCarpintero.setSelected(true); break;
+						case "Gesti n Financiera": chkCajero.setSelected(true); break;
+						case "Soldadura": chkSoldadura.setSelected(true); break;
+						case "Instalaci n El ctrica": chkElectrica.setSelected(true); break;
+						case "Mec nica": chkMecanica.setSelected(true); break;
+						case "Alba iler a": chkAlbanileria.setSelected(true); break;
+						case "Redes Sociales": chkRedes.setSelected(true); break;
+						case "Conducci n": chkConduccion.setSelected(true); break;
+						case "Reparaci n de Electr nicos": chkReparacion.setSelected(true); break;
+						case "Ventas": chkVentas.setSelected(true); break;
+						case "Fotograf a": chkFotografia.setSelected(true); break;
+						case "Cocina": chkCocina.setSelected(true); break;
+						case "Limpieza": chkLimpieza.setSelected(true); break;
+						case "Pintura": chkPintura.setSelected(true); break;
 					}
 				}
 			}
@@ -1083,7 +1116,7 @@ public class RegistroCandidato extends JDialog {
 		}
 		String cedula = txtCedula.getText().trim().replaceAll("[^0-9]", "");
 		if(cedula.length() != 11) {
-			throw new FormatException("La c�dula debe tener 11 d�gitos");
+			throw new FormatException("La c dula debe tener 11 d gitos");
 		}
 
 		Date fechaNacimiento = (Date) spnFechaNac.getValue();
@@ -1096,7 +1129,7 @@ public class RegistroCandidato extends JDialog {
 
 		cal.add(Calendar.YEAR, -16);
 		if(fechaNacimiento.after(cal.getTime())) {
-			throw new FormatException("El candidato debe tener al menos 16 a�os");
+			throw new FormatException("El candidato debe tener al menos 16 a os");
 		}
 
 		cal = Calendar.getInstance();
@@ -1105,33 +1138,33 @@ public class RegistroCandidato extends JDialog {
 			throw new FormatException("La fecha de nacimiento no puede ser anterior a " + (Calendar.getInstance().get(Calendar.YEAR) - 100));
 		}
 
-		if(cmbGenero == null || cmbGenero.getSelectedItem() == null || 
+		if(cmbGenero == null || cmbGenero.getSelectedItem() == null ||
 				cmbGenero.getSelectedItem().toString().trim().isEmpty()) {
-			throw new FormatException("El g�nero es obligatoria");
+			throw new FormatException("El g nero es obligatoria");
 		}
 
 		if(txtTelefono.getText().trim().isEmpty()) {
-			throw new FormatException("El tel�fono es obligatorio");
+			throw new FormatException("El tel fono es obligatorio");
 		}
 
 		if(txtCorreo.getText().trim().isEmpty()) {
 			throw new FormatException("El correo es obligatorio");
 		}
 
-		if(txtProvincia.getText().trim().isEmpty()) {
+		if(cmbProvincia.getSelectedItem() == null) {
 			throw new FormatException("La provincia es obligatoria");
 		}
-		if(txtMunicipio.getText().trim().isEmpty()) {
+		if(cmbMunicipio.getSelectedItem() == null) {
 			throw new FormatException("El municipio es obligatorio");
 		}
 
 		if(!txtCorreo.getText().contains("@") || !txtCorreo.getText().contains(".")) {
-			throw new FormatException("Formato del correo inv�lido. Ejemplo: usuario@dominio.com\"");
+			throw new FormatException("Formato del correo inv lido. Ejemplo: usuario@dominio.com\"");
 		}
 
-		String telefono = txtTelefono.getText().trim().replaceAll("[^0-9]", ""); 
+		String telefono = txtTelefono.getText().trim().replaceAll("[^0-9]", "");
 		if(telefono.length() != 10) {
-			throw new FormatException("El tel�fono debe tener 10 d�gitos");
+			throw new FormatException("El tel fono debe tener 10 d gitos");
 		}
 
 		if(rdUniversitario.isSelected()) {
@@ -1141,7 +1174,7 @@ public class RegistroCandidato extends JDialog {
 
 		} else if(rdTecnico.isSelected()) {
 			if(cmbAreaTecnica.getSelectedIndex() < 0) {
-				throw new FormatException("El �rea t�cnica es obligatoria para t�cnicos superiores");
+				throw new FormatException("El  rea t cnica es obligatoria para t cnicos superiores");
 			}
 
 		} else if(rdObrero.isSelected()) {
@@ -1160,16 +1193,16 @@ public class RegistroCandidato extends JDialog {
 				throw new FormatException("Debe seleccionar al menos una habilidad para obreros");
 			}
 		}
-		if(cmbModalidad == null || cmbModalidad.getSelectedItem() == null || 
+		if(cmbModalidad == null || cmbModalidad.getSelectedItem() == null ||
 				cmbModalidad.getSelectedItem().toString().trim().isEmpty()) {
 			throw new FormatException("La modalidad es obligatoria");
 		}
-		if(cmbArea == null || cmbArea.getSelectedItem() == null || 
+		if(cmbArea == null || cmbArea.getSelectedItem() == null ||
 				cmbArea.getSelectedItem().toString().trim().isEmpty()) {
-			throw new FormatException("Debe seleccionar un �rea");
+			throw new FormatException("Debe seleccionar un  rea");
 		}
 
-		if(cmbJornada == null || cmbJornada.getSelectedItem() == null || 
+		if(cmbJornada == null || cmbJornada.getSelectedItem() == null ||
 				cmbJornada.getSelectedItem().toString().trim().isEmpty()) {
 			throw new FormatException("La jornada es obligatoria");
 		}

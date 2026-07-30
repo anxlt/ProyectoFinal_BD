@@ -6,17 +6,17 @@ import java.time.Period;
 import java.util.ArrayList;
 
 public abstract class Candidato implements Serializable{
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private String codigo;
 	private String identificacion;
 	private String nombres;
 	private String apellidos;
 	private LocalDate fechaNacimiento;
 	private String genero;
-	private String provincia;
-	private String municipio;
+	private int idProvincia;
+	private int idMunicipio;
 	private String telefono;
 	private String correo;
 	private String jornada;
@@ -30,9 +30,9 @@ public abstract class Candidato implements Serializable{
 	private ArrayList<Solicitud> misSolicitudes;
 
 	public Candidato(String codigo, String identificacion, String nombres, String apellidos, LocalDate fechaNacimiento,
-			String genero, String provincia, String municipio, String telefono, String correo, String jornada,
-			String modalidad, String areaDeInteres, float aspiracionSalarial, boolean licenciaConducir,
-			boolean disposicionMudarse, ArrayList<String> idiomas, String estado) {
+	                 String genero, int idProvincia, int idMunicipio, String telefono, String correo, String jornada,
+	                 String modalidad, String areaDeInteres, float aspiracionSalarial, boolean licenciaConducir,
+	                 boolean disposicionMudarse, ArrayList<String> idiomas, String estado) {
 		super();
 		this.codigo = codigo;
 		this.identificacion = identificacion;
@@ -40,8 +40,8 @@ public abstract class Candidato implements Serializable{
 		this.apellidos = apellidos;
 		this.fechaNacimiento = fechaNacimiento;
 		this.genero = genero;
-		this.provincia = provincia;
-		this.municipio = municipio;
+		this.idProvincia = idProvincia;
+		this.idMunicipio = idMunicipio;
 		this.telefono = telefono;
 		this.correo = correo;
 		this.jornada = jornada;
@@ -103,20 +103,20 @@ public abstract class Candidato implements Serializable{
 		this.genero = genero;
 	}
 
-	public String getProvincia() {
-		return provincia;
+	public int getIdProvincia() {
+		return idProvincia;
 	}
 
-	public void setProvincia(String provincia) {
-		this.provincia = provincia;
+	public void setIdProvincia(int idProvincia) {
+		this.idProvincia = idProvincia;
 	}
 
-	public String getMunicipio() {
-		return municipio;
+	public int getIdMunicipio() {
+		return idMunicipio;
 	}
 
-	public void setMunicipio(String municipio) {
-		this.municipio = municipio;
+	public void setIdMunicipio(int idMunicipio) {
+		this.idMunicipio = idMunicipio;
 	}
 
 	public String getTelefono() {
@@ -198,23 +198,23 @@ public abstract class Candidato implements Serializable{
 	public void setAreaDeInteres(String areaDeInteres) {
 		this.areaDeInteres = areaDeInteres;
 	}
-	
+
 	public abstract String getSobreMi();
-	
+
 	public abstract String getFormacion();
-	
+
 	public void cambiarEstadoSolicitudesAEmpleado() {
-	    for (Solicitud solicitud : misSolicitudes) {
-	        solicitud.setEstado("Aprovada");
-	    }
+		for (Solicitud solicitud : misSolicitudes) {
+			solicitud.setEstado("Aprovada");
+		}
 	}
-	
+
 	public void cambiarEstadoSolicitudesADesempleado() {
-	    for (Solicitud solicitud : misSolicitudes) {
-	        solicitud.setEstado("Rechazada");
-	    }
+		for (Solicitud solicitud : misSolicitudes) {
+			solicitud.setEstado("Rechazada");
+		}
 	}
-	
+
 	public int getEdad() {
 		return Period.between(fechaNacimiento, LocalDate.now()).getYears();
 	}
@@ -226,9 +226,9 @@ public abstract class Candidato implements Serializable{
 	public void setEstado(String estado) {
 		this.estado = estado;
 	}
-	
+
 	public void addSolicitud(Solicitud solicitud) {
 		misSolicitudes.add(solicitud);
 	}
-	
+
 }

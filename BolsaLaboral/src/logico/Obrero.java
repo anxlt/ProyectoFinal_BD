@@ -10,10 +10,10 @@ public class Obrero extends Candidato implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	public Obrero(String codigo, String identificacion, String nombres, String apellidos, LocalDate fechaNacimiento,
-			String genero, String provincia, String municipio, String telefono, String correo, String jornada,
-			String modalidad, String areaDeInteres, float aspiracionSalarial, boolean licenciaConducir,
-			boolean disposicionMudarse, ArrayList<String> idiomas,ArrayList<String> habilidades, String estado) {
-		super(codigo, identificacion, nombres, apellidos, fechaNacimiento, genero, provincia, municipio, telefono,
+	              String genero, int idProvincia, int idMunicipio, String telefono, String correo, String jornada,
+	              String modalidad, String areaDeInteres, float aspiracionSalarial, boolean licenciaConducir,
+	              boolean disposicionMudarse, ArrayList<String> idiomas,ArrayList<String> habilidades, String estado) {
+		super(codigo, identificacion, nombres, apellidos, fechaNacimiento, genero, idProvincia, idMunicipio, telefono,
 				correo, jornada, modalidad, areaDeInteres, aspiracionSalarial, licenciaConducir, disposicionMudarse,
 				idiomas,estado);
 		this.habilidades = habilidades;
@@ -30,8 +30,8 @@ public class Obrero extends Candidato implements Serializable{
 	@Override
 	public String getSobreMi() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Soy un trabajador con experiencia práctica en el área de ")
-		.append(getAreaDeInteres().toLowerCase()).append(". ");
+		sb.append("Soy un trabajador con experiencia pr ctica en el  rea de ")
+				.append(getAreaDeInteres().toLowerCase()).append(". ");
 
 		if (!habilidades.isEmpty()) {
 			sb.append("Cuento con habilidades como ");
@@ -51,12 +51,12 @@ public class Obrero extends Candidato implements Serializable{
 		}
 
 		sb.append("Busco una oportunidad de trabajo en modalidad ")
-		.append(getModalidad().toLowerCase())
-		.append(" y jornada ").append(getJornada().toLowerCase())
-		.append(", con una aspiración salarial de RD$").append(getAspiracionSalarial()).append(". ");
+				.append(getModalidad().toLowerCase())
+				.append(" y jornada ").append(getJornada().toLowerCase())
+				.append(", con una aspiraci n salarial de RD$").append(getAspiracionSalarial()).append(". ");
 
 		if (!getIdiomas().isEmpty()) {
-			sb.append("También tengo conocimientos en los siguientes idiomas: ");
+			sb.append("Tambi n tengo conocimientos en los siguientes idiomas: ");
 			for (int i = 0; i < getIdiomas().size(); i++) {
 				sb.append(getIdiomas().get(i));
 				if (i < getIdiomas().size() - 2) sb.append(", ");
@@ -71,8 +71,8 @@ public class Obrero extends Candidato implements Serializable{
 	@Override
 	public String getFormacion() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Mi formación se basa principalmente en la experiencia práctica adquirida en el área de ")
-		.append(getAreaDeInteres().toLowerCase()).append(". ");
+		sb.append("Mi formaci n se basa principalmente en la experiencia pr ctica adquirida en el  rea de ")
+				.append(getAreaDeInteres().toLowerCase()).append(". ");
 
 		if (!habilidades.isEmpty()) {
 			sb.append("He desarrollado habilidades como ");
@@ -81,7 +81,7 @@ public class Obrero extends Candidato implements Serializable{
 				if (i < habilidades.size() - 2) sb.append(", ");
 				else if (i == habilidades.size() - 2) sb.append(" y ");
 			}
-			sb.append(", que me permiten desempeñar eficientemente labores técnicas. ");
+			sb.append(", que me permiten desempe ar eficientemente labores t cnicas. ");
 		}
 
 		return sb.toString().trim();

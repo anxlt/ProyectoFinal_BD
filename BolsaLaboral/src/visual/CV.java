@@ -218,7 +218,7 @@ public class CV extends JDialog {
 			lblform.setText(((Universitario) solicitante).getNivelAcademico());
 		}
 		else if(solicitante instanceof TecnicoSuperior) {
-			lblform.setText("Técnico");
+			lblform.setText("T cnico");
 		}
 		else if(solicitante instanceof Obrero) {
 			lblform.setText("Trabajador");
@@ -227,7 +227,7 @@ public class CV extends JDialog {
 		lblNombre.setText(getFormatNombre(solicitante));
 		lblFechaNac.setText(solicitante.getFechaNacimiento().toString());
 		lblUbic.setText(getFormatUbicacion(solicitante));
-		lblUbic.setToolTipText(solicitante.getMunicipio() + ", " + solicitante.getProvincia());
+		lblUbic.setToolTipText(getFormatUbicacionCompleta(solicitante));
 		lblTelefono.setText(solicitante.getTelefono());
 		lblArea.setToolTipText(solicitante.getAreaDeInteres());
 		lblJornada.setToolTipText(solicitante.getJornada());
@@ -239,10 +239,22 @@ public class CV extends JDialog {
 		cargarJornada(solicitante.getJornada());
 		cargarModalidad(solicitante.getModalidad());
 	}
-	
+
+	private String getFormatUbicacionCompleta(Candidato solicitante) {
+		db.MunicipioDAO municipioDAO = new db.MunicipioDAOImpl();
+		db.ProvinciaDAO provinciaDAO = new db.ProvinciaDAOImpl();
+		logico.Municipio m = municipioDAO.buscarPorId(solicitante.getIdMunicipio());
+		logico.Provincia p = provinciaDAO.buscarPorId(solicitante.getIdProvincia());
+		return (m != null ? m.getNombreMunicipio() : "") + ", " + (p != null ? p.getNombreProvincia() : "");
+	}
+
 	private String getFormatUbicacion(Candidato solicitante) {
-		String municipio = solicitante.getMunicipio();
-		String provincia = solicitante.getProvincia();
+		db.MunicipioDAO municipioDAO = new db.MunicipioDAOImpl();
+		db.ProvinciaDAO provinciaDAO = new db.ProvinciaDAOImpl();
+		logico.Municipio m = municipioDAO.buscarPorId(solicitante.getIdMunicipio());
+		logico.Provincia p = provinciaDAO.buscarPorId(solicitante.getIdProvincia());
+		String municipio = m != null ? m.getNombreMunicipio() : "";
+		String provincia = p != null ? p.getNombreProvincia() : "";
 		String ubicacion = municipio + ", " + provincia;
 
 		if (ubicacion.length() <= 15) {
@@ -252,12 +264,12 @@ public class CV extends JDialog {
 		int maxPorParte = (maxTotal - 2) / 2;
 
 		String municipioAbrev = municipio.length() > maxPorParte
-			? municipio.substring(0, maxPorParte - 1) + "."
-			: municipio;
+				? municipio.substring(0, maxPorParte - 1) + "."
+				: municipio;
 
 		String provinciaAbrev = provincia.length() > maxPorParte
-			? provincia.substring(0, maxPorParte - 1) + "."
-			: provincia;
+				? provincia.substring(0, maxPorParte - 1) + "."
+				: provincia;
 
 		String resultado = municipioAbrev + ", " + provinciaAbrev;
 		while (resultado.length() > 15 && provinciaAbrev.length() > 2) {
@@ -306,7 +318,7 @@ public class CV extends JDialog {
 
 	private void cargarArea(String nombreArea) {
 		nombreArea = nombreArea.toLowerCase();
-		nombreArea = nombreArea.replace("ó","o");
+		nombreArea = nombreArea.replace(" ","o");
 		nombreArea = nombreArea.replace(" ","");
 
 		lblArea.setIcon(new ImageIcon("recursos/" + nombreArea + ".png"));
@@ -320,24 +332,24 @@ public class CV extends JDialog {
 
 	private void cargarModalidad(String modalidad) {
 		String nombreModalidad = modalidad.toLowerCase();
-		nombreModalidad = nombreModalidad.replace("í","i");
+		nombreModalidad = nombreModalidad.replace(" ","i");
 		lblModalidad.setIcon(new ImageIcon("recursos/" + nombreModalidad + ".png"));
 	}
 
 
 	private Color getColorPrincipal(String area) {
 		switch (area) {
-		case "Finanzas": return new Color(213, 69, 27);	
-		case "Recursos Humanos": return new Color(27, 60, 83);
-		case "Marketing": return new Color(197, 23, 46);
-		case "Limpieza": return new Color(78, 102, 136);
-		case "Seguridad": return new Color(10, 64, 12);
-		case "TI": return new Color(9, 107, 104);
-		case "Salud": return new Color(162, 18, 50);
-		case "Operaciones": return new Color(39, 63, 79);
-		case "Administración": return new Color(190, 49, 68);
-		case "Atención al Cliente": return new Color(130, 17, 49);	
-		default: return new Color(57, 62, 7);
+			case "Finanzas": return new Color(213, 69, 27);
+			case "Recursos Humanos": return new Color(27, 60, 83);
+			case "Marketing": return new Color(197, 23, 46);
+			case "Limpieza": return new Color(78, 102, 136);
+			case "Seguridad": return new Color(10, 64, 12);
+			case "TI": return new Color(9, 107, 104);
+			case "Salud": return new Color(162, 18, 50);
+			case "Operaciones": return new Color(39, 63, 79);
+			case "Administraci n": return new Color(190, 49, 68);
+			case "Atenci n al Cliente": return new Color(130, 17, 49);
+			default: return new Color(57, 62, 7);
 		}
 	}
 
@@ -355,6 +367,6 @@ public class CV extends JDialog {
 		txpDescripcion.setFocusable(false);
 		txpDatosFormacion.setBackground(fondoGeneral);
 		txpDatosFormacion.setFocusable(false);
-		
+
 	}
 }
