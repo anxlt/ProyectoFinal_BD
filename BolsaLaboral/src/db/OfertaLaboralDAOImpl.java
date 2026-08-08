@@ -10,10 +10,11 @@ public class OfertaLaboralDAOImpl implements OfertaLaboralDAO {
 
     @Override
     public void insertar(OfertaLaboral o) {
-        String sql = "INSERT INTO OfertaLaboral (id_oferta, puesto, descripcion, area, modalidad, jornada, estado, "
+        String sql = "INSERT INTO OfertaLaboral (puesto, descripcion, area, modalidad, jornada, estado, "
                 + "salario, experiencia_minima, vacantes, id_centro, ofrece_reubicacion, obligatorio_mayor_edad, "
                 + "obligatorio_licencia, nivel_academico, porcentaje_minimo, id_carrera, id_area_tecnica, id_habilidad) "
-                + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                + "OUTPUT INSERTED.id_oferta "
+                + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         Connection con = null;
         try {
@@ -21,26 +22,30 @@ public class OfertaLaboralDAOImpl implements OfertaLaboralDAO {
             con.setAutoCommit(false);
 
             try (PreparedStatement ps = con.prepareStatement(sql)) {
-                ps.setString(1, o.getCodigo());
-                ps.setString(2, o.getPuesto());
-                ps.setString(3, o.getDescripcion());
-                ps.setString(4, o.getArea());
-                ps.setString(5, o.getModalidad());
-                ps.setString(6, o.getJornada());
-                ps.setString(7, o.getEstado());
-                ps.setFloat(8, o.getSalario());
-                ps.setInt(9, o.getExperienciaMinima());
-                ps.setInt(10, o.getVacantes());
-                ps.setString(11, o.getOfertador().getCodigo());
-                ps.setBoolean(12, o.isOfreceReubicacion());
-                ps.setBoolean(13, o.isObligatorioMayorDeEdad());
-                ps.setBoolean(14, o.isObligatorioLicencia());
-                ps.setString(15, o.getNivelAcademico());
-                ps.setInt(16, o.getPorcentajeMinimo());
-                setNullableInt(ps, 17, o.getIdCarrera());
-                setNullableInt(ps, 18, o.getIdAreaTecnica());
-                setNullableInt(ps, 19, o.getIdHabilidad());
-                ps.executeUpdate();
+                ps.setString(1, o.getPuesto());
+                ps.setString(2, o.getDescripcion());
+                ps.setString(3, o.getArea());
+                ps.setString(4, o.getModalidad());
+                ps.setString(5, o.getJornada());
+                ps.setString(6, o.getEstado());
+                ps.setFloat(7, o.getSalario());
+                ps.setInt(8, o.getExperienciaMinima());
+                ps.setInt(9, o.getVacantes());
+                ps.setString(10, o.getOfertador().getCodigo());
+                ps.setBoolean(11, o.isOfreceReubicacion());
+                ps.setBoolean(12, o.isObligatorioMayorDeEdad());
+                ps.setBoolean(13, o.isObligatorioLicencia());
+                ps.setString(14, o.getNivelAcademico());
+                ps.setInt(15, o.getPorcentajeMinimo());
+                setNullableInt(ps, 16, o.getIdCarrera());
+                setNullableInt(ps, 17, o.getIdAreaTecnica());
+                setNullableInt(ps, 18, o.getIdHabilidad());
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        o.setCodigo(rs.getString(1)); // código generado por la BD
+                    }
+                }
             }
 
             insertarIdiomas(con, o.getCodigo(), o.getIdiomasRequeridas());

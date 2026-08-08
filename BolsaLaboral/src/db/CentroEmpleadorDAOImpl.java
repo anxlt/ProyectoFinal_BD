@@ -14,27 +14,31 @@ public class CentroEmpleadorDAOImpl implements CentroEmpleadorDAO {
 
     @Override
     public void insertar(CentroEmpleador c) {
-        // CAMBIO: 'codigo' por 'id_centro' y 'nombre' por 'nombre_centro'
-        String sql = "INSERT INTO CentroEmpleador (id_centro, rnc, nombre_centro, sector, id_provincia, id_municipio, telefono, correo) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO CentroEmpleador (rnc, nombre_centro, sector, id_provincia, id_municipio, telefono, correo) "
+                + "OUTPUT INSERTED.id_centro "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
         try (Connection con = Conexion.conectar();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, c.getCodigo());
-            ps.setString(2, c.getRnc());
-            ps.setString(3, c.getNombre());
-            ps.setString(4, c.getSector());
-            ps.setInt(5, c.getIdProvincia());
-            ps.setInt(6, c.getIdMunicipio());
-            ps.setString(7, c.getTelefono());
-            ps.setString(8, c.getCorreo());
-            ps.executeUpdate();
+            ps.setString(1, c.getRnc());
+            ps.setString(2, c.getNombre());
+            ps.setString(3, c.getSector());
+            ps.setInt(4, c.getIdProvincia());
+            ps.setInt(5, c.getIdMunicipio());
+            ps.setString(6, c.getTelefono());
+            ps.setString(7, c.getCorreo());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    c.setCodigo(rs.getString(1)); // código generado por la BD
+                }
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
     @Override
     public void actualizar(CentroEmpleador c) {
         // CAMBIO: 'nombre' por 'nombre_centro' y 'codigo' por 'id_centro'

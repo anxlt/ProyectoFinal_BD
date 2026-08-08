@@ -205,7 +205,7 @@ public abstract class Candidato implements Serializable{
 
 	public void cambiarEstadoSolicitudesAEmpleado() {
 		for (Solicitud solicitud : misSolicitudes) {
-			solicitud.setEstado("Aprovada");
+			solicitud.setEstado("Aprobada");
 		}
 	}
 

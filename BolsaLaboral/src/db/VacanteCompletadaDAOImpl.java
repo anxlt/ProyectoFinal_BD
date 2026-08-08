@@ -15,21 +15,26 @@ import logico.VacanteCompletada;
 public class VacanteCompletadaDAOImpl {
 
     public boolean insertar(VacanteCompletada v) {
-        // CAMBIO: Se actualizaron los 4 nombres de las columnas
         String sql = """
-            INSERT INTO VacanteCompletada (id_vacante, fecha_contratacion, id_solicitud, id_oferta)
-            VALUES (?, ?, ?, ?)
-        """;
+        INSERT INTO VacanteCompletada (fecha_contratacion, id_solicitud, id_oferta)
+        OUTPUT INSERTED.id_vacante
+        VALUES (?, ?, ?)
+    """;
 
         try (Connection conn = Conexion.conectar();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, v.getCodigo());
-            ps.setDate(2, Date.valueOf(v.getFechaContratacion()));
-            ps.setString(3, v.getSolicitudAceptada().getCodigo());
-            ps.setString(4, v.getOfertaOcupada().getCodigo());
+            ps.setDate(1, Date.valueOf(v.getFechaContratacion()));
+            ps.setString(2, v.getSolicitudAceptada().getCodigo());
+            ps.setString(3, v.getOfertaOcupada().getCodigo());
 
-            return ps.executeUpdate() > 0;
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    v.setCodigo(rs.getString(1)); // código generado por la BD
+                }
+            }
+            return true;
+
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

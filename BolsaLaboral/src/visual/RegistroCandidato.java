@@ -152,7 +152,7 @@ public class RegistroCandidato extends JDialog {
 		pnlPersonal.add(label);
 
 		txtCodigo = new JTextField();
-		txtCodigo.setText("CAN-" + BolsaLaboral.genCodigoCandidato);
+		txtCodigo.setText("");
 		txtCodigo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		txtCodigo.setEditable(false);
 		txtCodigo.setColumns(10);
@@ -810,8 +810,7 @@ public class RegistroCandidato extends JDialog {
 
 
 	private void limpiar() {
-
-		txtCodigo.setText("CAN-" + BolsaLaboral.genCodigoCandidato);
+		txtCodigo.setText("");
 		txtNombre.setText("");
 		txtApellido.setText("");
 		txtCedula.setText("");
@@ -873,7 +872,7 @@ public class RegistroCandidato extends JDialog {
 
 	private void registrarCandidato() {
 		try {
-			String codigo = txtCodigo.getText();
+			String codigo = null;
 			String nombres = txtNombre.getText().trim();
 			String apellidos = txtApellido.getText().trim();
 			String cedula = txtCedula.getText().trim();

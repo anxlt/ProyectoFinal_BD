@@ -11,25 +11,28 @@ public class SolicitudDAOImpl implements SolicitudDAO {
 
     @Override
     public void insertar(Solicitud s) {
-        // CAMBIO: Se actualizaron los nombres de las 5 columnas
         String sql = """
-                INSERT INTO Solicitud
-                (id_solicitud, fecha_solicitud, estado_solicitud, id_candidato, id_oferta)
-                VALUES(?,?,?,?,?)
-                """;
+            INSERT INTO Solicitud
+            (fecha_solicitud, estado_solicitud, id_candidato, id_oferta)
+            OUTPUT INSERTED.id_solicitud
+            VALUES(?,?,?,?)
+            """;
 
-        try(Connection con = Conexion.conectar();
-            PreparedStatement ps = con.prepareStatement(sql)){
+        try (Connection con = Conexion.conectar();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, s.getCodigo());
-            ps.setDate(2, Date.valueOf(s.getFechaSolicitud()));
-            ps.setString(3, s.getEstado());
-            ps.setString(4, s.getSolicitante().getCodigo());
-            ps.setString(5, s.getOfertaSolicitada().getCodigo());
+            ps.setDate(1, Date.valueOf(s.getFechaSolicitud()));
+            ps.setString(2, s.getEstado());
+            ps.setString(3, s.getSolicitante().getCodigo());
+            ps.setString(4, s.getOfertaSolicitada().getCodigo());
 
-            ps.executeUpdate();
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    s.setCodigo(rs.getString(1)); // código generado por la BD
+                }
+            }
 
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

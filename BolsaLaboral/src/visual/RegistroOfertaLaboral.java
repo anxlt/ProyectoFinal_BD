@@ -114,7 +114,7 @@ public class RegistroOfertaLaboral extends JDialog {
 		pnlGeneralidades.add(label);
 
 		txtCodigo = new JTextField();
-		txtCodigo.setText("OFR-" + BolsaLaboral.genCodigoOferta);
+		txtCodigo.setText("");
 		txtCodigo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		txtCodigo.setEditable(false);
 		txtCodigo.setColumns(10);
@@ -623,7 +623,7 @@ public class RegistroOfertaLaboral extends JDialog {
 			}
 		} else {
 			OfertaLaboral nuevaOferta = new OfertaLaboral(
-					txtCodigo.getText(),
+					null,
 					txtPuesto.getText(),
 					txtDescripcion.getText(),
 					cmbArea.getSelectedItem().toString(),
@@ -647,7 +647,7 @@ public class RegistroOfertaLaboral extends JDialog {
 			BolsaLaboral.getInstancia().registrarOfertaLaboral(nuevaOferta);
 			JOptionPane.showMessageDialog(null, "La oferta laboral ha sido agregada correctamente.",
 					"Información", JOptionPane.INFORMATION_MESSAGE);
-			txtCodigo.setText("OFR-" + BolsaLaboral.genCodigoOferta);
+			txtCodigo.setText(nuevaOferta.getCodigo());  // muestra el código real
 			limpiar();
 		}
 	}

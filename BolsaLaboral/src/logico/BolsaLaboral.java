@@ -18,12 +18,6 @@ public class BolsaLaboral implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static int genCodigoCandidato = 1;
-	public static int genCodigoSolicitud = 1;
-	public static int genCodigoOferta = 1;
-	public static int genCodigoCentro = 1;
-	public static int genCodigoVacanteCompletada = 1;
-
 	private ArrayList<Candidato> candidatos;
 	private ArrayList<Solicitud> solicitudes;
 	private ArrayList<OfertaLaboral> ofertas;
@@ -77,12 +71,10 @@ public class BolsaLaboral implements Serializable {
 
 	public void cargarCentrosDesdeBD() {
 		centros = (ArrayList<CentroEmpleador>) new CentroEmpleadorDAOImpl().listarTodos();
-		genCodigoCentro = centros.size() + 1;
 	}
 
 	public void registrarCentroTrabajo(CentroEmpleador nuevoCentro) {
 		centros.add(nuevoCentro);
-		genCodigoCentro++;
 		new CentroEmpleadorDAOImpl().insertar(nuevoCentro);
 	}
 
@@ -121,12 +113,10 @@ public class BolsaLaboral implements Serializable {
 
 	public void cargarCandidatosDesdeBD() {
 		candidatos = (ArrayList<Candidato>) new CandidatoDAOImpl().listarTodos();
-		genCodigoCandidato = candidatos.size() + 1;
 	}
 
 	public void registrarCandidato(Candidato nuevoCandidato) {
 		candidatos.add(nuevoCandidato);
-		genCodigoCandidato++;
 		new CandidatoDAOImpl().insertar(nuevoCandidato);
 	}
 
@@ -331,7 +321,6 @@ public class BolsaLaboral implements Serializable {
 			}
 			solicitudes.add(sol);
 		}
-		genCodigoSolicitud = solicitudes.size() + 1;
 	}
 
 	public void cargarVacantesDesdeBD() {
@@ -344,7 +333,7 @@ public class BolsaLaboral implements Serializable {
 			if (ofer != null) vac.setOfertaOcupada(ofer);
 			vacantes.add(vac);
 		}
-		genCodigoVacanteCompletada = vacantes.size() + 1;
+
 	}
 
 	public OfertaLaboral buscarOfertaByCodigo(String codigo) {
@@ -374,14 +363,12 @@ public class BolsaLaboral implements Serializable {
 
 	public void cargarOfertasDesdeBD() {
 		ofertas = (ArrayList<OfertaLaboral>) new OfertaLaboralDAOImpl().listarTodos();
-		genCodigoOferta = ofertas.size() + 1;
 	}
 
 	public void registrarOfertaLaboral(OfertaLaboral nuevaOferta) {
 		ofertas.add(nuevaOferta);
 		nuevaOferta.getOfertador().getOfertasLaborales().add(nuevaOferta);
 		new OfertaLaboralDAOImpl().insertar(nuevaOferta);
-		genCodigoOferta++;
 	}
 
 	public boolean modificarOfertaLaboral(OfertaLaboral ofertaModificar) {
@@ -417,11 +404,9 @@ public class BolsaLaboral implements Serializable {
 		new CandidatoDAOImpl().actualizarEstado(candidatoContratado.getCodigo(), "Empleado");
 		new SolicitudDAOImpl().actualizar(solicitudContratada);
 
-		String codigoVacante = "VAC-" + genCodigoVacanteCompletada;
-		VacanteCompletada nuevaVacante = new VacanteCompletada(codigoVacante, solicitudContratada, oferta, LocalDate.now());
-		vacantes.add(nuevaVacante);
+		VacanteCompletada nuevaVacante = new VacanteCompletada(null, solicitudContratada, oferta, LocalDate.now());
 		new VacanteCompletadaDAOImpl().insertar(nuevaVacante);
-		genCodigoVacanteCompletada++;
+		vacantes.add(nuevaVacante);
 	}
 
 	public void regUsuario(Usuario user) {
@@ -498,14 +483,13 @@ public class BolsaLaboral implements Serializable {
 	public boolean vincularOferta(ResultadoMatcheo resMatchSelec) {
 		boolean aux = false;
 		if (resMatchSelec.getOferta().getVacantes() > 0) {
-			Solicitud sol = new Solicitud("SOL-" + genCodigoSolicitud, LocalDate.now(), "Enviada",
+			Solicitud sol = new Solicitud(null, LocalDate.now(), "Enviada",
 					resMatchSelec.getSolicitante(), resMatchSelec.getOferta());
 			if (verificarSolicitud(sol)) {
 				solicitudes.add(sol);
 				resMatchSelec.getSolicitante().addSolicitud(sol);
 				resMatchSelec.getSolicitante().setEstado("En Espera");
 				new SolicitudDAOImpl().insertar(sol);
-				genCodigoSolicitud++;
 				aux = true;
 			}
 		}
@@ -529,8 +513,9 @@ public class BolsaLaboral implements Serializable {
 	}
 
 	public void contratarCandidato(Solicitud solicitud) {
-		VacanteCompletada vacante = new VacanteCompletada("VAC-" + genCodigoVacanteCompletada,
+		VacanteCompletada vacante = new VacanteCompletada(null,
 				solicitud, solicitud.getOfertaSolicitada(), LocalDate.now());
+
 		solicitud.setEstado("Aprobada");
 		solicitud.getOfertaSolicitada().setVacantes(solicitud.getOfertaSolicitada().getVacantes() - 1);
 		solicitud.getSolicitante().setEstado("Empleado");
@@ -542,8 +527,8 @@ public class BolsaLaboral implements Serializable {
 		}
 		new OfertaLaboralDAOImpl().actualizar(solicitud.getOfertaSolicitada());
 		new SolicitudDAOImpl().actualizar(solicitud);
+
 		new VacanteCompletadaDAOImpl().insertar(vacante);
-		genCodigoVacanteCompletada++;
 		vacantes.add(vacante);
 	}
 

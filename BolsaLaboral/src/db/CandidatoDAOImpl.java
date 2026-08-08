@@ -11,10 +11,11 @@ public class CandidatoDAOImpl implements CandidatoDAO {
 
     @Override
     public void insertar(Candidato c) {
-        String sqlBase = "INSERT INTO Candidato (id_candidato, identificacion, nombres, apellidos, fecha_nacimiento, "
+        String sqlBase = "INSERT INTO Candidato (identificacion, nombres, apellidos, fecha_nacimiento, "
                 + "genero, id_provincia, id_municipio, telefono, correo, jornada, modalidad, area_interes, "
                 + "aspiracion_salarial, licencia_conducir, disposicion_mudarse, estado, tipo_candidato) "
-                + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                + "OUTPUT INSERTED.id_candidato "
+                + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         Connection con = null;
         try {
@@ -27,25 +28,29 @@ public class CandidatoDAOImpl implements CandidatoDAO {
             else tipo = "OBRERO";
 
             try (PreparedStatement ps = con.prepareStatement(sqlBase)) {
-                ps.setString(1, c.getCodigo());
-                ps.setString(2, c.getIdentificacion());
-                ps.setString(3, c.getNombres());
-                ps.setString(4, c.getApellidos());
-                ps.setDate(5, Date.valueOf(c.getFechaNacimiento()));
-                ps.setString(6, c.getGenero());
-                ps.setInt(7, c.getIdProvincia());
-                ps.setInt(8, c.getIdMunicipio());
-                ps.setString(9, c.getTelefono());
-                ps.setString(10, c.getCorreo());
-                ps.setString(11, c.getJornada());
-                ps.setString(12, c.getModalidad());
-                ps.setString(13, c.getAreaDeInteres());
-                ps.setFloat(14, c.getAspiracionSalarial());
-                ps.setBoolean(15, c.isLicenciaConducir());
-                ps.setBoolean(16, c.isDisposicionMudarse());
-                ps.setString(17, c.getEstado());
-                ps.setString(18, tipo);
-                ps.executeUpdate();
+                ps.setString(1, c.getIdentificacion());
+                ps.setString(2, c.getNombres());
+                ps.setString(3, c.getApellidos());
+                ps.setDate(4, Date.valueOf(c.getFechaNacimiento()));
+                ps.setString(5, c.getGenero());
+                ps.setInt(6, c.getIdProvincia());
+                ps.setInt(7, c.getIdMunicipio());
+                ps.setString(8, c.getTelefono());
+                ps.setString(9, c.getCorreo());
+                ps.setString(10, c.getJornada());
+                ps.setString(11, c.getModalidad());
+                ps.setString(12, c.getAreaDeInteres());
+                ps.setFloat(13, c.getAspiracionSalarial());
+                ps.setBoolean(14, c.isLicenciaConducir());
+                ps.setBoolean(15, c.isDisposicionMudarse());
+                ps.setString(16, c.getEstado());
+                ps.setString(17, tipo);
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        c.setCodigo(rs.getString(1)); // código generado por la BD
+                    }
+                }
             }
 
             if (c instanceof Universitario u) {
@@ -65,7 +70,7 @@ public class CandidatoDAOImpl implements CandidatoDAO {
                     ps.setInt(3, t.getAniosExperiencia());
                     ps.executeUpdate();
                 }
-            }else if (c instanceof Obrero o) {
+            } else if (c instanceof Obrero o) {
                 String sql = "INSERT INTO Obrero (id_candidato) VALUES (?)";
                 try (PreparedStatement ps = con.prepareStatement(sql)) {
                     ps.setString(1, o.getCodigo());

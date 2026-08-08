@@ -76,7 +76,7 @@ public class RegistroCentro extends JDialog {
 			txtCodigo = new JTextField();
 			txtCodigo.setEditable(false);
 			txtCodigo.setFocusable(false);
-			txtCodigo.setText("CEN-" + BolsaLaboral.genCodigoCentro);
+			txtCodigo.setText("");
 			txtCodigo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 			txtCodigo.setBounds(116, 29, 305, 22);
 			contenedor.add(txtCodigo);
@@ -221,10 +221,10 @@ public class RegistroCentro extends JDialog {
 									}
 								}
 								else {
-									CentroEmpleador nuevoCentro = new CentroEmpleador(txtCodigo.getText(),txtNombre.getText(),cmbSector.getSelectedItem().toString(),((Provincia) cmbProvincia.getSelectedItem()).getIdProvincia(),((Municipio) cmbMunicipio.getSelectedItem()).getIdMunicipio(),txtTelefono.getText(),txtCorreo.getText(),txtRNC.getText());
+									CentroEmpleador nuevoCentro = new CentroEmpleador(null,txtNombre.getText(),cmbSector.getSelectedItem().toString(),((Provincia) cmbProvincia.getSelectedItem()).getIdProvincia(),((Municipio) cmbMunicipio.getSelectedItem()).getIdMunicipio(),txtTelefono.getText(),txtCorreo.getText(),txtRNC.getText());
 									BolsaLaboral.getInstancia().registrarCentroTrabajo(nuevoCentro);
 									JOptionPane.showMessageDialog(null,"El centro de trabajo ha sido agregado correctamente.","Inforamci n",JOptionPane.INFORMATION_MESSAGE);
-									txtCodigo.setText("CEN-" + BolsaLaboral.genCodigoCentro);
+									txtCodigo.setText(nuevoCentro.getCodigo());  // muestra el código real
 									limpiar();
 
 								}
