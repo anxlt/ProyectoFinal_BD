@@ -2,7 +2,6 @@ package visual;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -10,7 +9,10 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import logico.BolsaLaboral;
+import db.DAO.MunicipioDAO;
+import db.DAO.ProvinciaDAO;
+import db.DAOImpl.MunicipioDAOImpl;
+import db.DAOImpl.ProvinciaDAOImpl;
 import logico.CentroEmpleador;
 import logico.OfertaLaboral;
 
@@ -22,8 +24,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -165,8 +165,8 @@ public class VistaCentro extends JDialog {
 		lblTelefono.setText(" " + centr.getTelefono());
 		lblTelefono.setToolTipText(centr.getTelefono());
 		lblCorreo.setText(centr.getCorreo());
-		db.MunicipioDAO municipioDAO = new db.MunicipioDAOImpl();
-		db.ProvinciaDAO provinciaDAO = new db.ProvinciaDAOImpl();
+		MunicipioDAO municipioDAO = new MunicipioDAOImpl();
+		ProvinciaDAO provinciaDAO = new ProvinciaDAOImpl();
 		logico.Municipio municipio = municipioDAO.buscarPorId(centr.getIdMunicipio());
 		logico.Provincia provincia = provinciaDAO.buscarPorId(centr.getIdProvincia());
 		lblDireccion.setText(" " + (municipio != null ? municipio.getNombreMunicipio() : "") + ", " + (provincia != null ? provincia.getNombreProvincia() : ""));
@@ -205,13 +205,14 @@ public class VistaCentro extends JDialog {
 
 	public void cargarOfertas(CentroEmpleador centr) {
 		modelo.setRowCount(0);
-		row = new Object[table.getColumnCount()];
-		for(OfertaLaboral ofr : centr.getOfertasLaborales()) {
-			row[0] = ofr.getCodigo();
-			row[1] = ofr.getPuesto();
-			row[2] = new ImageIcon(getImagen(ofr.getArea().toLowerCase()));
-			row[3] = ofr.getEstado();
-			modelo.addRow(row);
+		for (OfertaLaboral ofr : centr.getOfertasLaborales()) {
+			if (ofr.getCodigo() == null) continue;
+			Object[] fila = new Object[4];
+			fila[0] = ofr.getCodigo();
+			fila[1] = ofr.getPuesto();
+			fila[2] = new ImageIcon(getImagen(ofr.getArea() != null ? ofr.getArea().toLowerCase() : ""));
+			fila[3] = ofr.getEstado();
+			modelo.addRow(fila);
 		}
 	}
 

@@ -1,9 +1,10 @@
-package db;
+package db.DAOImpl;
 
+import db.Conexion;
+import db.DAO.SolicitudDAO;
 import logico.*;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 

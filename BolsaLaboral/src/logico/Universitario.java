@@ -4,10 +4,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import db.UniversidadDAO;
-import db.UniversidadDAOImpl;
-import db.CarreraDAO;
-import db.CarreraDAOImpl;
+import db.DAOImpl.UniversidadDAOImpl;
+import db.DAOImpl.CarreraDAOImpl;
 
 public class Universitario extends Candidato implements Serializable{
 

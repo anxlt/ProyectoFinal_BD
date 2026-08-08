@@ -3,9 +3,9 @@ package logico;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import db.AreaTecnicaDAOImpl;
-import db.CarreraDAOImpl;
-import db.HabilidadDAOImpl;
+import db.DAOImpl.AreaTecnicaDAOImpl;
+import db.DAOImpl.CarreraDAOImpl;
+import db.DAOImpl.HabilidadDAOImpl;
 
 public class OfertaLaboral implements Serializable {
 

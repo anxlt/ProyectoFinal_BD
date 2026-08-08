@@ -227,7 +227,6 @@ public class ConsultarCandidatos extends JDialog {
 	public void filtrar() {
 		String filtro = txtFiltro.getText().toLowerCase();
 		modelo.setRowCount(0);
-		row = new Object[table.getColumnCount()];
 
 		seleccionado = null;
 		btnDelete.setEnabled(false);
@@ -235,18 +234,20 @@ public class ConsultarCandidatos extends JDialog {
 		btnVisualizar.setEnabled(false);
 
 		for (Candidato aux : BolsaLaboral.getInstancia().getCandidatos()) {
+			if (aux.getCodigo() == null) continue;
 			boolean coincide =
 					aux.getCodigo().toLowerCase().contains(filtro) ||
 							(aux.getNombres() + " " + aux.getApellidos()).toLowerCase().contains(filtro) ||
-							aux.getIdentificacion().toLowerCase().contains(filtro) ||
+							(aux.getIdentificacion() != null && aux.getIdentificacion().toLowerCase().contains(filtro)) ||
 							getNivelAcademico(aux).toLowerCase().contains(filtro);
 
 			if (coincide) {
-				row[0] = aux.getCodigo();
-				row[1] = aux.getNombres() + " " + aux.getApellidos();
-				row[2] = aux.getIdentificacion();
-				row[3] = getNivelAcademico(aux);
-				modelo.addRow(row);
+				Object[] fila = new Object[4];
+				fila[0] = aux.getCodigo();
+				fila[1] = aux.getNombres() + " " + aux.getApellidos();
+				fila[2] = aux.getIdentificacion();
+				fila[3] = getNivelAcademico(aux);
+				modelo.addRow(fila);
 			}
 		}
 	}
@@ -263,14 +264,16 @@ public class ConsultarCandidatos extends JDialog {
 	}
 
 	public static void cargarCandidatos() {
+		if (modelo == null) return;
 		modelo.setRowCount(0);
-		row = new Object[table.getColumnCount()];
 		for (Candidato aux : BolsaLaboral.getInstancia().getCandidatos()) {
-			row[0] = aux.getCodigo();
-			row[1] = aux.getNombres() + " " + aux.getApellidos();
-			row[2] = aux.getIdentificacion();
-			row[3] = getNivelAcademico(aux);
-			modelo.addRow(row);
+			if (aux.getCodigo() == null) continue;
+			Object[] fila = new Object[4];
+			fila[0] = aux.getCodigo();
+			fila[1] = aux.getNombres() + " " + aux.getApellidos();
+			fila[2] = aux.getIdentificacion();
+			fila[3] = getNivelAcademico(aux);
+			modelo.addRow(fila);
 		}
 	}
 

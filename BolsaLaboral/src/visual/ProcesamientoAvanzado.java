@@ -199,71 +199,74 @@ public class ProcesamientoAvanzado extends JDialog {
 		cargarResultados();
 		cargarOfertas();
 	}
-	
-	public void filtrar() {
-	    String filtro = txtFiltro.getText().toLowerCase();
-	    modeloOfertas.setRowCount(0);
-	    rowOferta = new Object[tablaOfertas.getColumnCount()];
-	    btnProcesar.setEnabled(false);
 
-	    ArrayList<OfertaLaboral> ofertasVisibles = new ArrayList<>();
-	    
-	    for (OfertaLaboral aux : BolsaLaboral.getInstancia().getOfertas()) {
-	        boolean coincide = 
-	            aux.getCodigo().toLowerCase().contains(filtro) ||
-	            aux.getOfertador().getNombre().toLowerCase().contains(filtro) ||
-	            aux.getPuesto().toLowerCase().contains(filtro) ||
-	            aux.getArea().toLowerCase().contains(filtro) ||
-	            aux.getEstado().toLowerCase().contains(filtro);
-	        
-	        if (coincide) {
-	            rowOferta[0] = aux.getCodigo();
-	            rowOferta[1] = aux.getPuesto();
-	            rowOferta[2] = aux.getOfertador().getNombre();
-	            rowOferta[3] = new ImageIcon(getArea(aux.getArea()));
-	            rowOferta[4] = aux.getEstado();
-	            modeloOfertas.addRow(rowOferta);
-	            ofertasVisibles.add(aux);
-	        }
-	    }
-	    
-	    actualizarResultadosFiltrados(ofertasVisibles);
-	}
+    public void filtrar() {
+        String filtro = txtFiltro.getText().toLowerCase();
+        modeloOfertas.setRowCount(0);
+        btnProcesar.setEnabled(false);
 
-	private void actualizarResultadosFiltrados(ArrayList<OfertaLaboral> ofertasVisibles) {
-	    modeloMatcheo.setRowCount(0);
-	    rowMatcheo = new Object[tablaMatcheo.getColumnCount()];
-	    
-	    for (ResultadoMatcheo aux : resultados) {
-	        if (ofertasVisibles.contains(aux.getOferta())) {
-	            rowMatcheo[0] = aux.getOferta().getCodigo();
-	            rowMatcheo[1] = aux.getSolicitante().getCodigo();
-	            rowMatcheo[2] = aux.getSolicitante().getNombres() + " " + aux.getSolicitante().getApellidos();
-	            rowMatcheo[3] = aux.getPorcentaje() + "%";
-	            rowMatcheo[4] = new ImageIcon(getCondicion(aux.getCondicion()));
-	            modeloMatcheo.addRow(rowMatcheo);
-	        }
-	    }
-	}
-	
+        ArrayList<OfertaLaboral> ofertasVisibles = new ArrayList<>();
+
+        for (OfertaLaboral aux : BolsaLaboral.getInstancia().getOfertas()) {
+            if (aux.getCodigo() == null) continue;
+            boolean coincide =
+                    aux.getCodigo().toLowerCase().contains(filtro) ||
+                            (aux.getOfertador() != null && aux.getOfertador().getNombre() != null
+                                    && aux.getOfertador().getNombre().toLowerCase().contains(filtro)) ||
+                            (aux.getPuesto() != null && aux.getPuesto().toLowerCase().contains(filtro)) ||
+                            (aux.getArea() != null && aux.getArea().toLowerCase().contains(filtro)) ||
+                            (aux.getEstado() != null && aux.getEstado().toLowerCase().contains(filtro));
+
+            if (coincide) {
+                Object[] fila = new Object[5];
+                fila[0] = aux.getCodigo();
+                fila[1] = aux.getPuesto();
+                fila[2] = aux.getOfertador() != null ? aux.getOfertador().getNombre() : "";
+                fila[3] = new ImageIcon(getArea(aux.getArea()));
+                fila[4] = aux.getEstado();
+                modeloOfertas.addRow(fila);
+                ofertasVisibles.add(aux);
+            }
+        }
+
+        actualizarResultadosFiltrados(ofertasVisibles);
+    }
+
+    private void actualizarResultadosFiltrados(ArrayList<OfertaLaboral> ofertasVisibles) {
+        modeloMatcheo.setRowCount(0);
+
+        for (ResultadoMatcheo aux : resultados) {
+            if (ofertasVisibles.contains(aux.getOferta())) {
+                Object[] fila = new Object[5];
+                fila[0] = aux.getOferta().getCodigo();
+                fila[1] = aux.getSolicitante().getCodigo();
+                fila[2] = aux.getSolicitante().getNombres() + " " + aux.getSolicitante().getApellidos();
+                fila[3] = aux.getPorcentaje() + "%";
+                fila[4] = new ImageIcon(getCondicion(aux.getCondicion()));
+                modeloMatcheo.addRow(fila);
+            }
+        }
+    }
 	private static String getArea(String area) {
 		area = area.replace("�","o");
 		area = area.replace(" ","");
 		return "recursos/" + area + ".png";
 	}
 
-	public static void cargarOfertas() {
-		modeloOfertas.setRowCount(0);
-		rowOferta = new Object[tablaOfertas.getColumnCount()];
-		for (OfertaLaboral aux : ofertas) {
-			rowOferta[0] = aux.getCodigo();
-            rowOferta[1] = aux.getPuesto();
-            rowOferta[2] = aux.getOfertador().getNombre();
-            rowOferta[3] = new ImageIcon(getArea(aux.getArea()));
-            rowOferta[4] = aux.getEstado();
-			modeloOfertas.addRow(rowOferta);
-		}
-	}
+    public static void cargarOfertas() {
+        if (modeloOfertas == null) return;
+        modeloOfertas.setRowCount(0);
+        for (OfertaLaboral aux : ofertas) {
+            if (aux.getCodigo() == null) continue;
+            Object[] fila = new Object[5];
+            fila[0] = aux.getCodigo();
+            fila[1] = aux.getPuesto();
+            fila[2] = aux.getOfertador() != null ? aux.getOfertador().getNombre() : "";
+            fila[3] = new ImageIcon(getArea(aux.getArea()));
+            fila[4] = aux.getEstado();
+            modeloOfertas.addRow(fila);
+        }
+    }
 	
 	private static String getCondicion(String condicion) {
 		condicion = condicion.toLowerCase();
@@ -271,16 +274,17 @@ public class ProcesamientoAvanzado extends JDialog {
 		return "recursos/" + condicion + ".png";
 	}
 
-	public static void cargarResultados() {
-		modeloMatcheo.setRowCount(0);
-		rowMatcheo = new Object[tablaMatcheo.getColumnCount()];
-		for (ResultadoMatcheo aux : resultados) {
-			rowMatcheo[0] = aux.getOferta().getCodigo();
-            rowMatcheo[1] = aux.getSolicitante().getCodigo();
-            rowMatcheo[2] = aux.getSolicitante().getNombres() + " " + aux.getSolicitante().getApellidos();
-            rowMatcheo[3] = aux.getPorcentaje() + "%";
-            rowMatcheo[4] = new ImageIcon(getCondicion(aux.getCondicion()));
-			modeloMatcheo.addRow(rowMatcheo);
-		}
-	}
+    public static void cargarResultados() {
+        if (modeloMatcheo == null) return;
+        modeloMatcheo.setRowCount(0);
+        for (ResultadoMatcheo aux : resultados) {
+            Object[] fila = new Object[5];
+            fila[0] = aux.getOferta().getCodigo();
+            fila[1] = aux.getSolicitante().getCodigo();
+            fila[2] = aux.getSolicitante().getNombres() + " " + aux.getSolicitante().getApellidos();
+            fila[3] = aux.getPorcentaje() + "%";
+            fila[4] = new ImageIcon(getCondicion(aux.getCondicion()));
+            modeloMatcheo.addRow(fila);
+        }
+    }
 }

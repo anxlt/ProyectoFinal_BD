@@ -1,11 +1,15 @@
 package visual;
 
 import java.awt.BorderLayout;
+
+import db.DAO.MunicipioDAO;
+import db.DAO.ProvinciaDAO;
+import db.DAOImpl.MunicipioDAOImpl;
+import db.DAOImpl.ProvinciaDAOImpl;
 import exception.*;
 import logico.*;
-import db.*;
+
 import java.awt.FlowLayout;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -221,12 +225,31 @@ public class RegistroCentro extends JDialog {
 									}
 								}
 								else {
-									CentroEmpleador nuevoCentro = new CentroEmpleador(null,txtNombre.getText(),cmbSector.getSelectedItem().toString(),((Provincia) cmbProvincia.getSelectedItem()).getIdProvincia(),((Municipio) cmbMunicipio.getSelectedItem()).getIdMunicipio(),txtTelefono.getText(),txtCorreo.getText(),txtRNC.getText());
+									CentroEmpleador nuevoCentro = new CentroEmpleador(
+											null,
+											txtNombre.getText(),
+											cmbSector.getSelectedItem().toString(),
+											((Provincia) cmbProvincia.getSelectedItem()).getIdProvincia(),
+											((Municipio) cmbMunicipio.getSelectedItem()).getIdMunicipio(),
+											txtTelefono.getText(),
+											txtCorreo.getText(),
+											txtRNC.getText());
 									BolsaLaboral.getInstancia().registrarCentroTrabajo(nuevoCentro);
-									JOptionPane.showMessageDialog(null,"El centro de trabajo ha sido agregado correctamente.","Inforamci n",JOptionPane.INFORMATION_MESSAGE);
-									txtCodigo.setText(nuevoCentro.getCodigo());  // muestra el código real
-									limpiar();
 
+									String codigoGenerado = nuevoCentro.getCodigo();
+									txtCodigo.setText(codigoGenerado != null ? codigoGenerado : "");
+
+									JOptionPane.showMessageDialog(null,
+											"El centro de trabajo ha sido agregado correctamente.\nCódigo asignado: "
+													+ (codigoGenerado != null ? codigoGenerado : "(no disponible)"),
+											"Información",
+											JOptionPane.INFORMATION_MESSAGE);
+
+									try {
+										ConsultarCentros.cargarCentros();
+									} catch (Exception ignore) { }
+
+									limpiar();
 								}
 							}
 							else {

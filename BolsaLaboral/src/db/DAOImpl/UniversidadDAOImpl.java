@@ -1,4 +1,6 @@
-package db;
+package db.DAOImpl;
+import db.Conexion;
+import db.DAO.UniversidadDAO;
 import logico.Universidad;
 import java.sql.*;
 import java.util.ArrayList;

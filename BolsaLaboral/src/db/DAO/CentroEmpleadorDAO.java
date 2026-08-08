@@ -1,4 +1,4 @@
-package db;
+package db.DAO;
 
 import logico.CentroEmpleador;
 import java.util.List;

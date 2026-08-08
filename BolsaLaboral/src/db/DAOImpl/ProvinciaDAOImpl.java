@@ -1,5 +1,7 @@
-package db;
+package db.DAOImpl;
 
+import db.Conexion;
+import db.DAO.ProvinciaDAO;
 import logico.Provincia;
 
 import java.sql.Connection;

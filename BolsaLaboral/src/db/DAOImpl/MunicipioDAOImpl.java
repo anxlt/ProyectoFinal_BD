@@ -1,5 +1,7 @@
-package db;
+package db.DAOImpl;
 
+import db.Conexion;
+import db.DAO.MunicipioDAO;
 import logico.Municipio;
 
 import java.sql.Connection;

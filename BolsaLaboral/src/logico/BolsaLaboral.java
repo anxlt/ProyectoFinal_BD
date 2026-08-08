@@ -3,15 +3,14 @@ package logico;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
-import db.CandidatoDAOImpl;
-import db.CentroEmpleadorDAOImpl;
-import db.OfertaLaboralDAOImpl;
-import db.SolicitudDAOImpl;
-import db.UsuarioDAOImpl;
-import db.VacanteCompletadaDAOImpl;
+import db.DAOImpl.CandidatoDAOImpl;
+import db.DAOImpl.CentroEmpleadorDAOImpl;
+import db.DAOImpl.OfertaLaboralDAOImpl;
+import db.DAOImpl.SolicitudDAOImpl;
+import db.DAOImpl.UsuarioDAOImpl;
+import db.DAOImpl.VacanteCompletadaDAOImpl;
 import exception.NotRemovableException;
 
 public class BolsaLaboral implements Serializable {
@@ -73,8 +72,11 @@ public class BolsaLaboral implements Serializable {
 	}
 
 	public void registrarCentroTrabajo(CentroEmpleador nuevoCentro) {
-		centros.add(nuevoCentro);
+
 		new CentroEmpleadorDAOImpl().insertar(nuevoCentro);
+		if (nuevoCentro.getCodigo() != null && !nuevoCentro.getCodigo().isEmpty()) {
+			centros.add(nuevoCentro);
+		}
 	}
 
 	public int buscarIndiceCentroByCodigo(String codigo) {
@@ -115,8 +117,10 @@ public class BolsaLaboral implements Serializable {
 	}
 
 	public void registrarCandidato(Candidato nuevoCandidato) {
-		candidatos.add(nuevoCandidato);
 		new CandidatoDAOImpl().insertar(nuevoCandidato);
+		if (nuevoCandidato.getCodigo() != null && !nuevoCandidato.getCodigo().isEmpty()) {
+			candidatos.add(nuevoCandidato);
+		}
 	}
 
 	public void modificarCandidato(Candidato candidatoModificar) {
@@ -365,9 +369,13 @@ public class BolsaLaboral implements Serializable {
 	}
 
 	public void registrarOfertaLaboral(OfertaLaboral nuevaOferta) {
-		ofertas.add(nuevaOferta);
-		nuevaOferta.getOfertador().getOfertasLaborales().add(nuevaOferta);
 		new OfertaLaboralDAOImpl().insertar(nuevaOferta);
+		if (nuevaOferta.getCodigo() != null && !nuevaOferta.getCodigo().isEmpty()) {
+			ofertas.add(nuevaOferta);
+			if (nuevaOferta.getOfertador() != null) {
+				nuevaOferta.getOfertador().getOfertasLaborales().add(nuevaOferta);
+			}
+		}
 	}
 
 	public boolean modificarOfertaLaboral(OfertaLaboral ofertaModificar) {

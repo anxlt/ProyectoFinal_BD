@@ -1,9 +1,16 @@
 package visual;
 
 import java.awt.BorderLayout;
+
+import db.DAO.AreaTecnicaDAO;
+import db.DAO.CarreraDAO;
+import db.DAO.HabilidadDAO;
+import db.DAOImpl.AreaTecnicaDAOImpl;
+import db.DAOImpl.CarreraDAOImpl;
+import db.DAOImpl.HabilidadDAOImpl;
 import exception.*;
 import logico.*;
-import db.*;
+
 import java.awt.FlowLayout;
 
 import javax.swing.JButton;
@@ -645,9 +652,12 @@ public class RegistroOfertaLaboral extends JDialog {
 					((Integer) spnPorcentaje.getValue()).intValue()
 			);
 			BolsaLaboral.getInstancia().registrarOfertaLaboral(nuevaOferta);
-			JOptionPane.showMessageDialog(null, "La oferta laboral ha sido agregada correctamente.",
+			String cod = nuevaOferta.getCodigo();
+			txtCodigo.setText(cod != null ? cod : "");
+			JOptionPane.showMessageDialog(null,
+					"La oferta laboral ha sido agregada correctamente.\nCódigo asignado: " + (cod != null ? cod : "(no disponible)"),
 					"Información", JOptionPane.INFORMATION_MESSAGE);
-			txtCodigo.setText(nuevaOferta.getCodigo());  // muestra el código real
+			try { ConsultarOfertas.cargarOfertas(); } catch (Exception ignore) { }
 			limpiar();
 		}
 	}

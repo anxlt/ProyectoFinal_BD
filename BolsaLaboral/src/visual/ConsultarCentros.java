@@ -220,33 +220,34 @@ public class ConsultarCentros extends JDialog {
 		table.getTableHeader().setReorderingAllowed(false);
 		table.setBackground(new Color(228, 228, 228));
 	}
-	
+
 	public void filtrar() {
-	    String filtro = txtFiltro.getText().toLowerCase();
-	    modelo.setRowCount(0);
-	    row = new Object[table.getColumnCount()];
-	    
-	    seleccionado = null;
-	    btnDelete.setEnabled(false);
-	    btnUpdate.setEnabled(false);
-	    btnVisualizar.setEnabled(false);
-	    
-	    for (CentroEmpleador aux : BolsaLaboral.getInstancia().getCentros()) {
-	        boolean coincide = 
-	            aux.getCodigo().toLowerCase().contains(filtro) ||
-	            aux.getNombre().toLowerCase().contains(filtro) ||
-	            aux.getRnc().toLowerCase().contains(filtro) ||
-	            aux.getSector().toLowerCase().contains(filtro);
-	        
-	        if (coincide) {
-	            row[0] = aux.getCodigo();
-	            row[1] = aux.getNombre();
-	            row[2] = aux.getRnc();
-	            row[3] = aux.getSector();
-	            row[4] = new ImageIcon(getImagen(aux.getSector()));
-	            modelo.addRow(row);
-	        }
-	    }
+		String filtro = txtFiltro.getText().toLowerCase();
+		modelo.setRowCount(0);
+
+		seleccionado = null;
+		btnDelete.setEnabled(false);
+		btnUpdate.setEnabled(false);
+		btnVisualizar.setEnabled(false);
+
+		for (CentroEmpleador aux : BolsaLaboral.getInstancia().getCentros()) {
+			if (aux.getCodigo() == null) continue;
+			boolean coincide =
+					aux.getCodigo().toLowerCase().contains(filtro) ||
+							(aux.getNombre() != null && aux.getNombre().toLowerCase().contains(filtro)) ||
+							(aux.getRnc() != null && aux.getRnc().toLowerCase().contains(filtro)) ||
+							(aux.getSector() != null && aux.getSector().toLowerCase().contains(filtro));
+
+			if (coincide) {
+				Object[] fila = new Object[5];
+				fila[0] = aux.getCodigo();
+				fila[1] = aux.getNombre();
+				fila[2] = aux.getRnc();
+				fila[3] = aux.getSector();
+				fila[4] = new ImageIcon(getImagen(aux.getSector()));
+				modelo.addRow(fila);
+			}
+		}
 	}
 	
 	private static String getImagen(String nombreSector) {
@@ -257,15 +258,17 @@ public class ConsultarCentros extends JDialog {
 	}
 
 	public static void cargarCentros() {
+		if (modelo == null) return;
 		modelo.setRowCount(0);
-		row = new Object[table.getColumnCount()];
 		for (CentroEmpleador aux : BolsaLaboral.getInstancia().getCentros()) {
-            row[0] = aux.getCodigo();
-            row[1] = aux.getNombre();
-            row[2] = aux.getRnc();
-            row[3] = aux.getSector();
-            row[4] = new ImageIcon(getImagen(aux.getSector()));
-			modelo.addRow(row);
+			if (aux.getCodigo() == null) continue;
+			Object[] fila = new Object[5];
+			fila[0] = aux.getCodigo();
+			fila[1] = aux.getNombre();
+			fila[2] = aux.getRnc();
+			fila[3] = aux.getSector();
+			fila[4] = new ImageIcon(getImagen(aux.getSector()));
+			modelo.addRow(fila);
 		}
 	}
 

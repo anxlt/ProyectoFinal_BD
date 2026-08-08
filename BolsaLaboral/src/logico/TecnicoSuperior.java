@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import db.AreaTecnicaDAOImpl;
+import db.DAOImpl.AreaTecnicaDAOImpl;
 
 public class TecnicoSuperior extends Candidato implements Serializable {
 

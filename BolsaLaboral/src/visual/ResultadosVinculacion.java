@@ -52,7 +52,7 @@ public class ResultadosVinculacion extends JDialog {
 	 * Create the dialog.
 	 */
 	 public ResultadosVinculacion(OfertaLaboral ofertaVinculada) {
-		 setTitle("Resultados de la Vinculación");
+		 setTitle("Resultados de la Vinculaciï¿½n");
 		 setIconImage(Toolkit.getDefaultToolkit().getImage("recursos/icono.png"));
 		 setBounds(100, 100, 665, 606);
 		 setResizable(false);
@@ -85,7 +85,7 @@ public class ResultadosVinculacion extends JDialog {
 							 }
 						 }
 					 });
-					 String [] headers = {"Código", "Solicitante", "Porcentaje", "Condición"};
+					 String [] headers = {"Cï¿½digo", "Solicitante", "Porcentaje", "Condiciï¿½n"};
 					 modelo.setColumnIdentifiers(headers);
 					 table.setModel(modelo);
 					 scrollPane.setViewportView(table);
@@ -125,9 +125,9 @@ public class ResultadosVinculacion extends JDialog {
 					 public void actionPerformed(ActionEvent e) {
 						 if(seleccionado.getOferta().getVacantes() > 0) {
 							 if(BolsaLaboral.getInstancia().vincularOferta(seleccionado)) {
-								 JOptionPane.showMessageDialog(null,"Se ha creado la solicitud correctamente a la oferta " + seleccionado.getOferta().getPuesto() + ".","Información",JOptionPane.INFORMATION_MESSAGE);
+								 JOptionPane.showMessageDialog(null,"Se ha creado la solicitud correctamente a la oferta " + seleccionado.getOferta().getPuesto() + ".","Informaciï¿½n",JOptionPane.INFORMATION_MESSAGE);
 							 } else {
-								 JOptionPane.showMessageDialog(null,"Esta solicitud ya existe.","Información",JOptionPane.INFORMATION_MESSAGE);
+								 JOptionPane.showMessageDialog(null,"Esta solicitud ya existe.","Informaciï¿½n",JOptionPane.INFORMATION_MESSAGE);
 							 }
 						 }
 						 else {
@@ -166,16 +166,17 @@ public class ResultadosVinculacion extends JDialog {
 		 return "recursos/" + condicion + ".png";
 	 }
 
-	 public static void cargarResultados(OfertaLaboral oferta) {
-		 modelo.setRowCount(0);
-		 row = new Object[table.getColumnCount()];
-		 for (ResultadoMatcheo aux : resultados) {
-			 row[0] = aux.getSolicitante().getCodigo();
-			 row[1] = aux.getSolicitante().getNombres() + " " + aux.getSolicitante().getApellidos();
-			 row[2] = aux.getPorcentaje() + "%";
-			 row[3] = new ImageIcon(getImagen(aux.getCondicion()));
-			 modelo.addRow(row);
-		 }
-	 }
+	public static void cargarResultados(OfertaLaboral oferta) {
+		if (modelo == null) return;
+		modelo.setRowCount(0);
+		for (ResultadoMatcheo aux : resultados) {
+			Object[] fila = new Object[4];
+			fila[0] = aux.getSolicitante().getCodigo();
+			fila[1] = aux.getSolicitante().getNombres() + " " + aux.getSolicitante().getApellidos();
+			fila[2] = aux.getPorcentaje() + "%";
+			fila[3] = new ImageIcon(getImagen(aux.getCondicion()));
+			modelo.addRow(fila);
+		}
+	}
 
 }

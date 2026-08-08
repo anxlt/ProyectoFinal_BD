@@ -1,5 +1,7 @@
-package db;
+package db.DAOImpl;
 
+import db.Conexion;
+import db.DAO.AreaTecnicaDAO;
 import logico.AreaTecnica;
 import java.sql.*;
 import java.util.ArrayList;

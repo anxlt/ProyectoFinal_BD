@@ -240,34 +240,36 @@ public class ConsultarOfertas extends JDialog {
 		table.getTableHeader().setReorderingAllowed(false);
 		table.setBackground(new Color(228, 228, 228));
 	}
-	
+
 	public void filtrar() {
-	    String filtro = txtFiltro.getText().toLowerCase();
-	    modelo.setRowCount(0);
-	    row = new Object[table.getColumnCount()];
-	    
-	    seleccionado = null;
-	    btnDelete.setEnabled(false);
-	    btnUpdate.setEnabled(false);
-	    btnVincular.setEnabled(false);
-	    
-	    for (OfertaLaboral aux : BolsaLaboral.getInstancia().getOfertas()) {
-	        boolean coincide = 
-	            aux.getCodigo().toLowerCase().contains(filtro) ||
-	            aux.getOfertador().getNombre().toLowerCase().contains(filtro) ||
-	            aux.getPuesto().toLowerCase().contains(filtro) ||
-	            aux.getArea().toLowerCase().contains(filtro) ||
-	            aux.getEstado().toLowerCase().contains(filtro);
-	        
-	        if (coincide) {
-	            row[0] = aux.getCodigo();
-	            row[1] = aux.getPuesto();
-	            row[2] = aux.getOfertador().getNombre();
-	            row[3] = new ImageIcon(getImagen(aux.getArea()));
-	            row[4] = aux.getEstado();
-	            modelo.addRow(row);
-	        }
-	    }
+		String filtro = txtFiltro.getText().toLowerCase();
+		modelo.setRowCount(0);
+
+		seleccionado = null;
+		btnDelete.setEnabled(false);
+		btnUpdate.setEnabled(false);
+		btnVincular.setEnabled(false);
+
+		for (OfertaLaboral aux : BolsaLaboral.getInstancia().getOfertas()) {
+			if (aux.getCodigo() == null) continue;
+			boolean coincide =
+					aux.getCodigo().toLowerCase().contains(filtro) ||
+							(aux.getOfertador() != null && aux.getOfertador().getNombre() != null
+									&& aux.getOfertador().getNombre().toLowerCase().contains(filtro)) ||
+							(aux.getPuesto() != null && aux.getPuesto().toLowerCase().contains(filtro)) ||
+							(aux.getArea() != null && aux.getArea().toLowerCase().contains(filtro)) ||
+							(aux.getEstado() != null && aux.getEstado().toLowerCase().contains(filtro));
+
+			if (coincide) {
+				Object[] fila = new Object[5];
+				fila[0] = aux.getCodigo();
+				fila[1] = aux.getPuesto();
+				fila[2] = aux.getOfertador() != null ? aux.getOfertador().getNombre() : "";
+				fila[3] = new ImageIcon(getImagen(aux.getArea()));
+				fila[4] = aux.getEstado();
+				modelo.addRow(fila);
+			}
+		}
 	}
 	
 	private static String getImagen(String area) {
@@ -277,15 +279,17 @@ public class ConsultarOfertas extends JDialog {
 	}
 
 	public static void cargarOfertas() {
+		if (modelo == null) return;
 		modelo.setRowCount(0);
-		row = new Object[table.getColumnCount()];
 		for (OfertaLaboral aux : BolsaLaboral.getInstancia().getOfertas()) {
-            row[0] = aux.getCodigo();
-            row[1] = aux.getPuesto();
-            row[2] = aux.getOfertador().getNombre();
-            row[3] = new ImageIcon(getImagen(aux.getArea()));
-            row[4] = aux.getEstado();
-			modelo.addRow(row);
+			if (aux.getCodigo() == null) continue;
+			Object[] fila = new Object[5];
+			fila[0] = aux.getCodigo();
+			fila[1] = aux.getPuesto();
+			fila[2] = aux.getOfertador() != null ? aux.getOfertador().getNombre() : "";
+			fila[3] = new ImageIcon(getImagen(aux.getArea()));
+			fila[4] = aux.getEstado();
+			modelo.addRow(fila);
 		}
 	}
 

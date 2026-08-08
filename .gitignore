@@ -1,0 +1,14 @@
+﻿# IntelliJ
+.idea/
+*.iml
+*.iws
+out/
+
+# Compilación
+target/
+*.class
+*.jar
+
+# Sistema
+.DS_Store
+Thumbs.db

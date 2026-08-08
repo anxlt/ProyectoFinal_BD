@@ -200,45 +200,53 @@ public class ConsultarSolicitudes extends JDialog {
 		table.getTableHeader().setReorderingAllowed(false);
 		table.setBackground(new Color(228, 228, 228));
 	}
-	
-	public void filtrar() {
-	    String filtro = txtFiltro.getText().toLowerCase();
-	    modelo.setRowCount(0);
-	    row = new Object[table.getColumnCount()];
-	    
-	    seleccionado = null;
-	    btnContratar.setEnabled(false);
-	    
-	    for (Solicitud aux : BolsaLaboral.getInstancia().getSolicitudes()) {
-	        boolean coincide = 
-	            aux.getCodigo().toLowerCase().contains(filtro) ||
-	            aux.getOfertaSolicitada().getPuesto().toLowerCase().contains(filtro) ||
-	            aux.getOfertaSolicitada().getOfertador().getNombre().toLowerCase().contains(filtro) ||
-	            (aux.getSolicitante().getNombres() + aux.getSolicitante().getApellidos()).toLowerCase().contains(filtro) ||
-	            aux.getEstado().toLowerCase().contains(filtro);
-	        
-	        if (coincide) {
-	            row[0] = aux.getCodigo();
-	            row[1] = aux.getSolicitante().getNombres() + " " + aux.getSolicitante().getApellidos();
-	            row[2] = aux.getOfertaSolicitada().getPuesto();
-	            row[3] = aux.getOfertaSolicitada().getOfertador().getNombre();
-	            row[4] = aux.getEstado();
-	            
-	            modelo.addRow(row);
-	        }
-	    }
-	}
 
-	public static void cargarSolicitudes() {
+	public void filtrar() {
+		String filtro = txtFiltro.getText().toLowerCase();
 		modelo.setRowCount(0);
-		row = new Object[table.getColumnCount()];
+
+		seleccionado = null;
+		btnContratar.setEnabled(false);
+		// si tienes btnRechazar:
+		// btnRechazar.setEnabled(false);
+
 		for (Solicitud aux : BolsaLaboral.getInstancia().getSolicitudes()) {
-            row[0] = aux.getCodigo();
-            row[1] = aux.getSolicitante().getNombres() + " " + aux.getSolicitante().getApellidos();
-            row[2] = aux.getOfertaSolicitada().getPuesto();
-            row[3] = aux.getOfertaSolicitada().getOfertador().getNombre();
-            row[4] = aux.getEstado();
-			modelo.addRow(row);
+			if (aux.getCodigo() == null) continue;
+			boolean coincide =
+					aux.getCodigo().toLowerCase().contains(filtro) ||
+							(aux.getOfertaSolicitada() != null && aux.getOfertaSolicitada().getPuesto() != null
+									&& aux.getOfertaSolicitada().getPuesto().toLowerCase().contains(filtro)) ||
+							(aux.getOfertaSolicitada() != null && aux.getOfertaSolicitada().getOfertador() != null
+									&& aux.getOfertaSolicitada().getOfertador().getNombre() != null
+									&& aux.getOfertaSolicitada().getOfertador().getNombre().toLowerCase().contains(filtro)) ||
+							(aux.getSolicitante() != null
+									&& (aux.getSolicitante().getNombres() + " " + aux.getSolicitante().getApellidos())
+									.toLowerCase().contains(filtro)) ||
+							(aux.getEstado() != null && aux.getEstado().toLowerCase().contains(filtro));
+
+			if (coincide) {
+				Object[] fila = new Object[5];
+				fila[0] = aux.getCodigo();
+				fila[1] = aux.getSolicitante().getNombres() + " " + aux.getSolicitante().getApellidos();
+				fila[2] = aux.getOfertaSolicitada().getPuesto();
+				fila[3] = aux.getOfertaSolicitada().getOfertador().getNombre();
+				fila[4] = aux.getEstado();
+				modelo.addRow(fila);
+			}
+		}
+	}
+	public static void cargarSolicitudes() {
+		if (modelo == null) return;
+		modelo.setRowCount(0);
+		for (Solicitud aux : BolsaLaboral.getInstancia().getSolicitudes()) {
+			if (aux.getCodigo() == null) continue;
+			Object[] fila = new Object[5];
+			fila[0] = aux.getCodigo();
+			fila[1] = aux.getSolicitante().getNombres() + " " + aux.getSolicitante().getApellidos();
+			fila[2] = aux.getOfertaSolicitada().getPuesto();
+			fila[3] = aux.getOfertaSolicitada().getOfertador().getNombre();
+			fila[4] = aux.getEstado();
+			modelo.addRow(fila);
 		}
 	}
 

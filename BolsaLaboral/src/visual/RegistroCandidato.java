@@ -1,9 +1,12 @@
 package visual;
 
 import java.awt.BorderLayout;
+
+import db.DAO.*;
+import db.DAOImpl.*;
 import exception.*;
 import logico.*;
-import db.*;
+
 import java.awt.FlowLayout;
 
 import javax.swing.JButton;
@@ -32,15 +35,12 @@ import javax.swing.JSpinner;
 import javax.swing.border.TitledBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.JRadioButton;
-import javax.swing.UIManager;
 import javax.swing.JComboBox;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
-import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
-import db.AreaTecnicaDAO;
-import db.AreaTecnicaDAOImpl;
+
 import logico.AreaTecnica;
 
 public class RegistroCandidato extends JDialog {
@@ -949,9 +949,12 @@ public class RegistroCandidato extends JDialog {
 			if(nuevoCandidato != null) {
 				if(candidatoAct == null) {
 					BolsaLaboral.getInstancia().registrarCandidato(nuevoCandidato);
-					JOptionPane.showMessageDialog(this, "Candidato registrado exitosamente",
+					String cod = nuevoCandidato.getCodigo();
+					txtCodigo.setText(cod != null ? cod : "");
+					JOptionPane.showMessageDialog(this,
+							"Candidato registrado exitosamente.\nCódigo asignado: " + (cod != null ? cod : "(no disponible)"),
 							"Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
-
+					try { ConsultarCandidatos.cargarCandidatos(); } catch (Exception ignore) { }
 					limpiar();
 					contenedor.setSelectedIndex(0);
 

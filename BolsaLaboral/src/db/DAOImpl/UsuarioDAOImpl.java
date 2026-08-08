@@ -1,5 +1,7 @@
-package db;
+package db.DAOImpl;
 
+import db.Conexion;
+import db.DAO.UsuarioDAO;
 import logico.Usuario;
 
 import java.sql.Connection;

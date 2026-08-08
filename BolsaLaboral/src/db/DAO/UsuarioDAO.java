@@ -1,4 +1,4 @@
-package db;
+package db.DAO;
 
 import logico.Usuario;
 import java.util.List;

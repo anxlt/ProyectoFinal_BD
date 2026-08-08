@@ -1,4 +1,4 @@
-package db;
+package db.DAO;
 import logico.Universidad;
 import java.util.List;
 

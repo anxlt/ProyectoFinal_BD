@@ -1,17 +1,17 @@
 package visual;
 
+import db.DAO.MunicipioDAO;
+import db.DAO.ProvinciaDAO;
+import db.DAOImpl.MunicipioDAOImpl;
+import db.DAOImpl.ProvinciaDAOImpl;
 import logico.*;
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.table.DefaultTableModel;
 
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -19,13 +19,11 @@ import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
 import java.awt.Font;
 import java.awt.Color;
-import java.awt.Component;
 
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.JTextPane;
-import javax.swing.JTextArea;
 
 public class CV extends JDialog {
 
@@ -241,16 +239,16 @@ public class CV extends JDialog {
 	}
 
 	private String getFormatUbicacionCompleta(Candidato solicitante) {
-		db.MunicipioDAO municipioDAO = new db.MunicipioDAOImpl();
-		db.ProvinciaDAO provinciaDAO = new db.ProvinciaDAOImpl();
+		MunicipioDAO municipioDAO = new MunicipioDAOImpl();
+		ProvinciaDAO provinciaDAO = new ProvinciaDAOImpl();
 		logico.Municipio m = municipioDAO.buscarPorId(solicitante.getIdMunicipio());
 		logico.Provincia p = provinciaDAO.buscarPorId(solicitante.getIdProvincia());
 		return (m != null ? m.getNombreMunicipio() : "") + ", " + (p != null ? p.getNombreProvincia() : "");
 	}
 
 	private String getFormatUbicacion(Candidato solicitante) {
-		db.MunicipioDAO municipioDAO = new db.MunicipioDAOImpl();
-		db.ProvinciaDAO provinciaDAO = new db.ProvinciaDAOImpl();
+		MunicipioDAO municipioDAO = new MunicipioDAOImpl();
+		ProvinciaDAO provinciaDAO = new ProvinciaDAOImpl();
 		logico.Municipio m = municipioDAO.buscarPorId(solicitante.getIdMunicipio());
 		logico.Provincia p = provinciaDAO.buscarPorId(solicitante.getIdProvincia());
 		String municipio = m != null ? m.getNombreMunicipio() : "";

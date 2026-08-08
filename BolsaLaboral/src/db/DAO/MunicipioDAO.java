@@ -1,4 +1,4 @@
-package db;
+package db.DAO;
 
 import logico.Municipio;
 import java.util.List;

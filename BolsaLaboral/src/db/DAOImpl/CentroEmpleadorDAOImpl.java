@@ -1,5 +1,7 @@
-package db;
+package db.DAOImpl;
 
+import db.Conexion;
+import db.DAO.CentroEmpleadorDAO;
 import logico.CentroEmpleador;
 
 import java.sql.Connection;

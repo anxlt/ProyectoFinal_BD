@@ -1,4 +1,4 @@
-package db;
+package db.DAO;
 
 import java.util.List;
 import logico.Solicitud;

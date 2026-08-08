@@ -1,4 +1,4 @@
-package db;
+package db.DAOImpl;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import db.Conexion;
 import logico.OfertaLaboral;
 import logico.Solicitud;
 import logico.VacanteCompletada;
