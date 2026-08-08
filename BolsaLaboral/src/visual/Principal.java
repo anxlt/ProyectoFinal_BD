@@ -43,7 +43,7 @@ import java.net.UnknownHostException;
 
 import logico.BolsaLaboral;
 import logico.Usuario;
-import server.Servidor;
+
 
 public class Principal extends JFrame {
 
@@ -75,10 +75,6 @@ public class Principal extends JFrame {
 	 */
 
 	public Principal() {
-
-		Servidor servidor = new Servidor(7000);
-		servidor.start();
-
 
 		setTitle("Bolsa Laboral");
 		setIconImage(Toolkit.getDefaultToolkit().getImage("recursos/icono.png"));

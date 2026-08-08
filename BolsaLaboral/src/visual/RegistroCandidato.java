@@ -781,7 +781,7 @@ public class RegistroCandidato extends JDialog {
 			pnlTecnico.setVisible(false);
 			pnlEstudiante.setVisible(true);
 		}
-		else if(especializacion.equalsIgnoreCase("Estudiante Tecnico")) {
+		else if(especializacion.equalsIgnoreCase("Estudiante Técnico")) {
 			pnlEstudiante.setVisible(false);
 			pnlObrero.setVisible(false);
 			pnlTecnico.setVisible(true);
@@ -1090,7 +1090,7 @@ public class RegistroCandidato extends JDialog {
 				rdUniversitario.setEnabled(false);
 				rdObrero.setEnabled(false);
 
-				cambiarEspecializacion("Estudiante Tecnico");
+				cambiarEspecializacion("Estudiante Técnico");
 
 				TecnicoSuperior tecnico = (TecnicoSuperior) candidatoAct;
 				for (int i = 0; i < cmbAreaTecnica.getItemCount(); i++) {

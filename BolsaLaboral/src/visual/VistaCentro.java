@@ -127,13 +127,13 @@ public class VistaCentro extends JDialog {
 			table = new JTable();
 			table.setForeground(Color.BLACK);
 			table.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-			String [] headers = {"C digo", "Puesto", " rea", "Estado"};
+			String [] headers = {"Código", "Puesto", "Área", "Estado"};
 			modelo.setColumnIdentifiers(headers);
 			table.setModel(modelo);
 			scrollPane.setViewportView(table);
 		}
 
-		lblNewLabel = new JLabel("Ofertas Laborales Acutales");
+		lblNewLabel = new JLabel("Ofertas Laborales Actuales");
 		lblNewLabel.setForeground(Color.BLACK);
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Consolas", Font.BOLD, 18));
@@ -184,13 +184,13 @@ public class VistaCentro extends JDialog {
 		switch (sector) {
 			case "No definido": return new Color(26, 26, 29);
 			case "Turismo": return new Color(31, 125, 83);
-			case "Tecnolog a": return new Color(17, 63, 103);
+			case "Tecnología": return new Color(17, 63, 103);
 			case "Salud": return new Color(125, 10, 10);
 			case "Comercio": return new Color(117, 14, 33);
-			case "Educaci n": return new Color(51, 52, 70);
-			case "Construcci n": return new Color(84, 18, 18);
+			case "Educación": return new Color(51, 52, 70);
+			case "Construcción": return new Color(84, 18, 18);
 			case "Agricultura": return new Color(57, 153, 24);
-			case "Jur dico": return new Color(68, 54, 39);
+			case "Jurídico": return new Color(68, 54, 39);
 			case "Arte": return new Color(30, 81, 40);
 			case "Transporte": return new Color(23, 49, 62);
 		}

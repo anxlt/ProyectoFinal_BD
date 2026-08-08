@@ -96,7 +96,7 @@ public class ConsultarOfertas extends JDialog {
 							}
 						}
 					});
-					String [] headers = {"Código", "Puesto", "Ofertador", "Área", "Estado"};
+					String [] headers = {"Codigo", "Puesto", "Ofertador", "Area", "Estado"};
 					modelo.setColumnIdentifiers(headers);
 					table.setModel(modelo);
 					scrollPane.setViewportView(table);
@@ -200,7 +200,7 @@ public class ConsultarOfertas extends JDialog {
 				btnDelete.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						if(seleccionado != null) {
-							int option = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea eliminar la oferta al puesto de " + seleccionado.getPuesto() + " que posee el ID: "+seleccionado.getCodigo()+"?", "Eliminar", JOptionPane.WARNING_MESSAGE);
+							int option = JOptionPane.showConfirmDialog(null, "ï¿½Esta seguro que desea eliminar la oferta al puesto de " + seleccionado.getPuesto() + " que posee el ID: "+seleccionado.getCodigo()+"?", "Eliminar", JOptionPane.WARNING_MESSAGE);
 							if(option == JOptionPane.OK_OPTION){
 								btnDelete.setEnabled(true);
 								btnUpdate.setEnabled(true);
@@ -271,7 +271,7 @@ public class ConsultarOfertas extends JDialog {
 	}
 	
 	private static String getImagen(String area) {
-		area = area.replace("ó","o");
+		area = area.replace("ï¿½","o");
 		area = area.replace(" ","");
 		return "recursos/" + area + ".png";
 	}

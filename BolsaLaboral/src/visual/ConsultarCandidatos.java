@@ -86,7 +86,7 @@ public class ConsultarCandidatos extends JDialog {
 							}
 						}
 					});
-					String [] headers = {"Código", "Nombre", "Cédula", "Nivel Académico"};
+					String [] headers = {"Codigo", "Nombre", "Cedula", "Nivel Academico"};
 					modelo.setColumnIdentifiers(headers);
 					table.setModel(modelo);
 					scrollPane.setViewportView(table);

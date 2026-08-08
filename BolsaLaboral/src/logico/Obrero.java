@@ -30,7 +30,7 @@ public class Obrero extends Candidato implements Serializable{
 	@Override
 	public String getSobreMi() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Soy un trabajador con experiencia pr ctica en el  rea de ")
+		sb.append("Soy un trabajador con experiencia práctica en el área de ")
 				.append(getAreaDeInteres().toLowerCase()).append(". ");
 
 		if (!habilidades.isEmpty()) {
@@ -53,10 +53,10 @@ public class Obrero extends Candidato implements Serializable{
 		sb.append("Busco una oportunidad de trabajo en modalidad ")
 				.append(getModalidad().toLowerCase())
 				.append(" y jornada ").append(getJornada().toLowerCase())
-				.append(", con una aspiraci n salarial de RD$").append(getAspiracionSalarial()).append(". ");
+				.append(", con una aspiración salarial de RD$").append(getAspiracionSalarial()).append(". ");
 
 		if (!getIdiomas().isEmpty()) {
-			sb.append("Tambi n tengo conocimientos en los siguientes idiomas: ");
+			sb.append("También tengo conocimientos en los siguientes idiomas: ");
 			for (int i = 0; i < getIdiomas().size(); i++) {
 				sb.append(getIdiomas().get(i));
 				if (i < getIdiomas().size() - 2) sb.append(", ");
@@ -71,7 +71,7 @@ public class Obrero extends Candidato implements Serializable{
 	@Override
 	public String getFormacion() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Mi formaci n se basa principalmente en la experiencia pr ctica adquirida en el  rea de ")
+		sb.append("Mi formación se basa principalmente en la experiencia práctica adquirida en el área de ")
 				.append(getAreaDeInteres().toLowerCase()).append(". ");
 
 		if (!habilidades.isEmpty()) {
@@ -81,7 +81,7 @@ public class Obrero extends Candidato implements Serializable{
 				if (i < habilidades.size() - 2) sb.append(", ");
 				else if (i == habilidades.size() - 2) sb.append(" y ");
 			}
-			sb.append(", que me permiten desempe ar eficientemente labores t cnicas. ");
+			sb.append(", que me permiten desempeñar eficientemente labores técnicas. ");
 		}
 
 		return sb.toString().trim();

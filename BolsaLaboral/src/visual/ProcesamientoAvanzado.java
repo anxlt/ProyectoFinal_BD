@@ -94,7 +94,7 @@ public class ProcesamientoAvanzado extends JDialog {
 					tablaOfertas = new JTable();
 					tablaOfertas.setForeground(Color.BLACK);
 					tablaOfertas.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-					String [] headers = {"Código", "Puesto", "Ofertador", "Área", "Estado"};
+					String [] headers = {"Codigo", "Puesto", "Ofertador", "Area", "Estado"};
 					modeloOfertas.setColumnIdentifiers(headers);
 					tablaOfertas.setModel(modeloOfertas);
 					scrollPane.setViewportView(tablaOfertas);
@@ -118,7 +118,7 @@ public class ProcesamientoAvanzado extends JDialog {
 					}
 				}
 			});
-			String [] headers = {"Oferta", "Código", "Nombre", "Porcentaje", "Condición"};
+			String [] headers = {"Oferta", "Codigo", "Nombre", "Porcentaje", "Condicion"};
 			modeloMatcheo.setColumnIdentifiers(headers);
 			tablaMatcheo.setModel(modeloMatcheo);
 			scrollPane.setViewportView(tablaMatcheo);
@@ -166,9 +166,9 @@ public class ProcesamientoAvanzado extends JDialog {
 				btnProcesar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						if(BolsaLaboral.getInstancia().vincularOferta(resMatchSelec)) {
-							JOptionPane.showMessageDialog(null,"Se ha creado la solicitud correctamente a la oferta " + resMatchSelec.getOferta().getPuesto() + ".","Información",JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.showMessageDialog(null,"Se ha creado la solicitud correctamente a la oferta " + resMatchSelec.getOferta().getPuesto() + ".","Informaciï¿½n",JOptionPane.INFORMATION_MESSAGE);
 						} else {
-							JOptionPane.showMessageDialog(null,"Esta solicitud ya existe.","Información",JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.showMessageDialog(null,"Esta solicitud ya existe.","Informaciï¿½n",JOptionPane.INFORMATION_MESSAGE);
 						}
 					}
 				});
@@ -247,7 +247,7 @@ public class ProcesamientoAvanzado extends JDialog {
 	}
 	
 	private static String getArea(String area) {
-		area = area.replace("ó","o");
+		area = area.replace("ï¿½","o");
 		area = area.replace(" ","");
 		return "recursos/" + area + ".png";
 	}

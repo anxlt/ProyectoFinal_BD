@@ -91,7 +91,7 @@ public class ConsultarCentros extends JDialog {
 							}
 						}
 					});
-					String [] headers = {"Código", "Nombre", "RNC", "Sector", " "};
+					String [] headers = {"Codigo", "Nombre", "RNC", "Sector", " "};
 					modelo.setColumnIdentifiers(headers);
 					table.setModel(modelo);
 					scrollPane.setViewportView(table);
@@ -180,7 +180,7 @@ public class ConsultarCentros extends JDialog {
 				btnDelete.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						if(seleccionado != null) {
-							int option = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea eliminar el centro de trabajo llamado " + seleccionado.getNombre() + " que posee el ID: "+seleccionado.getCodigo()+"?", "Eliminar", JOptionPane.WARNING_MESSAGE);
+							int option = JOptionPane.showConfirmDialog(null, "ï¿½Esta seguro que desea eliminar el centro de trabajo llamado " + seleccionado.getNombre() + " que posee el ID: "+seleccionado.getCodigo()+"?", "Eliminar", JOptionPane.WARNING_MESSAGE);
 							if(option == JOptionPane.OK_OPTION){
 								btnDelete.setEnabled(true);
 								btnUpdate.setEnabled(true);
@@ -250,8 +250,8 @@ public class ConsultarCentros extends JDialog {
 	}
 	
 	private static String getImagen(String nombreSector) {
-		nombreSector = nombreSector.replace("í","i");
-		nombreSector = nombreSector.replace("ó","o");
+		nombreSector = nombreSector.replace("ï¿½","i");
+		nombreSector = nombreSector.replace("ï¿½","o");
 		nombreSector = nombreSector.replace(" ","");
 		return "recursos/" + nombreSector + ".png";
 	}

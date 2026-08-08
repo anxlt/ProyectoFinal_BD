@@ -55,15 +55,15 @@ public class Universitario extends Candidato implements Serializable{
 		StringBuilder sb = new StringBuilder();
 		sb.append("Soy estudiante de ").append(getCarrera().toLowerCase())
 				.append(" en la universidad ").append(getUniversidad())
-				.append(", con nivel acad mico ").append(getNivelAcademico().toLowerCase()).append(". ");
-		sb.append("Mi  rea de inter s es ").append(getAreaDeInteres().toLowerCase()).append(". ");
+				.append(", nivel académico ").append(getNivelAcademico().toLowerCase()).append(". ");
+		sb.append("Mi área de interés es ").append(getAreaDeInteres().toLowerCase()).append(". ");
 
 		if (isLicenciaConducir()) sb.append("Cuento con licencia de conducir. ");
 		if (isDisposicionMudarse()) sb.append("Estoy dispuesto a mudarme si es necesario para el empleo. ");
 
 		sb.append("Busco oportunidades en modalidad ").append(getModalidad().toLowerCase())
 				.append(" y jornada ").append(getJornada().toLowerCase())
-				.append(", con una aspiraci n salarial de RD$").append(getAspiracionSalarial()).append(". ");
+				.append(", con una aspiración salarial de RD$").append(getAspiracionSalarial()).append(". ");
 
 		if (!getIdiomas().isEmpty()) {
 			sb.append("Tengo conocimientos en los siguientes idiomas: ");
@@ -83,7 +83,7 @@ public class Universitario extends Candidato implements Serializable{
 		StringBuilder sb = new StringBuilder();
 		sb.append("Estoy cursando estudios universitarios en la carrera de ").append(getCarrera().toLowerCase())
 				.append(" en la universidad ").append(getUniversidad()).append(". ");
-		sb.append("Mi nivel acad mico actual es ").append(getNivelAcademico().toLowerCase()).append(". ");
+		sb.append("Mi nivel académico actual es ").append(getNivelAcademico().toLowerCase()).append(". ");
 
 		return sb.toString().trim();
 	}

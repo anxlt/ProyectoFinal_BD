@@ -92,7 +92,7 @@ public class ConsultarSolicitudes extends JDialog {
 							}
 						}
 					});
-					String [] headers = {"Código", "Solicitante", "Puesto", "Ofertador", "Estado"};
+					String [] headers = {"Codigo", "Solicitante", "Puesto", "Ofertador", "Estado"};
 					modelo.setColumnIdentifiers(headers);
 					table.setModel(modelo);
 					scrollPane.setViewportView(table);
@@ -143,7 +143,7 @@ public class ConsultarSolicitudes extends JDialog {
 						public void actionPerformed(ActionEvent e) {
 							if(seleccionado != null && BolsaLaboral.getInstancia().esProcesable(seleccionado)) {
 								BolsaLaboral.getInstancia().contratarCandidato(seleccionado);
-								JOptionPane.showMessageDialog(null,"Contratación procesada satisfactoriamente.","Información",JOptionPane.INFORMATION_MESSAGE);
+								JOptionPane.showMessageDialog(null,"Contrataciï¿½n procesada satisfactoriamente.","Informaciï¿½n",JOptionPane.INFORMATION_MESSAGE);
 								cargarSolicitudes();
 								filtrar();
 							}
@@ -158,7 +158,7 @@ public class ConsultarSolicitudes extends JDialog {
 							public void actionPerformed(ActionEvent e) {
 								if(seleccionado != null && BolsaLaboral.getInstancia().esProcesable(seleccionado)) {
 									BolsaLaboral.getInstancia().rechazarCandidato(seleccionado);
-									JOptionPane.showMessageDialog(null,"Rechazo procesado satisfactoriamente.","Información",JOptionPane.INFORMATION_MESSAGE);
+									JOptionPane.showMessageDialog(null,"Rechazo procesado satisfactoriamente.","Informaciï¿½n",JOptionPane.INFORMATION_MESSAGE);
 									cargarSolicitudes();
 									filtrar();
 								}

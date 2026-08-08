@@ -173,7 +173,7 @@ public class CV extends JDialog {
 
 		txpDatosFormacion = new JTextPane();
 		txpDatosFormacion.setEditable(false);
-		txpDatosFormacion.setText("Detalles de la estudiasao");
+		txpDatosFormacion.setText("Detalles de la formación");
 		txpDatosFormacion.setForeground(Color.BLACK);
 		txpDatosFormacion.setFont(new Font("Verdana", Font.PLAIN, 15));
 		txpDatosFormacion.setBounds(234, 394, 460, 126);
@@ -218,7 +218,7 @@ public class CV extends JDialog {
 			lblform.setText(((Universitario) solicitante).getNivelAcademico());
 		}
 		else if(solicitante instanceof TecnicoSuperior) {
-			lblform.setText("T cnico");
+			lblform.setText("T\u00E9cnico");
 		}
 		else if(solicitante instanceof Obrero) {
 			lblform.setText("Trabajador");
@@ -347,8 +347,8 @@ public class CV extends JDialog {
 			case "TI": return new Color(9, 107, 104);
 			case "Salud": return new Color(162, 18, 50);
 			case "Operaciones": return new Color(39, 63, 79);
-			case "Administraci n": return new Color(190, 49, 68);
-			case "Atenci n al Cliente": return new Color(130, 17, 49);
+			case "Administración": return new Color(190, 49, 68);
+			case "Atención al Cliente": return new Color(130, 17, 49);
 			default: return new Color(57, 62, 7);
 		}
 	}

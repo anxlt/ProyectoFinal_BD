@@ -676,7 +676,7 @@ public class RegistroOfertaLaboral extends JDialog {
 			pnlObrero.setVisible(false);
 			pnlTecnico.setVisible(false);
 			pnlCarreras.setVisible(true);
-		} else if (especializacion.equalsIgnoreCase("Estudiante Tecnico")) {
+		} else if (especializacion.equalsIgnoreCase("Estudiante Técnico")) {
 			pnlCarreras.setVisible(false);
 			pnlObrero.setVisible(false);
 			pnlTecnico.setVisible(true);
@@ -733,7 +733,7 @@ public class RegistroOfertaLaboral extends JDialog {
 			}
 		} else if (ofertaAct.getNivelAcademico().equals(rdTecnico.getText())) {
 			rdTecnico.setSelected(true);
-			cambiarEspecializacion("Estudiante Tecnico");
+			cambiarEspecializacion("Estudiante Técnico");
 			for (int i = 0; i < cmbAreaTecnica.getItemCount(); i++) {
 				if (ofertaAct.getIdAreaTecnica() != null
 						&& cmbAreaTecnica.getItemAt(i).getIdAreaTecnica() == ofertaAct.getIdAreaTecnica()) {

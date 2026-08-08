@@ -17,7 +17,6 @@ import exception.NotRemovableException;
 public class BolsaLaboral implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
 	private ArrayList<Candidato> candidatos;
 	private ArrayList<Solicitud> solicitudes;
 	private ArrayList<OfertaLaboral> ofertas;
@@ -130,7 +129,7 @@ public class BolsaLaboral implements Serializable {
 			new CandidatoDAOImpl().eliminar(candidatoEliminar.getCodigo());
 		} else {
 			throw new NotRemovableException(
-					"El candidato no puede ser eliminado ya que esta vinculado con una solicitud.");
+					"El candidato no puede ser eliminado ya que está vinculado con una solicitud.");
 		}
 	}
 
@@ -300,7 +299,7 @@ public class BolsaLaboral implements Serializable {
 			new OfertaLaboralDAOImpl().eliminar(seleccionado.getCodigo());
 		} else {
 			throw new NotRemovableException(
-					"La oferta no es eliminable ya que esta vinculada con una solicitud.");
+					"La oferta no es eliminable ya que está vinculada con una solicitud.");
 		}
 	}
 
