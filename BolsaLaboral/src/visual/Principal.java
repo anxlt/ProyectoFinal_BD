@@ -50,25 +50,25 @@ public class Principal extends JFrame {
 	private JPanel contentPane;
 	private Dimension dim;
 	private JMenu mnGestion;
-	private JMenu mnCatlogoDeOfertas;
+	private JMenu mnCatalogoDeOfertas;
 	private JMenu mnCentros;
 	private JMenu mnCandidatos;
 
 	/**
 	 * Launch the application.
 	 */
-	/*public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Principal frame = new Principal();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}*/
+    /*public static void main(String[] args) {
+       EventQueue.invokeLater(new Runnable() {
+          public void run() {
+             try {
+                Principal frame = new Principal();
+                frame.setVisible(true);
+             } catch (Exception e) {
+                e.printStackTrace();
+             }
+          }
+       });
+    }*/
 
 	/**
 	 * Create the frame.
@@ -81,7 +81,7 @@ public class Principal extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setBounds(100, 100, 571, 417);
-		dim = super.getToolkit().getScreenSize(); 
+		dim = super.getToolkit().getScreenSize();
 		super.setSize(dim.width, dim.height-45);
 		setLocationRelativeTo(null);
 
@@ -149,11 +149,11 @@ public class Principal extends JFrame {
 		mntmCandRegistrar.setIcon(new ImageIcon("recursos/registro.png"));
 		mnCandidatos.add(mntmCandRegistrar);
 
-		mnCatlogoDeOfertas = new JMenu("Cat\u00E1logo de Ofertas");
-		mnCatlogoDeOfertas.setIcon(new ImageIcon("recursos/conexion.png"));
-		mnCatlogoDeOfertas.setForeground(Color.BLACK);
-		mnCatlogoDeOfertas.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		menuBar.add(mnCatlogoDeOfertas);
+		mnCatalogoDeOfertas = new JMenu("Catalogo de Ofertas");
+		mnCatalogoDeOfertas.setIcon(new ImageIcon("recursos/conexion.png"));
+		mnCatalogoDeOfertas.setForeground(Color.BLACK);
+		mnCatalogoDeOfertas.setFont(new Font("Segoe UI", Font.BOLD, 20));
+		menuBar.add(mnCatalogoDeOfertas);
 
 		JMenuItem mntmCatConsultar = new JMenuItem("  Consultar");
 		mntmCatConsultar.addActionListener(new ActionListener() {
@@ -165,7 +165,7 @@ public class Principal extends JFrame {
 		});
 		mntmCatConsultar.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mntmCatConsultar.setIcon(new ImageIcon("recursos/consulta.png"));
-		mnCatlogoDeOfertas.add(mntmCatConsultar);
+		mnCatalogoDeOfertas.add(mntmCatConsultar);
 
 		JMenuItem mntmCatRegistrar = new JMenuItem("  Registrar");
 		mntmCatRegistrar.addActionListener(new ActionListener() {
@@ -177,7 +177,7 @@ public class Principal extends JFrame {
 		});
 		mntmCatRegistrar.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mntmCatRegistrar.setIcon(new ImageIcon("recursos/registro.png"));
-		mnCatlogoDeOfertas.add(mntmCatRegistrar);
+		mnCatalogoDeOfertas.add(mntmCatRegistrar);
 
 		JMenuItem mntmSolicitudes = new JMenuItem("  Solicitudes");
 		mntmSolicitudes.setIcon(new ImageIcon("recursos/solicitud.png"));
@@ -189,9 +189,9 @@ public class Principal extends JFrame {
 			}
 		});
 		mntmSolicitudes.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-		mnCatlogoDeOfertas.add(mntmSolicitudes);
+		mnCatalogoDeOfertas.add(mntmSolicitudes);
 
-		mnGestion = new JMenu("Gesti\u00F3n de Datos");
+		mnGestion = new JMenu("Gestion de Datos");
 		mnGestion.setForeground(Color.BLACK);
 		mnGestion.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		mnGestion.setIcon(new ImageIcon("recursos/gestion.png"));

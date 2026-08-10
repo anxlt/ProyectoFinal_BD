@@ -146,7 +146,7 @@ public class RegistroCandidato extends JDialog {
 		pnlPersonal.setBackground(new Color(228, 228, 228));
 		pnlPersonal.setLayout(null);
 
-		JLabel label = new JLabel("C\u00F3digo:");
+		JLabel label = new JLabel("Codigo:");
 		label.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		label.setBounds(12, 9, 84, 29);
 		pnlPersonal.add(label);
@@ -186,7 +186,7 @@ public class RegistroCandidato extends JDialog {
 		txtApellido.setBounds(106, 123, 305, 22);
 		pnlPersonal.add(txtApellido);
 
-		JLabel lblCdula = new JLabel("C\u00E9dula:");
+		JLabel lblCdula = new JLabel("Cedula:");
 		lblCdula.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblCdula.setBounds(12, 175, 84, 29);
 		pnlPersonal.add(lblCdula);
@@ -222,12 +222,12 @@ public class RegistroCandidato extends JDialog {
 
 		JPanel pnlContactos = new JPanel();
 		pnlContactos.setLayout(null);
-		pnlContactos.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0)), "Contactos y Ubicaci\u00F3n", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		pnlContactos.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0)), "Contactos y Ubicacion", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		pnlContactos.setBackground(new Color(228, 228, 228));
 		pnlContactos.setBounds(12, 311, 513, 229);
 		pnlPersonal.add(pnlContactos);
 
-		JLabel label_1 = new JLabel("Tel\u00E9fono:");
+		JLabel label_1 = new JLabel("Telefono:");
 		label_1.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		label_1.setBounds(12, 28, 84, 29);
 		pnlContactos.add(label_1);
@@ -287,7 +287,7 @@ public class RegistroCandidato extends JDialog {
 		cmbGenero.setBounds(106, 269, 305, 29);
 		pnlPersonal.add(cmbGenero);
 
-		JLabel lblGnero = new JLabel("G\u00E9nero:");
+		JLabel lblGnero = new JLabel("Genero:");
 		lblGnero.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblGnero.setBounds(12, 269, 74, 29);
 		pnlPersonal.add(lblGnero);
@@ -301,15 +301,15 @@ public class RegistroCandidato extends JDialog {
 		pnlTecnico.setBounds(12, 97, 510, 210);
 		pnlEspecializacion.add(pnlTecnico);
 		pnlTecnico.setLayout(null);
-		pnlTecnico.setBorder(new TitledBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0)), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)), "Estudiante T\u00E9cnico", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		pnlTecnico.setBorder(new TitledBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0)), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)), "Estudiante Tecnico", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		pnlTecnico.setBackground(new Color(228, 228, 228));
 
-		JLabel lblreaTcnica = new JLabel("\u00C1rea T\u00E9cnica:");
+		JLabel lblreaTcnica = new JLabel("Area Tecnica:");
 		lblreaTcnica.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblreaTcnica.setBounds(12, 25, 106, 29);
 		pnlTecnico.add(lblreaTcnica);
 
-		JLabel lblAosDeExperiencia = new JLabel("A\u00F1os de Experiencia:");
+		JLabel lblAosDeExperiencia = new JLabel("Anios de Experiencia:");
 		lblAosDeExperiencia.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblAosDeExperiencia.setBounds(12, 82, 168, 29);
 		pnlTecnico.add(lblAosDeExperiencia);
@@ -339,19 +339,19 @@ public class RegistroCandidato extends JDialog {
 		pnlObrero.setBounds(12, 97, 510, 210);
 		pnlEspecializacion.add(pnlObrero);
 
-		chkPlomeria = new JCheckBox("Plomer\u00EDa");
+		chkPlomeria = new JCheckBox("Plomeria");
 		chkPlomeria.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chkPlomeria.setBackground(new Color(228, 228, 228));
 		chkPlomeria.setBounds(8, 24, 113, 25);
 		pnlObrero.add(chkPlomeria);
 
-		chkCarpintero = new JCheckBox("Carpinter\u00EDa");
+		chkCarpintero = new JCheckBox("Carpinteria");
 		chkCarpintero.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chkCarpintero.setBackground(new Color(228, 228, 228));
 		chkCarpintero.setBounds(8, 61, 113, 25);
 		pnlObrero.add(chkCarpintero);
 
-		chkCajero = new JCheckBox("Gesti\u00F3n Financiera");
+		chkCajero = new JCheckBox("Gestion Financiera");
 		chkCajero.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chkCajero.setBackground(new Color(228, 228, 228));
 		chkCajero.setBounds(8, 101, 147, 25);
@@ -363,19 +363,19 @@ public class RegistroCandidato extends JDialog {
 		chkSoldadura.setBounds(8, 143, 113, 25);
 		pnlObrero.add(chkSoldadura);
 
-		chkElectrica = new JCheckBox("Instalaci\u00F3n El\u00E9ctrica");
+		chkElectrica = new JCheckBox("Instalacion Electrica");
 		chkElectrica.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chkElectrica.setBackground(new Color(228, 228, 228));
 		chkElectrica.setBounds(8, 181, 147, 25);
 		pnlObrero.add(chkElectrica);
 
-		chkMecanica = new JCheckBox("Mec\u00E1nica");
+		chkMecanica = new JCheckBox("Mecanica");
 		chkMecanica.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chkMecanica.setBackground(new Color(228, 228, 228));
 		chkMecanica.setBounds(181, 25, 113, 25);
 		pnlObrero.add(chkMecanica);
 
-		chkAlbanileria = new JCheckBox("Alba\u00F1iler\u00EDa");
+		chkAlbanileria = new JCheckBox("Albanileria");
 		chkAlbanileria.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chkAlbanileria.setBackground(new Color(228, 228, 228));
 		chkAlbanileria.setBounds(181, 62, 113, 25);
@@ -387,13 +387,13 @@ public class RegistroCandidato extends JDialog {
 		chkRedes.setBounds(181, 101, 135, 25);
 		pnlObrero.add(chkRedes);
 
-		chkConduccion = new JCheckBox("Conducci\u00F3n");
+		chkConduccion = new JCheckBox("Conduccion");
 		chkConduccion.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chkConduccion.setBackground(new Color(228, 228, 228));
 		chkConduccion.setBounds(181, 143, 113, 25);
 		pnlObrero.add(chkConduccion);
 
-		chkReparacion = new JCheckBox("Reparaci\u00F3n de Electr\u00F3nicos");
+		chkReparacion = new JCheckBox("Reparacion de Electronicos");
 		chkReparacion.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chkReparacion.setBackground(new Color(228, 228, 228));
 		chkReparacion.setBounds(181, 182, 199, 25);
@@ -405,7 +405,7 @@ public class RegistroCandidato extends JDialog {
 		chkVentas.setBounds(389, 25, 113, 25);
 		pnlObrero.add(chkVentas);
 
-		chkFotografia = new JCheckBox("Fotograf\u00EDa");
+		chkFotografia = new JCheckBox("Fotografia");
 		chkFotografia.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chkFotografia.setBackground(new Color(228, 228, 228));
 		chkFotografia.setBounds(389, 62, 113, 25);
@@ -448,7 +448,7 @@ public class RegistroCandidato extends JDialog {
 		rdUniversitario.setBounds(29, 26, 182, 25);
 		pnlTipoCand.add(rdUniversitario);
 
-		rdTecnico = new JRadioButton("Estudiante T\u00E9cnico");
+		rdTecnico = new JRadioButton("Estudiante Tecnico");
 		rdTecnico.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cambiarEspecializacion("Estudiante Tecnico");
@@ -500,7 +500,7 @@ public class RegistroCandidato extends JDialog {
 		cmbUniversidad.setBounds(116, 86, 305, 22);
 		pnlEstudiante.add(cmbUniversidad);
 
-		JLabel lblNivelAcadmico = new JLabel("Nivel Acad\u00E9mico:");
+		JLabel lblNivelAcadmico = new JLabel("Nivel Academico:");
 		lblNivelAcadmico.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblNivelAcadmico.setBounds(12, 144, 146, 29);
 		pnlEstudiante.add(lblNivelAcadmico);
@@ -529,7 +529,7 @@ public class RegistroCandidato extends JDialog {
 		pnlIdiomas.setBounds(12, 317, 510, 145);
 		pnlEspecializacion.add(pnlIdiomas);
 
-		chckbxIngles = new JCheckBox("Ingl\u00E9s");
+		chckbxIngles = new JCheckBox("Ingles");
 		chckbxIngles.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chckbxIngles.setBackground(new Color(228, 228, 228));
 		chckbxIngles.setBounds(8, 24, 113, 25);
@@ -541,25 +541,25 @@ public class RegistroCandidato extends JDialog {
 		chckbxItaliano.setBounds(8, 61, 113, 25);
 		pnlIdiomas.add(chckbxItaliano);
 
-		chckbxEspanol = new JCheckBox("Espa\u00F1ol");
+		chckbxEspanol = new JCheckBox("Espanol");
 		chckbxEspanol.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chckbxEspanol.setBackground(new Color(228, 228, 228));
 		chckbxEspanol.setBounds(8, 101, 113, 25);
 		pnlIdiomas.add(chckbxEspanol);
 
-		chckbxFrances = new JCheckBox("Franc\u00E9s");
+		chckbxFrances = new JCheckBox("Frances");
 		chckbxFrances.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chckbxFrances.setBackground(new Color(228, 228, 228));
 		chckbxFrances.setBounds(181, 101, 113, 25);
 		pnlIdiomas.add(chckbxFrances);
 
-		chckbxPortugues = new JCheckBox("Portugu\u00E9s");
+		chckbxPortugues = new JCheckBox("Portugues");
 		chckbxPortugues.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chckbxPortugues.setBackground(new Color(228, 228, 228));
 		chckbxPortugues.setBounds(181, 25, 113, 25);
 		pnlIdiomas.add(chckbxPortugues);
 
-		chckbxAleman = new JCheckBox("Alem\u00E1n");
+		chckbxAleman = new JCheckBox("Aleman");
 		chckbxAleman.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chckbxAleman.setBackground(new Color(228, 228, 228));
 		chckbxAleman.setBounds(181, 62, 113, 25);
@@ -577,13 +577,13 @@ public class RegistroCandidato extends JDialog {
 		chckbxCoreano.setBounds(389, 62, 113, 25);
 		pnlIdiomas.add(chckbxCoreano);
 
-		chckbxJapones = new JCheckBox("Japon\u00E9s");
+		chckbxJapones = new JCheckBox("Japones");
 		chckbxJapones.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chckbxJapones.setBackground(new Color(228, 228, 228));
 		chckbxJapones.setBounds(389, 101, 113, 25);
 		pnlIdiomas.add(chckbxJapones);
 
-		JLabel lbltieneLicenciaDe = new JLabel("\u00BFTiene licencia de conducir?");
+		JLabel lbltieneLicenciaDe = new JLabel("Tiene licencia de conducir?");
 		lbltieneLicenciaDe.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lbltieneLicenciaDe.setBounds(12, 475, 219, 29);
 		pnlEspecializacion.add(lbltieneLicenciaDe);
@@ -610,7 +610,7 @@ public class RegistroCandidato extends JDialog {
 				cargarModalidad();
 			}
 		});
-		cmbModalidad.setModel(new DefaultComboBoxModel(new String[] {"Presencial", "Remoto", "H\u00EDbrido"}));
+		cmbModalidad.setModel(new DefaultComboBoxModel(new String[] {"Presencial", "Remoto", "Hibrido"}));
 		cmbModalidad.setMaximumRowCount(11);
 		cmbModalidad.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		cmbModalidad.setBounds(111, 18, 305, 29);
@@ -643,7 +643,7 @@ public class RegistroCandidato extends JDialog {
 		lblIcoJornada.setBounds(433, 69, 32, 32);
 		pnlPreferencias.add(lblIcoJornada);
 
-		JLabel lblrea = new JLabel("\u00C1rea:");
+		JLabel lblrea = new JLabel("Area:");
 		lblrea.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblrea.setBounds(12, 127, 106, 29);
 		pnlPreferencias.add(lblrea);
@@ -654,7 +654,7 @@ public class RegistroCandidato extends JDialog {
 				cargarArea();
 			}
 		});
-		cmbArea.setModel(new DefaultComboBoxModel(new String[] {"No definido", "Finanzas", "Recursos Humanos", "Marketing", "Limpieza", "Seguridad", "TI", "Salud", "Operaciones", "Administraci\u00F3n", "Atenci\u00F3n al Cliente", "Educaci\u00F3n"}));
+		cmbArea.setModel(new DefaultComboBoxModel(new String[] {"No definido", "Finanzas", "Recursos Humanos", "Marketing", "Limpieza", "Seguridad", "TI", "Salud", "Operaciones", "Administracion", "Atencion al Cliente", "Educacion"}));
 		cmbArea.setMaximumRowCount(12);
 		cmbArea.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		cmbArea.setBounds(111, 128, 305, 29);
@@ -675,7 +675,7 @@ public class RegistroCandidato extends JDialog {
 		separator_1.setBounds(12, 176, 503, 6);
 		pnlPreferencias.add(separator_1);
 
-		JLabel lblestaraDispuestoA = new JLabel("\u00BFEstar\u00EDa dispuesto a mudarse si es requerido?");
+		JLabel lblestaraDispuestoA = new JLabel("Estaria dispuesto a mudarse si es requerido?");
 		lblestaraDispuestoA.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblestaraDispuestoA.setBounds(12, 248, 359, 29);
 		pnlPreferencias.add(lblestaraDispuestoA);
@@ -781,7 +781,7 @@ public class RegistroCandidato extends JDialog {
 			pnlTecnico.setVisible(false);
 			pnlEstudiante.setVisible(true);
 		}
-		else if(especializacion.equalsIgnoreCase("Estudiante Técnico")) {
+		else if(especializacion.equalsIgnoreCase("Estudiante Tecnico")) {
 			pnlEstudiante.setVisible(false);
 			pnlObrero.setVisible(false);
 			pnlTecnico.setVisible(true);
@@ -952,7 +952,7 @@ public class RegistroCandidato extends JDialog {
 					String cod = nuevoCandidato.getCodigo();
 					txtCodigo.setText(cod != null ? cod : "");
 					JOptionPane.showMessageDialog(this,
-							"Candidato registrado exitosamente.\nCódigo asignado: " + (cod != null ? cod : "(no disponible)"),
+							"Candidato registrado exitosamente.\nCodigo asignado: " + (cod != null ? cod : "(no disponible)"),
 							"Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
 					try { ConsultarCandidatos.cargarCandidatos(); } catch (Exception ignore) { }
 					limpiar();
@@ -990,10 +990,10 @@ public class RegistroCandidato extends JDialog {
 						((Obrero)candidatoAct).setHabilidades(((Obrero)nuevoCandidato).getHabilidades());
 					}
 
-					BolsaLaboral.getInstancia().modificarCandidato(candidatoAct);   // <-- nuevo: persiste el cambio
+					BolsaLaboral.getInstancia().modificarCandidato(candidatoAct);
 
 					JOptionPane.showMessageDialog(this, "Candidato modificado exitosamente",
-							"Modificación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+							"Modificacion Exitosa", JOptionPane.INFORMATION_MESSAGE);
 					dispose();
 					ConsultarCandidatos.cargarCandidatos();
 				}
@@ -1053,15 +1053,15 @@ public class RegistroCandidato extends JDialog {
 
 			for (String idioma : candidatoAct.getIdiomas()) {
 				switch (idioma) {
-					case "Inglés": chckbxIngles.setSelected(true); break;
+					case "Ingles": chckbxIngles.setSelected(true); break;
 					case "Italiano": chckbxItaliano.setSelected(true); break;
-					case "Español": chckbxEspanol.setSelected(true); break;
-					case "Francés": chckbxFrances.setSelected(true); break;
-					case "Portugués": chckbxPortugues.setSelected(true); break;
-					case "Alemán": chckbxAleman.setSelected(true); break;
+					case "Espanol": chckbxEspanol.setSelected(true); break;
+					case "Frances": chckbxFrances.setSelected(true); break;
+					case "Portugues": chckbxPortugues.setSelected(true); break;
+					case "Aleman": chckbxAleman.setSelected(true); break;
 					case "Chino": chckbxMandarin.setSelected(true); break;
 					case "Coreano": chckbxCoreano.setSelected(true); break;
-					case "Japonés": chckbxJapones.setSelected(true); break;
+					case "Japones": chckbxJapones.setSelected(true); break;
 				}
 			}
 
@@ -1093,7 +1093,7 @@ public class RegistroCandidato extends JDialog {
 				rdUniversitario.setEnabled(false);
 				rdObrero.setEnabled(false);
 
-				cambiarEspecializacion("Estudiante Técnico");
+				cambiarEspecializacion("Estudiante Tecnico");
 
 				TecnicoSuperior tecnico = (TecnicoSuperior) candidatoAct;
 				for (int i = 0; i < cmbAreaTecnica.getItemCount(); i++) {
@@ -1114,18 +1114,18 @@ public class RegistroCandidato extends JDialog {
 				Obrero obrero = (Obrero) candidatoAct;
 				for (String habilidad : obrero.getHabilidades()) {
 					switch (habilidad) {
-						case "Plomería": chkPlomeria.setSelected(true); break;
-						case "Carpintería": chkCarpintero.setSelected(true); break;
-						case "Gestión Financiera": chkCajero.setSelected(true); break;
+						case "Plomeria": chkPlomeria.setSelected(true); break;
+						case "Carpinteria": chkCarpintero.setSelected(true); break;
+						case "Gestion Financiera": chkCajero.setSelected(true); break;
 						case "Soldadura": chkSoldadura.setSelected(true); break;
-						case "Instalación Eléctrica": chkElectrica.setSelected(true); break;
-						case "Mecánica": chkMecanica.setSelected(true); break;
-						case "Albañilería": chkAlbanileria.setSelected(true); break;
+						case "Instalacion Electrica": chkElectrica.setSelected(true); break;
+						case "Mecanica": chkMecanica.setSelected(true); break;
+						case "Albanileria": chkAlbanileria.setSelected(true); break;
 						case "Redes Sociales": chkRedes.setSelected(true); break;
-						case "Conducción": chkConduccion.setSelected(true); break;
-						case "Reparación de Electrónicos": chkReparacion.setSelected(true); break;
+						case "Conduccion": chkConduccion.setSelected(true); break;
+						case "Reparacion de Electronicos": chkReparacion.setSelected(true); break;
 						case "Ventas": chkVentas.setSelected(true); break;
-						case "Fotografía": chkFotografia.setSelected(true); break;
+						case "Fotografia": chkFotografia.setSelected(true); break;
 						case "Cocina": chkCocina.setSelected(true); break;
 						case "Limpieza": chkLimpieza.setSelected(true); break;
 						case "Pintura": chkPintura.setSelected(true); break;
@@ -1149,7 +1149,7 @@ public class RegistroCandidato extends JDialog {
 		}
 		String cedula = txtCedula.getText().trim().replaceAll("[^0-9]", "");
 		if(cedula.length() != 11) {
-			throw new FormatException("La c dula debe tener 11 d gitos");
+			throw new FormatException("La cedula debe tener 11 digitos");
 		}
 
 		Date fechaNacimiento = (Date) spnFechaNac.getValue();
@@ -1162,7 +1162,7 @@ public class RegistroCandidato extends JDialog {
 
 		cal.add(Calendar.YEAR, -16);
 		if(fechaNacimiento.after(cal.getTime())) {
-			throw new FormatException("El candidato debe tener al menos 16 a os");
+			throw new FormatException("El candidato debe tener al menos 16 anios");
 		}
 
 		cal = Calendar.getInstance();
@@ -1173,11 +1173,11 @@ public class RegistroCandidato extends JDialog {
 
 		if(cmbGenero == null || cmbGenero.getSelectedItem() == null ||
 				cmbGenero.getSelectedItem().toString().trim().isEmpty()) {
-			throw new FormatException("El g nero es obligatoria");
+			throw new FormatException("El genero es obligatoria");
 		}
 
 		if(txtTelefono.getText().trim().isEmpty()) {
-			throw new FormatException("El tel fono es obligatorio");
+			throw new FormatException("El telefono es obligatorio");
 		}
 
 		if(txtCorreo.getText().trim().isEmpty()) {
@@ -1192,12 +1192,12 @@ public class RegistroCandidato extends JDialog {
 		}
 
 		if(!txtCorreo.getText().contains("@") || !txtCorreo.getText().contains(".")) {
-			throw new FormatException("Formato del correo inv lido. Ejemplo: usuario@dominio.com\"");
+			throw new FormatException("Formato del correo invalido. Ejemplo: usuario@dominio.com");
 		}
 
 		String telefono = txtTelefono.getText().trim().replaceAll("[^0-9]", "");
 		if(telefono.length() != 10) {
-			throw new FormatException("El tel fono debe tener 10 d gitos");
+			throw new FormatException("El telefono debe tener 10 digitos");
 		}
 
 		if(rdUniversitario.isSelected()) {
@@ -1210,7 +1210,7 @@ public class RegistroCandidato extends JDialog {
 
 		} else if (rdTecnico.isSelected()) {
 			if (cmbAreaTecnica.getSelectedItem() == null) {
-				throw new FormatException("El área técnica es obligatoria para técnicos superiores");
+				throw new FormatException("El area tecnica es obligatoria para tecnicos superiores");
 			}
 		} else if (rdObrero.isSelected()) {
 			boolean tieneHabilidad = false;
@@ -1233,7 +1233,7 @@ public class RegistroCandidato extends JDialog {
 		}
 		if(cmbArea == null || cmbArea.getSelectedItem() == null ||
 				cmbArea.getSelectedItem().toString().trim().isEmpty()) {
-			throw new FormatException("Debe seleccionar un  rea");
+			throw new FormatException("Debe seleccionar un area");
 		}
 
 		if(cmbJornada == null || cmbJornada.getSelectedItem() == null ||
