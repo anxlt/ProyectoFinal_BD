@@ -36,14 +36,13 @@ public class ConsultarCentros extends JDialog {
 	public static JTable table;
 	public static DefaultTableModel modelo = new DefaultTableModel() {
 		@Override
-        public boolean isCellEditable(int row, int column) {
-            return false;
-        }
-		
-		public Class getColumnClass(int column)
-        {
-            return getValueAt(0, column).getClass();
-        }
+		public boolean isCellEditable(int row, int column) {
+			return false;
+		}
+
+		public Class getColumnClass(int column) {
+			return getValueAt(0, column).getClass();
+		}
 	};
 	public static Object[] row;
 	private CentroEmpleador seleccionado = null;
@@ -51,7 +50,7 @@ public class ConsultarCentros extends JDialog {
 	private JButton btnDelete;
 	private JTextField txtFiltro;
 	private JButton btnVisualizar;
-	
+
 	/**
 	 * Create the dialog.
 	 */
@@ -63,7 +62,7 @@ public class ConsultarCentros extends JDialog {
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPanel.setBackground(new Color(228,228,228));
+		contentPanel.setBackground(new Color(228, 228, 228));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BorderLayout(0, 0));
 		{
@@ -83,15 +82,16 @@ public class ConsultarCentros extends JDialog {
 						@Override
 						public void mouseClicked(MouseEvent e) {
 							int index = table.getSelectedRow();
-							if(index >= 0) {
-								seleccionado = BolsaLaboral.getInstancia().buscarCentroByCodigo(table.getValueAt(index, 0).toString());
+							if (index >= 0) {
+								seleccionado = BolsaLaboral.getInstancia()
+										.buscarCentroByCodigo(table.getValueAt(index, 0).toString());
 								btnDelete.setEnabled(true);
 								btnUpdate.setEnabled(true);
 								btnVisualizar.setEnabled(true);
 							}
 						}
 					});
-					String [] headers = {"Codigo", "Nombre", "RNC", "Sector", " "};
+					String[] headers = { "Código", "Nombre", "RNC", "Sector", "Teléfono" };
 					modelo.setColumnIdentifiers(headers);
 					table.setModel(modelo);
 					scrollPane.setViewportView(table);
@@ -106,7 +106,6 @@ public class ConsultarCentros extends JDialog {
 				JLabel lblIconFiltrar = new JLabel("");
 				lblIconFiltrar.setIcon(new ImageIcon("recursos/filtrar.png"));
 				pnlFiltro.add(lblIconFiltrar);
-				
 			}
 			{
 				JLabel lblNewLabel = new JLabel("Criterio del Filtro: ");
@@ -179,9 +178,13 @@ public class ConsultarCentros extends JDialog {
 				btnDelete.setFont(new Font("Segoe UI", Font.BOLD, 16));
 				btnDelete.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						if(seleccionado != null) {
-							int option = JOptionPane.showConfirmDialog(null, "�Esta seguro que desea eliminar el centro de trabajo llamado " + seleccionado.getNombre() + " que posee el ID: "+seleccionado.getCodigo()+"?", "Eliminar", JOptionPane.WARNING_MESSAGE);
-							if(option == JOptionPane.OK_OPTION){
+						if (seleccionado != null) {
+							int option = JOptionPane.showConfirmDialog(null,
+									"¿Está seguro que desea eliminar el centro de trabajo llamado "
+											+ seleccionado.getNombre() + " que posee el ID: "
+											+ seleccionado.getCodigo() + "?",
+									"Eliminar", JOptionPane.WARNING_MESSAGE);
+							if (option == JOptionPane.OK_OPTION) {
 								btnDelete.setEnabled(true);
 								btnUpdate.setEnabled(true);
 								try {
@@ -189,10 +192,10 @@ public class ConsultarCentros extends JDialog {
 									btnUpdate.setEnabled(true);
 									BolsaLaboral.getInstancia().eliminarCentroTrabajo(seleccionado);
 									cargarCentros();
+								} catch (NotRemovableException ex) {
+									JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia",
+											JOptionPane.ERROR_MESSAGE);
 								}
-								catch (NotRemovableException ex) {
-									JOptionPane.showMessageDialog(null,ex.getMessage(),"Advertencia",JOptionPane.ERROR_MESSAGE);
-								}	
 							}
 						}
 					}
@@ -231,12 +234,12 @@ public class ConsultarCentros extends JDialog {
 		btnVisualizar.setEnabled(false);
 
 		for (CentroEmpleador aux : BolsaLaboral.getInstancia().getCentros()) {
-			if (aux.getCodigo() == null) continue;
-			boolean coincide =
-					aux.getCodigo().toLowerCase().contains(filtro) ||
-							(aux.getNombre() != null && aux.getNombre().toLowerCase().contains(filtro)) ||
-							(aux.getRnc() != null && aux.getRnc().toLowerCase().contains(filtro)) ||
-							(aux.getSector() != null && aux.getSector().toLowerCase().contains(filtro));
+			if (aux.getCodigo() == null)
+				continue;
+			boolean coincide = aux.getCodigo().toLowerCase().contains(filtro)
+					|| (aux.getNombre() != null && aux.getNombre().toLowerCase().contains(filtro))
+					|| (aux.getRnc() != null && aux.getRnc().toLowerCase().contains(filtro))
+					|| (aux.getSector() != null && aux.getSector().toLowerCase().contains(filtro));
 
 			if (coincide) {
 				Object[] fila = new Object[5];
@@ -244,32 +247,26 @@ public class ConsultarCentros extends JDialog {
 				fila[1] = aux.getNombre();
 				fila[2] = aux.getRnc();
 				fila[3] = aux.getSector();
-				fila[4] = new ImageIcon(getImagen(aux.getSector()));
+				fila[4] = aux.getTelefono();
 				modelo.addRow(fila);
 			}
 		}
 	}
-	
-	private static String getImagen(String nombreSector) {
-		nombreSector = nombreSector.replace("�","i");
-		nombreSector = nombreSector.replace("�","o");
-		nombreSector = nombreSector.replace(" ","");
-		return "recursos/" + nombreSector + ".png";
-	}
 
 	public static void cargarCentros() {
-		if (modelo == null) return;
+		if (modelo == null)
+			return;
 		modelo.setRowCount(0);
 		for (CentroEmpleador aux : BolsaLaboral.getInstancia().getCentros()) {
-			if (aux.getCodigo() == null) continue;
+			if (aux.getCodigo() == null)
+				continue;
 			Object[] fila = new Object[5];
 			fila[0] = aux.getCodigo();
 			fila[1] = aux.getNombre();
 			fila[2] = aux.getRnc();
 			fila[3] = aux.getSector();
-			fila[4] = new ImageIcon(getImagen(aux.getSector()));
+			fila[4] = aux.getTelefono();
 			modelo.addRow(fila);
 		}
 	}
-
 }

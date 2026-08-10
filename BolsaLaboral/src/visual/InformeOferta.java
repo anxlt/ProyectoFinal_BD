@@ -2,33 +2,27 @@ package visual;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import logico.BolsaLaboral;
-import logico.CentroEmpleador;
 import logico.OfertaLaboral;
 import logico.Solicitud;
-
-import javax.swing.JLabel;
-import java.awt.Font;
-import java.awt.Toolkit;
-
-import javax.swing.ImageIcon;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.awt.event.ActionEvent;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 
 public class InformeOferta extends JDialog {
 
@@ -38,17 +32,15 @@ public class InformeOferta extends JDialog {
 	private JPanel pnlEnfasis;
 	private JTable table;
 	private JLabel lblNewLabel;
-	
 	public static DefaultTableModel modelo = new DefaultTableModel() {
 		@Override
-        public boolean isCellEditable(int row, int column) {
-            return false;
-        }
-		
-		public Class getColumnClass(int column)
-        {
-            return getValueAt(0, column).getClass();
-        }
+		public boolean isCellEditable(int row, int column) {
+			return false;
+		}
+
+		public Class getColumnClass(int column) {
+			return getValueAt(0, column).getClass();
+		}
 	};
 	public static Object[] row;
 	private JPanel pnlResumen;
@@ -56,7 +48,7 @@ public class InformeOferta extends JDialog {
 	private JLabel lblJornada;
 	private JLabel lblModalidad;
 	private JLabel lblEstado;
-	private JLabel lblDeAceptacin;
+	private JLabel lblDeAceptacion;
 	private ArrayList<Solicitud> solicitudesVinculadas = new ArrayList<>();
 
 	/**
@@ -70,41 +62,41 @@ public class InformeOferta extends JDialog {
 		setResizable(false);
 		setLocationRelativeTo(null);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPanel.setBackground(new Color(255,255,255));
+		contentPanel.setBackground(new Color(255, 255, 255));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
-		
+
 		pnlEnfasis = new JPanel();
 		pnlEnfasis.setBounds(0, 0, 679, 130);
 		contentPanel.add(pnlEnfasis);
 		pnlEnfasis.setLayout(null);
-		
+
 		lblPuesto = new JLabel("PUESTO LABORAL");
 		lblPuesto.setForeground(Color.WHITE);
 		lblPuesto.setFont(new Font("Verdana", Font.BOLD, 26));
 		lblPuesto.setBounds(19, 13, 595, 46);
 		pnlEnfasis.add(lblPuesto);
-		
+
 		lblArea = new JLabel("");
 		lblArea.setBounds(29, 82, 40, 40);
 		pnlEnfasis.add(lblArea);
-		
+
 		JSeparator separator = new JSeparator();
 		separator.setForeground(Color.WHITE);
 		separator.setBackground(Color.WHITE);
 		separator.setBounds(19, 67, 630, 2);
 		pnlEnfasis.add(separator);
-		
+
 		lblJornada = new JLabel("");
 		lblJornada.setToolTipText((String) null);
 		lblJornada.setBounds(81, 82, 40, 40);
 		pnlEnfasis.add(lblJornada);
-		
+
 		lblModalidad = new JLabel("");
 		lblModalidad.setToolTipText((String) null);
 		lblModalidad.setBounds(133, 82, 40, 40);
 		pnlEnfasis.add(lblModalidad);
-		
+
 		lblEstado = new JLabel("Estado:");
 		lblEstado.setToolTipText((String) null);
 		lblEstado.setHorizontalAlignment(SwingConstants.LEFT);
@@ -112,27 +104,27 @@ public class InformeOferta extends JDialog {
 		lblEstado.setFont(new Font("Consolas", Font.PLAIN, 18));
 		lblEstado.setBounds(360, 92, 190, 22);
 		pnlEnfasis.add(lblEstado);
-		
+
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setForeground(Color.WHITE);
 		separator_1.setOrientation(SwingConstants.VERTICAL);
 		separator_1.setBounds(347, 82, 1, 40);
 		pnlEnfasis.add(separator_1);
-		
+
 		JSeparator separator_2 = new JSeparator();
 		separator_2.setOrientation(SwingConstants.VERTICAL);
 		separator_2.setForeground(Color.WHITE);
 		separator_2.setBounds(174, 82, 1, 40);
 		pnlEnfasis.add(separator_2);
-		
-		lblDeAceptacin = new JLabel("% de Aceptaci\u00F3n:");
-		lblDeAceptacin.setToolTipText((String) null);
-		lblDeAceptacin.setHorizontalAlignment(SwingConstants.LEFT);
-		lblDeAceptacin.setForeground(Color.WHITE);
-		lblDeAceptacin.setFont(new Font("Consolas", Font.PLAIN, 18));
-		lblDeAceptacin.setBounds(185, 92, 150, 22);
-		pnlEnfasis.add(lblDeAceptacin);
-		
+
+		lblDeAceptacion = new JLabel("% de Aceptaci√≥n:");
+		lblDeAceptacion.setToolTipText((String) null);
+		lblDeAceptacion.setHorizontalAlignment(SwingConstants.LEFT);
+		lblDeAceptacion.setForeground(Color.WHITE);
+		lblDeAceptacion.setFont(new Font("Consolas", Font.PLAIN, 18));
+		lblDeAceptacion.setBounds(185, 92, 150, 22);
+		pnlEnfasis.add(lblDeAceptacion);
+
 		JButton btnCancelar = new JButton("Cerrar");
 		btnCancelar.setIcon(new ImageIcon("recursos/cerrar.png"));
 		btnCancelar.addActionListener(new ActionListener() {
@@ -146,56 +138,61 @@ public class InformeOferta extends JDialog {
 		btnCancelar.setActionCommand("Cancel");
 		btnCancelar.setBounds(502, 555, 140, 31);
 		contentPanel.add(btnCancelar);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(12, 187, 643, 339);
-		contentPanel.add(scrollPane, BorderLayout.CENTER);
+		contentPanel.add(scrollPane);
+
 		{
 			table = new JTable();
 			table.setForeground(Color.BLACK);
 			table.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-			String [] headers = {"CÛdigo", "Solicitante", "Fecha Solicitud", "Estado", " "};
+			String[] headers = { "C√≥digo", "Solicitante", "Fecha Solicitud", "Estado", " " };
 			modelo.setColumnIdentifiers(headers);
 			table.setModel(modelo);
 			scrollPane.setViewportView(table);
 		}
-		
+
 		lblNewLabel = new JLabel("Solicitudes Vinculadas");
 		lblNewLabel.setForeground(Color.BLACK);
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Consolas", Font.BOLD, 18));
 		lblNewLabel.setBounds(157, 143, 352, 31);
 		contentPanel.add(lblNewLabel);
+
 		table.setRowHeight(36);
-		
+
 		pnlResumen = new JPanel();
 		pnlResumen.setBounds(0, 547, 452, 48);
 		contentPanel.add(pnlResumen);
 		pnlResumen.setLayout(null);
-		
+
 		lblCantidadVac = new JLabel("Vacantes disponibles:");
 		lblCantidadVac.setBounds(12, 13, 428, 22);
 		lblCantidadVac.setHorizontalAlignment(SwingConstants.LEFT);
 		lblCantidadVac.setForeground(Color.WHITE);
 		lblCantidadVac.setFont(new Font("Consolas", Font.PLAIN, 18));
 		pnlResumen.add(lblCantidadVac);
+
 		table.getTableHeader().setReorderingAllowed(false);
 		cargarOferta(oferta);
 		solicitudesVinculadas = BolsaLaboral.getInstancia().obtenerSolicitudesVinculadas(oferta);
 		cargarDetalles();
 	}
-	
+
 	public void cargarOferta(OfertaLaboral oferta) {
 		lblPuesto.setText(oferta.getPuesto());
 		lblArea.setToolTipText(oferta.getArea());
 		lblEstado.setText("Estado: " + oferta.getEstado());
 		lblCantidadVac.setText("Vacantes Disponibles: " + oferta.getVacantes());
-		lblDeAceptacin.setText("% MÌnimo: " + oferta.getPorcentajeMinimo() + "%");
+		lblDeAceptacion.setText("% M√≠nimo: " + oferta.getPorcentajeMinimo() + "%");
+
 		String nombreArea = oferta.getArea().toLowerCase();
-		nombreArea = nombreArea.replace("Ì","i");
-		nombreArea = nombreArea.replace("Û","o");
-		nombreArea = nombreArea.replace(" ","");
+		nombreArea = nombreArea.replace("√≠", "i");
+		nombreArea = nombreArea.replace("√≥", "o");
+		nombreArea = nombreArea.replace(" ", "");
 		lblArea.setIcon(new ImageIcon("recursos/" + nombreArea + ".png"));
+
 		Color fondo = getFondo(oferta.getArea());
 		lblJornada.setToolTipText(oferta.getJornada());
 		cargarJornada(oferta.getJornada());
@@ -204,46 +201,56 @@ public class InformeOferta extends JDialog {
 		pnlEnfasis.setBackground(fondo);
 		pnlResumen.setBackground(fondo);
 	}
-	
+
 	private void cargarJornada(String nombreJornada) {
 		nombreJornada = nombreJornada.toLowerCase();
-		nombreJornada = nombreJornada.replace(" ","");
+		nombreJornada = nombreJornada.replace(" ", "");
 		lblJornada.setIcon(new ImageIcon("recursos/" + nombreJornada + ".png"));
 	}
 
 	private void cargarModalidad(String modalidad) {
 		String nombreModalidad = modalidad.toLowerCase();
-		nombreModalidad = nombreModalidad.replace("Ì","i");
+		nombreModalidad = nombreModalidad.replace("√≠", "i");
 		lblModalidad.setIcon(new ImageIcon("recursos/" + nombreModalidad + ".png"));
 	}
 
-	
 	public Color getFondo(String area) {
 		switch (area) {
-			case "Finanzas": return new Color(213, 69, 27);	
-			case "Recursos Humanos": return new Color(27, 60, 83);
-			case "Marketing": return new Color(197, 23, 46);
-			case "Limpieza": return new Color(78, 102, 136);
-			case "Seguridad": return new Color(10, 64, 12);
-			case "TI": return new Color(9, 107, 104);
-			case "Salud": return new Color(162, 18, 50);
-			case "Operaciones": return new Color(39, 63, 79);
-			case "AdministraciÛn": return new Color(190, 49, 68);
-			case "AtenciÛn al Cliente": return new Color(130, 17, 49);	
-			default: return new Color(57, 62, 7);
+			case "Finanzas":
+				return new Color(213, 69, 27);
+			case "Recursos Humanos":
+				return new Color(27, 60, 83);
+			case "Marketing":
+				return new Color(197, 23, 46);
+			case "Limpieza":
+				return new Color(78, 102, 136);
+			case "Seguridad":
+				return new Color(10, 64, 12);
+			case "TI":
+				return new Color(9, 107, 104);
+			case "Salud":
+				return new Color(162, 18, 50);
+			case "Operaciones":
+				return new Color(39, 63, 79);
+			case "Administraci√≥n":
+				return new Color(190, 49, 68);
+			case "Atenci√≥n al Cliente":
+				return new Color(130, 17, 49);
+			default:
+				return new Color(57, 62, 7);
 		}
 	}
-	
+
 	private String getEstado(String estado) {
 		estado = estado.toLowerCase();
-		estado.replace(" ","");
-		return "recursos/" +  estado + ".png";
+		estado = estado.replace(" ", "");
+		return "recursos/" + estado + ".png";
 	}
-	
+
 	public void cargarDetalles() {
 		modelo.setRowCount(0);
 		row = new Object[table.getColumnCount()];
-		for(Solicitud sol : solicitudesVinculadas) {
+		for (Solicitud sol : solicitudesVinculadas) {
 			row[0] = sol.getCodigo();
 			row[1] = sol.getSolicitante().getNombres() + " " + sol.getSolicitante().getApellidos();
 			row[2] = sol.getFechaSolicitud().toString();

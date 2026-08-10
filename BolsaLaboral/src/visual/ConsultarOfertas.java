@@ -2,7 +2,6 @@ package visual;
 
 import logico.*;
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.FlowLayout;
 
 import javax.swing.ImageIcon;
@@ -28,8 +27,6 @@ import java.awt.Font;
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
-
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -39,14 +36,13 @@ public class ConsultarOfertas extends JDialog {
 	public static JTable table;
 	public static DefaultTableModel modelo = new DefaultTableModel() {
 		@Override
-        public boolean isCellEditable(int row, int column) {
-            return false;
-        }
-		
-		public Class getColumnClass(int column)
-        {
-            return getValueAt(0, column).getClass();
-        }
+		public boolean isCellEditable(int row, int column) {
+			return false;
+		}
+
+		public Class getColumnClass(int column) {
+			return getValueAt(0, column).getClass();
+		}
 	};
 	public static Object[] row;
 	private OfertaLaboral seleccionado = null;
@@ -55,7 +51,7 @@ public class ConsultarOfertas extends JDialog {
 	private JTextField txtFiltro;
 	private JButton btnVincular;
 	private JButton btnVerInforme;
-	
+
 	/**
 	 * Create the dialog.
 	 */
@@ -67,7 +63,7 @@ public class ConsultarOfertas extends JDialog {
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPanel.setBackground(new Color(228,228,228));
+		contentPanel.setBackground(new Color(228, 228, 228));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BorderLayout(0, 0));
 		{
@@ -87,8 +83,9 @@ public class ConsultarOfertas extends JDialog {
 						@Override
 						public void mouseClicked(MouseEvent e) {
 							int index = table.getSelectedRow();
-							if(index >= 0) {
-								seleccionado = BolsaLaboral.getInstancia().buscarOfertaByCodigo(table.getValueAt(index, 0).toString());
+							if (index >= 0) {
+								seleccionado = BolsaLaboral.getInstancia()
+										.buscarOfertaByCodigo(table.getValueAt(index, 0).toString());
 								btnDelete.setEnabled(true);
 								btnUpdate.setEnabled(true);
 								btnVincular.setEnabled(true);
@@ -96,7 +93,7 @@ public class ConsultarOfertas extends JDialog {
 							}
 						}
 					});
-					String [] headers = {"Codigo", "Puesto", "Ofertador", "Area", "Estado"};
+					String[] headers = { "Código", "Puesto", "Ofertador", "Área", "Estado" };
 					modelo.setColumnIdentifiers(headers);
 					table.setModel(modelo);
 					scrollPane.setViewportView(table);
@@ -111,7 +108,6 @@ public class ConsultarOfertas extends JDialog {
 				JLabel lblIconFiltrar = new JLabel("");
 				lblIconFiltrar.setIcon(new ImageIcon("recursos/filtrar.png"));
 				pnlFiltro.add(lblIconFiltrar);
-				
 			}
 			{
 				JLabel lblNewLabel = new JLabel("Criterio del Filtro: ");
@@ -162,7 +158,6 @@ public class ConsultarOfertas extends JDialog {
 							ResultadosVinculacion.cargarResultados(seleccionado);
 							res.setModal(true);
 							res.setVisible(true);
-							
 						}
 					});
 					{
@@ -199,9 +194,13 @@ public class ConsultarOfertas extends JDialog {
 				btnDelete.setFont(new Font("Segoe UI", Font.BOLD, 16));
 				btnDelete.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						if(seleccionado != null) {
-							int option = JOptionPane.showConfirmDialog(null, "�Esta seguro que desea eliminar la oferta al puesto de " + seleccionado.getPuesto() + " que posee el ID: "+seleccionado.getCodigo()+"?", "Eliminar", JOptionPane.WARNING_MESSAGE);
-							if(option == JOptionPane.OK_OPTION){
+						if (seleccionado != null) {
+							int option = JOptionPane.showConfirmDialog(null,
+									"¿Está seguro que desea eliminar la oferta al puesto de "
+											+ seleccionado.getPuesto() + " que posee el ID: "
+											+ seleccionado.getCodigo() + "?",
+									"Eliminar", JOptionPane.WARNING_MESSAGE);
+							if (option == JOptionPane.OK_OPTION) {
 								btnDelete.setEnabled(true);
 								btnUpdate.setEnabled(true);
 								btnVincular.setEnabled(true);
@@ -209,10 +208,10 @@ public class ConsultarOfertas extends JDialog {
 								try {
 									BolsaLaboral.getInstancia().eliminarOfertaTrabajo(seleccionado);
 									cargarOfertas();
+								} catch (NotRemovableException ex) {
+									JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia",
+											JOptionPane.ERROR_MESSAGE);
 								}
-								catch (NotRemovableException ex) {
-									JOptionPane.showMessageDialog(null,ex.getMessage(),"Advertencia",JOptionPane.ERROR_MESSAGE);
-								}	
 							}
 						}
 					}
@@ -249,48 +248,44 @@ public class ConsultarOfertas extends JDialog {
 		btnDelete.setEnabled(false);
 		btnUpdate.setEnabled(false);
 		btnVincular.setEnabled(false);
+		btnVerInforme.setEnabled(false);
 
 		for (OfertaLaboral aux : BolsaLaboral.getInstancia().getOfertas()) {
-			if (aux.getCodigo() == null) continue;
-			boolean coincide =
-					aux.getCodigo().toLowerCase().contains(filtro) ||
-							(aux.getOfertador() != null && aux.getOfertador().getNombre() != null
-									&& aux.getOfertador().getNombre().toLowerCase().contains(filtro)) ||
-							(aux.getPuesto() != null && aux.getPuesto().toLowerCase().contains(filtro)) ||
-							(aux.getArea() != null && aux.getArea().toLowerCase().contains(filtro)) ||
-							(aux.getEstado() != null && aux.getEstado().toLowerCase().contains(filtro));
+			if (aux.getCodigo() == null)
+				continue;
+			boolean coincide = aux.getCodigo().toLowerCase().contains(filtro)
+					|| (aux.getOfertador() != null && aux.getOfertador().getNombre() != null
+					&& aux.getOfertador().getNombre().toLowerCase().contains(filtro))
+					|| (aux.getPuesto() != null && aux.getPuesto().toLowerCase().contains(filtro))
+					|| (aux.getArea() != null && aux.getArea().toLowerCase().contains(filtro))
+					|| (aux.getEstado() != null && aux.getEstado().toLowerCase().contains(filtro));
 
 			if (coincide) {
 				Object[] fila = new Object[5];
 				fila[0] = aux.getCodigo();
 				fila[1] = aux.getPuesto();
 				fila[2] = aux.getOfertador() != null ? aux.getOfertador().getNombre() : "";
-				fila[3] = new ImageIcon(getImagen(aux.getArea()));
+				fila[3] = aux.getArea();
 				fila[4] = aux.getEstado();
 				modelo.addRow(fila);
 			}
 		}
 	}
-	
-	private static String getImagen(String area) {
-		area = area.replace("�","o");
-		area = area.replace(" ","");
-		return "recursos/" + area + ".png";
-	}
 
 	public static void cargarOfertas() {
-		if (modelo == null) return;
+		if (modelo == null)
+			return;
 		modelo.setRowCount(0);
 		for (OfertaLaboral aux : BolsaLaboral.getInstancia().getOfertas()) {
-			if (aux.getCodigo() == null) continue;
+			if (aux.getCodigo() == null)
+				continue;
 			Object[] fila = new Object[5];
 			fila[0] = aux.getCodigo();
 			fila[1] = aux.getPuesto();
 			fila[2] = aux.getOfertador() != null ? aux.getOfertador().getNombre() : "";
-			fila[3] = new ImageIcon(getImagen(aux.getArea()));
+			fila[3] = aux.getArea();
 			fila[4] = aux.getEstado();
 			modelo.addRow(fila);
 		}
 	}
-
 }

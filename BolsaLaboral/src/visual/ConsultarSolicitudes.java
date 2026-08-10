@@ -2,7 +2,6 @@ package visual;
 
 import logico.*;
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.FlowLayout;
 
 import javax.swing.ImageIcon;
@@ -28,8 +27,6 @@ import java.awt.Font;
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
-
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -39,21 +36,20 @@ public class ConsultarSolicitudes extends JDialog {
 	public static JTable table;
 	public static DefaultTableModel modelo = new DefaultTableModel() {
 		@Override
-        public boolean isCellEditable(int row, int column) {
-            return false;
-        }
-		
-		public Class getColumnClass(int column)
-        {
-            return getValueAt(0, column).getClass();
-        }
+		public boolean isCellEditable(int row, int column) {
+			return false;
+		}
+
+		public Class getColumnClass(int column) {
+			return getValueAt(0, column).getClass();
+		}
 	};
 	public static Object[] row;
 	private Solicitud seleccionado = null;
 	private JTextField txtFiltro;
 	private JButton btnContratar;
 	private JButton btnRechazar;
-	
+
 	/**
 	 * Create the dialog.
 	 */
@@ -65,7 +61,7 @@ public class ConsultarSolicitudes extends JDialog {
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPanel.setBackground(new Color(228,228,228));
+		contentPanel.setBackground(new Color(228, 228, 228));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BorderLayout(0, 0));
 		{
@@ -85,14 +81,15 @@ public class ConsultarSolicitudes extends JDialog {
 						@Override
 						public void mouseClicked(MouseEvent e) {
 							int index = table.getSelectedRow();
-							if(index >= 0) {
-								seleccionado = BolsaLaboral.getInstancia().buscarSolicitudByCodigo(table.getValueAt(index, 0).toString());
+							if (index >= 0) {
+								seleccionado = BolsaLaboral.getInstancia()
+										.buscarSolicitudByCodigo(table.getValueAt(index, 0).toString());
 								btnContratar.setEnabled(true);
 								btnRechazar.setEnabled(true);
 							}
 						}
 					});
-					String [] headers = {"Codigo", "Solicitante", "Puesto", "Ofertador", "Estado"};
+					String[] headers = { "Código", "Solicitante", "Puesto", "Ofertador", "Estado" };
 					modelo.setColumnIdentifiers(headers);
 					table.setModel(modelo);
 					scrollPane.setViewportView(table);
@@ -107,7 +104,6 @@ public class ConsultarSolicitudes extends JDialog {
 				JLabel lblIconFiltrar = new JLabel("");
 				lblIconFiltrar.setIcon(new ImageIcon("recursos/filtrar.png"));
 				pnlFiltro.add(lblIconFiltrar);
-				
 			}
 			{
 				JLabel lblNewLabel = new JLabel("Criterio del Filtro: ");
@@ -141,14 +137,17 @@ public class ConsultarSolicitudes extends JDialog {
 					btnContratar.setBackground(Color.WHITE);
 					btnContratar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
-							if(seleccionado != null && BolsaLaboral.getInstancia().esProcesable(seleccionado)) {
+							if (seleccionado != null && BolsaLaboral.getInstancia().esProcesable(seleccionado)) {
 								BolsaLaboral.getInstancia().contratarCandidato(seleccionado);
-								JOptionPane.showMessageDialog(null,"Contrataci�n procesada satisfactoriamente.","Informaci�n",JOptionPane.INFORMATION_MESSAGE);
+								JOptionPane.showMessageDialog(null,
+										"Contratación procesada satisfactoriamente.",
+										"Información", JOptionPane.INFORMATION_MESSAGE);
 								cargarSolicitudes();
 								filtrar();
-							}
-							else {
-								JOptionPane.showMessageDialog(null,"Solo se pueden aprobar y rechazar solicitudes que no han sido procesadas.","Advertencia",JOptionPane.WARNING_MESSAGE);
+							} else {
+								JOptionPane.showMessageDialog(null,
+										"Solo se pueden aprobar y rechazar solicitudes que no han sido procesadas.",
+										"Advertencia", JOptionPane.WARNING_MESSAGE);
 							}
 						}
 					});
@@ -156,14 +155,17 @@ public class ConsultarSolicitudes extends JDialog {
 						btnRechazar = new JButton("Rechazar");
 						btnRechazar.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
-								if(seleccionado != null && BolsaLaboral.getInstancia().esProcesable(seleccionado)) {
+								if (seleccionado != null && BolsaLaboral.getInstancia().esProcesable(seleccionado)) {
 									BolsaLaboral.getInstancia().rechazarCandidato(seleccionado);
-									JOptionPane.showMessageDialog(null,"Rechazo procesado satisfactoriamente.","Informaci�n",JOptionPane.INFORMATION_MESSAGE);
+									JOptionPane.showMessageDialog(null,
+											"Rechazo procesado satisfactoriamente.",
+											"Información", JOptionPane.INFORMATION_MESSAGE);
 									cargarSolicitudes();
 									filtrar();
-								}
-								else {
-									JOptionPane.showMessageDialog(null,"Solo se pueden aprobar y rechazar solicitudes que no han sido procesadas.","Advertencia",JOptionPane.WARNING_MESSAGE);
+								} else {
+									JOptionPane.showMessageDialog(null,
+											"Solo se pueden aprobar y rechazar solicitudes que no han sido procesadas.",
+											"Advertencia", JOptionPane.WARNING_MESSAGE);
 								}
 							}
 						});
@@ -207,22 +209,21 @@ public class ConsultarSolicitudes extends JDialog {
 
 		seleccionado = null;
 		btnContratar.setEnabled(false);
-		// si tienes btnRechazar:
-		// btnRechazar.setEnabled(false);
+		btnRechazar.setEnabled(false);
 
 		for (Solicitud aux : BolsaLaboral.getInstancia().getSolicitudes()) {
-			if (aux.getCodigo() == null) continue;
-			boolean coincide =
-					aux.getCodigo().toLowerCase().contains(filtro) ||
-							(aux.getOfertaSolicitada() != null && aux.getOfertaSolicitada().getPuesto() != null
-									&& aux.getOfertaSolicitada().getPuesto().toLowerCase().contains(filtro)) ||
-							(aux.getOfertaSolicitada() != null && aux.getOfertaSolicitada().getOfertador() != null
-									&& aux.getOfertaSolicitada().getOfertador().getNombre() != null
-									&& aux.getOfertaSolicitada().getOfertador().getNombre().toLowerCase().contains(filtro)) ||
-							(aux.getSolicitante() != null
-									&& (aux.getSolicitante().getNombres() + " " + aux.getSolicitante().getApellidos())
-									.toLowerCase().contains(filtro)) ||
-							(aux.getEstado() != null && aux.getEstado().toLowerCase().contains(filtro));
+			if (aux.getCodigo() == null)
+				continue;
+			boolean coincide = aux.getCodigo().toLowerCase().contains(filtro)
+					|| (aux.getOfertaSolicitada() != null && aux.getOfertaSolicitada().getPuesto() != null
+					&& aux.getOfertaSolicitada().getPuesto().toLowerCase().contains(filtro))
+					|| (aux.getOfertaSolicitada() != null && aux.getOfertaSolicitada().getOfertador() != null
+					&& aux.getOfertaSolicitada().getOfertador().getNombre() != null
+					&& aux.getOfertaSolicitada().getOfertador().getNombre().toLowerCase().contains(filtro))
+					|| (aux.getSolicitante() != null
+					&& (aux.getSolicitante().getNombres() + " " + aux.getSolicitante().getApellidos())
+					.toLowerCase().contains(filtro))
+					|| (aux.getEstado() != null && aux.getEstado().toLowerCase().contains(filtro));
 
 			if (coincide) {
 				Object[] fila = new Object[5];
@@ -235,11 +236,14 @@ public class ConsultarSolicitudes extends JDialog {
 			}
 		}
 	}
+
 	public static void cargarSolicitudes() {
-		if (modelo == null) return;
+		if (modelo == null)
+			return;
 		modelo.setRowCount(0);
 		for (Solicitud aux : BolsaLaboral.getInstancia().getSolicitudes()) {
-			if (aux.getCodigo() == null) continue;
+			if (aux.getCodigo() == null)
+				continue;
 			Object[] fila = new Object[5];
 			fila[0] = aux.getCodigo();
 			fila[1] = aux.getSolicitante().getNombres() + " " + aux.getSolicitante().getApellidos();
@@ -249,5 +253,4 @@ public class ConsultarSolicitudes extends JDialog {
 			modelo.addRow(fila);
 		}
 	}
-
 }
