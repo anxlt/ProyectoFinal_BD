@@ -221,6 +221,61 @@ public class Principal extends JFrame {
 		});
 		mntmInformes.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mntmInformes.setIcon(new ImageIcon("recursos/informes.png"));
+		JMenuItem mntmDesbalance = new JMenuItem("  Desbalance Oferta vs Demanda");
+		mntmDesbalance.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mntmDesbalance.setIcon(new ImageIcon("recursos/informes.png"));
+		mntmDesbalance.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new InformeSQL(
+						"Desbalance Oferta vs Demanda por Área",
+						"Muestra por cada área cuántas ofertas activas hay y cuántos candidatos disponibles existen.",
+						"SELECT * FROM DesbalanceOfertaDemandaPorArea ORDER BY desbalance DESC"
+				).setVisible(true);
+			}
+		});
+		mnGestion.add(mntmDesbalance);
+
+		JMenuItem mntmIdiomas = new JMenuItem("  Demanda vs Oferta de Idiomas");
+		mntmIdiomas.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mntmIdiomas.setIcon(new ImageIcon("recursos/informes.png"));
+		mntmIdiomas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new InformeSQL(
+						"Idiomas más demandados vs oferta de candidatos",
+						"Compara cuántas ofertas piden cada idioma y cuántos candidatos lo hablan.",
+						"SELECT * FROM DemandaVsOfertaIdiomas ORDER BY deficit DESC"
+				).setVisible(true);
+			}
+		});
+		mnGestion.add(mntmIdiomas);
+
+		JMenuItem mntmOfertasRiesgo = new JMenuItem("  Ofertas en Riesgo de Pérdida");
+		mntmOfertasRiesgo.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mntmOfertasRiesgo.setIcon(new ImageIcon("recursos/informes.png"));
+		mntmOfertasRiesgo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new InformeSQL(
+						"Ofertas que llevan mucho tiempo sin llenarse",
+						"Lista las ofertas activas sin solicitudes o con más de 30 días abiertas.",
+						"SELECT * FROM OfertasSinLlenarRiesgo"
+				).setVisible(true);
+			}
+		});
+		mnGestion.add(mntmOfertasRiesgo);
+
+		JMenuItem mntmRankingCentros = new JMenuItem("  Ranking de Centros por Colocación");
+		mntmRankingCentros.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mntmRankingCentros.setIcon(new ImageIcon("recursos/informes.png"));
+		mntmRankingCentros.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new InformeSQL(
+						"Ranking de centros por éxito de colocación",
+						"Muestra por cada centro el porcentaje de cobertura de vacantes.",
+						"SELECT * FROM RankingCentrosColocacion ORDER BY cobertura_pct DESC, vacantes_completadas DESC"
+				).setVisible(true);
+			}
+		});
+		mnGestion.add(mntmRankingCentros);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(4, 13, 18));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
