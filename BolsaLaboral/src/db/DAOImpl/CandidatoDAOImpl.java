@@ -13,11 +13,12 @@ public class CandidatoDAOImpl implements CandidatoDAO {
 
     @Override
     public void insertar(Candidato c) {
+        // Solo id_municipio (la provincia se obtiene vía Municipio)
         String sqlBase = "INSERT INTO Candidato (identificacion, nombres, apellidos, fecha_nacimiento, "
-                + "genero, id_provincia, id_municipio, telefono, correo, jornada, modalidad, area_interes, "
+                + "genero, id_municipio, telefono, correo, jornada, modalidad, area_interes, "
                 + "aspiracion_salarial, licencia_conducir, disposicion_mudarse, estado, tipo_candidato) "
                 + "OUTPUT INSERTED.id_candidato "
-                + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         Connection con = null;
         try {
@@ -35,18 +36,17 @@ public class CandidatoDAOImpl implements CandidatoDAO {
                 ps.setString(3, c.getApellidos());
                 ps.setDate(4, Date.valueOf(c.getFechaNacimiento()));
                 ps.setString(5, c.getGenero());
-                ps.setInt(6, c.getIdProvincia());
-                ps.setInt(7, c.getIdMunicipio());
-                ps.setString(8, c.getTelefono());
-                ps.setString(9, c.getCorreo());
-                ps.setString(10, c.getJornada());
-                ps.setString(11, c.getModalidad());
-                ps.setString(12, c.getAreaDeInteres());
-                ps.setFloat(13, c.getAspiracionSalarial());
-                ps.setBoolean(14, c.isLicenciaConducir());
-                ps.setBoolean(15, c.isDisposicionMudarse());
-                ps.setString(16, c.getEstado());
-                ps.setString(17, tipo);
+                ps.setInt(6, c.getIdMunicipio());
+                ps.setString(7, c.getTelefono());
+                ps.setString(8, c.getCorreo());
+                ps.setString(9, c.getJornada());
+                ps.setString(10, c.getModalidad());
+                ps.setString(11, c.getAreaDeInteres());
+                ps.setFloat(12, c.getAspiracionSalarial());
+                ps.setBoolean(13, c.isLicenciaConducir());
+                ps.setBoolean(14, c.isDisposicionMudarse());
+                ps.setString(15, c.getEstado());
+                ps.setString(16, tipo);
 
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
@@ -95,7 +95,7 @@ public class CandidatoDAOImpl implements CandidatoDAO {
     @Override
     public void actualizar(Candidato c) {
         String sqlBase = "UPDATE Candidato SET identificacion=?, nombres=?, apellidos=?, fecha_nacimiento=?, "
-                + "genero=?, id_provincia=?, id_municipio=?, telefono=?, correo=?, jornada=?, modalidad=?, "
+                + "genero=?, id_municipio=?, telefono=?, correo=?, jornada=?, modalidad=?, "
                 + "area_interes=?, aspiracion_salarial=?, licencia_conducir=?, disposicion_mudarse=?, estado=? "
                 + "WHERE id_candidato=?";
 
@@ -110,18 +110,17 @@ public class CandidatoDAOImpl implements CandidatoDAO {
                 ps.setString(3, c.getApellidos());
                 ps.setDate(4, Date.valueOf(c.getFechaNacimiento()));
                 ps.setString(5, c.getGenero());
-                ps.setInt(6, c.getIdProvincia());
-                ps.setInt(7, c.getIdMunicipio());
-                ps.setString(8, c.getTelefono());
-                ps.setString(9, c.getCorreo());
-                ps.setString(10, c.getJornada());
-                ps.setString(11, c.getModalidad());
-                ps.setString(12, c.getAreaDeInteres());
-                ps.setFloat(13, c.getAspiracionSalarial());
-                ps.setBoolean(14, c.isLicenciaConducir());
-                ps.setBoolean(15, c.isDisposicionMudarse());
-                ps.setString(16, c.getEstado());
-                ps.setString(17, c.getCodigo());
+                ps.setInt(6, c.getIdMunicipio());
+                ps.setString(7, c.getTelefono());
+                ps.setString(8, c.getCorreo());
+                ps.setString(9, c.getJornada());
+                ps.setString(10, c.getModalidad());
+                ps.setString(11, c.getAreaDeInteres());
+                ps.setFloat(12, c.getAspiracionSalarial());
+                ps.setBoolean(13, c.isLicenciaConducir());
+                ps.setBoolean(14, c.isDisposicionMudarse());
+                ps.setString(15, c.getEstado());
+                ps.setString(16, c.getCodigo());
                 ps.executeUpdate();
             }
 
@@ -316,8 +315,13 @@ public class CandidatoDAOImpl implements CandidatoDAO {
         String apellidos = rs.getString("apellidos");
         LocalDate fechaNacimiento = rs.getDate("fecha_nacimiento").toLocalDate();
         String genero = rs.getString("genero");
-        int idProvincia = rs.getInt("id_provincia");
         int idMunicipio = rs.getInt("id_municipio");
+        // Provincia derivada del municipio (ya no se guarda en Candidato)
+        int idProvincia = 0;
+        Municipio mun = new MunicipioDAOImpl().buscarPorId(idMunicipio);
+        if (mun != null) {
+            idProvincia = mun.getIdProvincia();
+        }
         String telefono = rs.getString("telefono");
         String correo = rs.getString("correo");
         String jornada = rs.getString("jornada");

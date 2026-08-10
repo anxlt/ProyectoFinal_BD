@@ -16,9 +16,9 @@ public class CentroEmpleadorDAOImpl implements CentroEmpleadorDAO {
 
     @Override
     public void insertar(CentroEmpleador c) {
-        String sql = "INSERT INTO CentroEmpleador (rnc, nombre_centro, sector, id_provincia, id_municipio, telefono, correo) "
+        String sql = "INSERT INTO CentroEmpleador (rnc, nombre_centro, sector, id_municipio, telefono, correo) "
                 + "OUTPUT INSERTED.id_centro "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                + "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection con = Conexion.conectar();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -26,10 +26,9 @@ public class CentroEmpleadorDAOImpl implements CentroEmpleadorDAO {
             ps.setString(1, c.getRnc());
             ps.setString(2, c.getNombre());
             ps.setString(3, c.getSector());
-            ps.setInt(4, c.getIdProvincia());
-            ps.setInt(5, c.getIdMunicipio());
-            ps.setString(6, c.getTelefono());
-            ps.setString(7, c.getCorreo());
+            ps.setInt(4, c.getIdMunicipio());
+            ps.setString(5, c.getTelefono());
+            ps.setString(6, c.getCorreo());
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -44,7 +43,7 @@ public class CentroEmpleadorDAOImpl implements CentroEmpleadorDAO {
     @Override
     public void actualizar(CentroEmpleador c) {
         // CAMBIO: 'nombre' por 'nombre_centro' y 'codigo' por 'id_centro'
-        String sql = "UPDATE CentroEmpleador SET rnc = ?, nombre_centro = ?, sector = ?, id_provincia = ?, "
+        String sql = "UPDATE CentroEmpleador SET rnc = ?, nombre_centro = ?, sector = ?, "
                 + "id_municipio = ?, telefono = ?, correo = ? WHERE id_centro = ?";
         try (Connection con = Conexion.conectar();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -52,11 +51,10 @@ public class CentroEmpleadorDAOImpl implements CentroEmpleadorDAO {
             ps.setString(1, c.getRnc());
             ps.setString(2, c.getNombre());
             ps.setString(3, c.getSector());
-            ps.setInt(4, c.getIdProvincia());
-            ps.setInt(5, c.getIdMunicipio());
-            ps.setString(6, c.getTelefono());
-            ps.setString(7, c.getCorreo());
-            ps.setString(8, c.getCodigo());
+            ps.setInt(4, c.getIdMunicipio());
+            ps.setString(5, c.getTelefono());
+            ps.setString(6, c.getCorreo());
+            ps.setString(7, c.getCodigo());
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -119,13 +117,19 @@ public class CentroEmpleadorDAOImpl implements CentroEmpleadorDAO {
     }
 
     private CentroEmpleador mapear(ResultSet rs) throws SQLException {
+        int idMunicipio = rs.getInt("id_municipio");
+        // Provincia derivada del municipio
+        int idProvincia = 0;
+        logico.Municipio mun = new MunicipioDAOImpl().buscarPorId(idMunicipio);
+        if (mun != null) {
+            idProvincia = mun.getIdProvincia();
+        }
         return new CentroEmpleador(
-                // CAMBIO: extraer los datos usando los nuevos nombres de columna
                 rs.getString("id_centro"),
                 rs.getString("nombre_centro"),
                 rs.getString("sector"),
-                rs.getInt("id_provincia"),
-                rs.getInt("id_municipio"),
+                idProvincia,
+                idMunicipio,
                 rs.getString("telefono"),
                 rs.getString("correo"),
                 rs.getString("rnc")
