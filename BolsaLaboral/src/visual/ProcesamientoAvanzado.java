@@ -34,38 +34,38 @@ public class ProcesamientoAvanzado extends JDialog {
 	public static JTable tablaOfertas;
 	public static DefaultTableModel modeloOfertas = new DefaultTableModel() {
 		@Override
-        public boolean isCellEditable(int row, int column) {
-            return false;
-        }
-		
+		public boolean isCellEditable(int row, int column) {
+			return false;
+		}
+
 		public Class getColumnClass(int column)
-        {
-            return getValueAt(0, column).getClass();
-        }
+		{
+			return getValueAt(0, column).getClass();
+		}
 	};
 	public static Object[] rowOferta;
-	
+
 	private JButton btnProcesar;
 	private JTextField txtFiltro;
 	private static JTable tablaMatcheo;
 	public static DefaultTableModel modeloMatcheo = new DefaultTableModel() {
 		@Override
-        public boolean isCellEditable(int row, int column) {
-            return false;
-        }
-		
+		public boolean isCellEditable(int row, int column) {
+			return false;
+		}
+
 		public Class getColumnClass(int column)
-        {
-            return getValueAt(0, column).getClass();
-        }
+		{
+			return getValueAt(0, column).getClass();
+		}
 	};
 	public static Object[] rowMatcheo;
 	private ResultadoMatcheo resMatchSelec = null;
-	
+
 	private static ArrayList<OfertaLaboral> ofertas = new ArrayList<>();
 	private static ArrayList<ResultadoMatcheo> resultados = new ArrayList<>();
-	
-	
+
+
 	/**
 	 * Create the dialog.
 	 */
@@ -100,11 +100,11 @@ public class ProcesamientoAvanzado extends JDialog {
 					scrollPane.setViewportView(tablaOfertas);
 				}
 			}
-			
+
 			JScrollPane scrollPane = new JScrollPane();
 			scrollPane.setBounds(12, 241, 648, 266);
 			panel.add(scrollPane);
-			
+
 			tablaMatcheo = new JTable();
 			tablaMatcheo.setForeground(Color.BLACK);
 			tablaMatcheo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -131,7 +131,7 @@ public class ProcesamientoAvanzado extends JDialog {
 				JLabel lblIconFiltrar = new JLabel("");
 				lblIconFiltrar.setIcon(new ImageIcon("recursos/filtrar.png"));
 				pnlFiltro.add(lblIconFiltrar);
-				
+
 			}
 			{
 				JLabel lblNewLabel = new JLabel("Criterio del Filtro: ");
@@ -166,9 +166,9 @@ public class ProcesamientoAvanzado extends JDialog {
 				btnProcesar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						if(BolsaLaboral.getInstancia().vincularOferta(resMatchSelec)) {
-							JOptionPane.showMessageDialog(null,"Se ha creado la solicitud correctamente a la oferta " + resMatchSelec.getOferta().getPuesto() + ".","Informaci�n",JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.showMessageDialog(null,"Se ha creado la solicitud correctamente a la oferta " + resMatchSelec.getOferta().getPuesto() + ".","Informacion",JOptionPane.INFORMATION_MESSAGE);
 						} else {
-							JOptionPane.showMessageDialog(null,"Esta solicitud ya existe.","Informaci�n",JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.showMessageDialog(null,"Esta solicitud ya existe.","Informacion",JOptionPane.INFORMATION_MESSAGE);
 						}
 					}
 				});
@@ -200,91 +200,91 @@ public class ProcesamientoAvanzado extends JDialog {
 		cargarOfertas();
 	}
 
-    public void filtrar() {
-        String filtro = txtFiltro.getText().toLowerCase();
-        modeloOfertas.setRowCount(0);
-        btnProcesar.setEnabled(false);
+	public void filtrar() {
+		String filtro = txtFiltro.getText().toLowerCase();
+		modeloOfertas.setRowCount(0);
+		btnProcesar.setEnabled(false);
 
-        ArrayList<OfertaLaboral> ofertasVisibles = new ArrayList<>();
+		ArrayList<OfertaLaboral> ofertasVisibles = new ArrayList<>();
 
-        for (OfertaLaboral aux : BolsaLaboral.getInstancia().getOfertas()) {
-            if (aux.getCodigo() == null) continue;
-            boolean coincide =
-                    aux.getCodigo().toLowerCase().contains(filtro) ||
-                            (aux.getOfertador() != null && aux.getOfertador().getNombre() != null
-                                    && aux.getOfertador().getNombre().toLowerCase().contains(filtro)) ||
-                            (aux.getPuesto() != null && aux.getPuesto().toLowerCase().contains(filtro)) ||
-                            (aux.getArea() != null && aux.getArea().toLowerCase().contains(filtro)) ||
-                            (aux.getEstado() != null && aux.getEstado().toLowerCase().contains(filtro));
+		for (OfertaLaboral aux : BolsaLaboral.getInstancia().getOfertas()) {
+			if (aux.getCodigo() == null) continue;
+			boolean coincide =
+					aux.getCodigo().toLowerCase().contains(filtro) ||
+							(aux.getOfertador() != null && aux.getOfertador().getNombre() != null
+									&& aux.getOfertador().getNombre().toLowerCase().contains(filtro)) ||
+							(aux.getPuesto() != null && aux.getPuesto().toLowerCase().contains(filtro)) ||
+							(aux.getArea() != null && aux.getArea().toLowerCase().contains(filtro)) ||
+							(aux.getEstado() != null && aux.getEstado().toLowerCase().contains(filtro));
 
-            if (coincide) {
-                Object[] fila = new Object[5];
-                fila[0] = aux.getCodigo();
-                fila[1] = aux.getPuesto();
-                fila[2] = aux.getOfertador() != null ? aux.getOfertador().getNombre() : "";
-                fila[3] = new ImageIcon(getArea(aux.getArea()));
-                fila[4] = aux.getEstado();
-                modeloOfertas.addRow(fila);
-                ofertasVisibles.add(aux);
-            }
-        }
+			if (coincide) {
+				Object[] fila = new Object[5];
+				fila[0] = aux.getCodigo();
+				fila[1] = aux.getPuesto();
+				fila[2] = aux.getOfertador() != null ? aux.getOfertador().getNombre() : "";
+				fila[3] = new ImageIcon(getArea(aux.getArea()));
+				fila[4] = aux.getEstado();
+				modeloOfertas.addRow(fila);
+				ofertasVisibles.add(aux);
+			}
+		}
 
-        actualizarResultadosFiltrados(ofertasVisibles);
-    }
+		actualizarResultadosFiltrados(ofertasVisibles);
+	}
 
-    private void actualizarResultadosFiltrados(ArrayList<OfertaLaboral> ofertasVisibles) {
-        modeloMatcheo.setRowCount(0);
+	private void actualizarResultadosFiltrados(ArrayList<OfertaLaboral> ofertasVisibles) {
+		modeloMatcheo.setRowCount(0);
 
-        for (ResultadoMatcheo aux : resultados) {
-            if (ofertasVisibles.contains(aux.getOferta())) {
-                Object[] fila = new Object[5];
-                fila[0] = aux.getOferta().getCodigo();
-                fila[1] = aux.getSolicitante().getCodigo();
-                fila[2] = aux.getSolicitante().getNombres() + " " + aux.getSolicitante().getApellidos();
-                fila[3] = aux.getPorcentaje() + "%";
-                fila[4] = new ImageIcon(getCondicion(aux.getCondicion()));
-                modeloMatcheo.addRow(fila);
-            }
-        }
-    }
+		for (ResultadoMatcheo aux : resultados) {
+			if (ofertasVisibles.contains(aux.getOferta())) {
+				Object[] fila = new Object[5];
+				fila[0] = aux.getOferta().getCodigo();
+				fila[1] = aux.getSolicitante().getCodigo();
+				fila[2] = aux.getSolicitante().getNombres() + " " + aux.getSolicitante().getApellidos();
+				fila[3] = aux.getPorcentaje() + "%";
+				fila[4] = new ImageIcon(getCondicion(aux.getCondicion()));
+				modeloMatcheo.addRow(fila);
+			}
+		}
+	}
 	private static String getArea(String area) {
-		area = area.replace("�","o");
+		area = area.replace("o","o"); // se mantiene por si llega con caracteres raros
 		area = area.replace(" ","");
 		return "recursos/" + area + ".png";
 	}
 
-    public static void cargarOfertas() {
-        if (modeloOfertas == null) return;
-        modeloOfertas.setRowCount(0);
-        for (OfertaLaboral aux : ofertas) {
-            if (aux.getCodigo() == null) continue;
-            Object[] fila = new Object[5];
-            fila[0] = aux.getCodigo();
-            fila[1] = aux.getPuesto();
-            fila[2] = aux.getOfertador() != null ? aux.getOfertador().getNombre() : "";
-            fila[3] = new ImageIcon(getArea(aux.getArea()));
-            fila[4] = aux.getEstado();
-            modeloOfertas.addRow(fila);
-        }
-    }
-	
+	public static void cargarOfertas() {
+		if (modeloOfertas == null) return;
+		modeloOfertas.setRowCount(0);
+		for (OfertaLaboral aux : ofertas) {
+			if (aux.getCodigo() == null) continue;
+			Object[] fila = new Object[5];
+			fila[0] = aux.getCodigo();
+			fila[1] = aux.getPuesto();
+			fila[2] = aux.getOfertador() != null ? aux.getOfertador().getNombre() : "";
+			fila[3] = new ImageIcon(getArea(aux.getArea()));
+			fila[4] = aux.getEstado();
+			modeloOfertas.addRow(fila);
+		}
+	}
+
 	private static String getCondicion(String condicion) {
 		condicion = condicion.toLowerCase();
 		condicion = condicion.replace(" ","");
 		return "recursos/" + condicion + ".png";
 	}
 
-    public static void cargarResultados() {
-        if (modeloMatcheo == null) return;
-        modeloMatcheo.setRowCount(0);
-        for (ResultadoMatcheo aux : resultados) {
-            Object[] fila = new Object[5];
-            fila[0] = aux.getOferta().getCodigo();
-            fila[1] = aux.getSolicitante().getCodigo();
-            fila[2] = aux.getSolicitante().getNombres() + " " + aux.getSolicitante().getApellidos();
-            fila[3] = aux.getPorcentaje() + "%";
-            fila[4] = new ImageIcon(getCondicion(aux.getCondicion()));
-            modeloMatcheo.addRow(fila);
-        }
-    }
+	public static void cargarResultados() {
+		if (modeloMatcheo == null) return;
+		modeloMatcheo.setRowCount(0);
+		for (ResultadoMatcheo aux : resultados) {
+			Object[] fila = new Object[5];
+			fila[0] = aux.getOferta().getCodigo();
+			fila[1] = aux.getSolicitante().getCodigo();
+			fila[2] = aux.getSolicitante().getNombres() + " " + aux.getSolicitante().getApellidos();
+			fila[3] = aux.getPorcentaje() + "%";
+			fila[4] = new ImageIcon(getCondicion(aux.getCondicion()));
+			modeloMatcheo.addRow(fila);
+		}
+	}
 }

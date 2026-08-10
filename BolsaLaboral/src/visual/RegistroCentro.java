@@ -72,7 +72,7 @@ public class RegistroCentro extends JDialog {
 			contentPanel.add(contenedor, BorderLayout.CENTER);
 			contenedor.setLayout(null);
 
-			JLabel lblNewLabel = new JLabel("C\u00F3digo:");
+			JLabel lblNewLabel = new JLabel("Codigo:");
 			lblNewLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
 			lblNewLabel.setBounds(22, 29, 84, 29);
 			contenedor.add(lblNewLabel);
@@ -115,7 +115,7 @@ public class RegistroCentro extends JDialog {
 			});
 
 			cmbSector.setMaximumRowCount(11);
-			cmbSector.setModel(new DefaultComboBoxModel(new String[] {"No definido", "Turismo", "Tecnolog\u00EDa", "Salud", "Comercio", "Educaci\u00F3n", "Agricultura", "Construcci\u00F3n", "Jur\u00EDdico", "Arte", "Transporte"}));
+			cmbSector.setModel(new DefaultComboBoxModel(new String[] {"No definido", "Turismo", "Tecnologia", "Salud", "Comercio", "Educacion", "Agricultura", "Construccion", "Juridico", "Arte", "Transporte"}));
 			cmbSector.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 			cmbSector.setBounds(116, 139, 305, 29);
 			contenedor.add(cmbSector);
@@ -127,12 +127,12 @@ public class RegistroCentro extends JDialog {
 
 			JPanel pnlContactos = new JPanel();
 			pnlContactos.setBackground(new Color(228, 228, 228));
-			pnlContactos.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0)), "Contactos y Ubicaci\u00F3n", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+			pnlContactos.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0)), "Contactos y Ubicacion", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 			pnlContactos.setBounds(12, 226, 513, 229);
 			contenedor.add(pnlContactos);
 			pnlContactos.setLayout(null);
 
-			JLabel lblTelfono = new JLabel("Tel\u00E9fono:");
+			JLabel lblTelfono = new JLabel("Telefono:");
 			lblTelfono.setFont(new Font("Segoe UI", Font.BOLD, 16));
 			lblTelfono.setBounds(12, 28, 84, 29);
 			pnlContactos.add(lblTelfono);
@@ -217,11 +217,11 @@ public class RegistroCentro extends JDialog {
 									centroAct.setTelefono(txtTelefono.getText());
 									if(BolsaLaboral.getInstancia().modificarCentroTrabajo(centroAct)) {
 										ConsultarCentros.cargarCentros();
-										JOptionPane.showMessageDialog(null,"El centro " + txtNombre.getText() + " ha sido modificado exitosamente.","Informaci n",JOptionPane.INFORMATION_MESSAGE);
+										JOptionPane.showMessageDialog(null,"El centro " + txtNombre.getText() + " ha sido modificado exitosamente.","Informacion",JOptionPane.INFORMATION_MESSAGE);
 										dispose();
 									}
 									else {
-										JOptionPane.showMessageDialog(null,"El centro " + txtNombre.getText() + " no logr  ser modificado.");
+										JOptionPane.showMessageDialog(null,"El centro " + txtNombre.getText() + " no logro ser modificado.");
 									}
 								}
 								else {
@@ -240,9 +240,9 @@ public class RegistroCentro extends JDialog {
 									txtCodigo.setText(codigoGenerado != null ? codigoGenerado : "");
 
 									JOptionPane.showMessageDialog(null,
-											"El centro de trabajo ha sido agregado correctamente.\nCódigo asignado: "
+											"El centro de trabajo ha sido agregado correctamente.\nCodigo asignado: "
 													+ (codigoGenerado != null ? codigoGenerado : "(no disponible)"),
-											"Información",
+											"Informacion",
 											JOptionPane.INFORMATION_MESSAGE);
 
 									try {
@@ -305,31 +305,31 @@ public class RegistroCentro extends JDialog {
 
 	private boolean verificar() throws FormatException {
 		if(txtNombre.getText().isEmpty()) {
-			throw new FormatException("El nombre no puede estar vac o.");
+			throw new FormatException("El nombre no puede estar vacio.");
 		}
 		else if(txtRNC.getText().isEmpty()) {
-			throw new FormatException("El RNC no puede estar vac o.");
+			throw new FormatException("El RNC no puede estar vacio.");
 		}
 		else if (txtRNC.getText().length() != 9 || !txtRNC.getText().matches("\\d+")) {
-			throw new FormatException("El RNC debe tener 9 d gitos.");
+			throw new FormatException("El RNC debe tener 9 digitos.");
 		}
 		else if(txtTelefono.getText().isEmpty()) {
-			throw new FormatException("El tel fono no puede estar vac o.");
+			throw new FormatException("El telefono no puede estar vacio.");
 		}
 		else if(!txtTelefono.getText().matches("\\d{10}")) {
-			throw new FormatException("El tel fono debe tener 10 d gitos.");
+			throw new FormatException("El telefono debe tener 10 digitos.");
 		}
 		else if(txtCorreo.getText().isEmpty()) {
-			throw new FormatException("El correo no puede estar vac o.");
+			throw new FormatException("El correo no puede estar vacio.");
 		}
 		else if(!txtCorreo.getText().contains("@") || !txtCorreo.getText().contains(".")) {
-			throw new FormatException("Formato del correo inv lido. Ejemplo: usuario@dominio.com");
+			throw new FormatException("Formato del correo invalido. Ejemplo: usuario@dominio.com");
 		}
 		else if(cmbProvincia.getSelectedItem() == null) {
-			throw new FormatException("La provincia no puede estar vac a.");
+			throw new FormatException("La provincia no puede estar vacia.");
 		}
 		else if(cmbMunicipio.getSelectedItem() == null) {
-			throw new FormatException("El municipio no puede estar vac o.");
+			throw new FormatException("El municipio no puede estar vacio.");
 		}
 
 

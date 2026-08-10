@@ -115,7 +115,7 @@ public class RegistroOfertaLaboral extends JDialog {
 		pnlGeneralidades.setBackground(new Color(228, 228, 228));
 		pnlGeneralidades.setLayout(null);
 
-		JLabel label = new JLabel("Código:");
+		JLabel label = new JLabel("Codigo:");
 		label.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		label.setBounds(12, 9, 84, 29);
 		pnlGeneralidades.add(label);
@@ -173,7 +173,7 @@ public class RegistroOfertaLaboral extends JDialog {
 		spnSalario.setBounds(127, 182, 305, 22);
 		pnlGeneralidades.add(spnSalario);
 
-		JLabel lblDescripcin = new JLabel("Descripción:");
+		JLabel lblDescripcin = new JLabel("Descripcion:");
 		lblDescripcin.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblDescripcin.setBounds(12, 230, 108, 29);
 		pnlGeneralidades.add(lblDescripcin);
@@ -193,7 +193,7 @@ public class RegistroOfertaLaboral extends JDialog {
 		spnVacantes.setBounds(127, 371, 305, 22);
 		pnlGeneralidades.add(spnVacantes);
 
-		JLabel label_1 = new JLabel("Área:");
+		JLabel label_1 = new JLabel("Area:");
 		label_1.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		label_1.setBounds(12, 419, 106, 29);
 		pnlGeneralidades.add(label_1);
@@ -206,7 +206,7 @@ public class RegistroOfertaLaboral extends JDialog {
 		});
 		cmbArea.setModel(new DefaultComboBoxModel(new String[] {
 				"No definido", "Finanzas", "Recursos Humanos", "Marketing", "Limpieza", "Seguridad",
-				"TI", "Salud", "Operaciones", "Administración", "Atención al Cliente", "Educación"
+				"TI", "Salud", "Operaciones", "Administracion", "Atencion al Cliente", "Educacion"
 		}));
 		cmbArea.setMaximumRowCount(12);
 		cmbArea.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -226,7 +226,7 @@ public class RegistroOfertaLaboral extends JDialog {
 
 		pnlTipoCand = new JPanel();
 		pnlTipoCand.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0)),
-				"Nivel Académico Requerido", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+				"Nivel Academico Requerido", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		pnlTipoCand.setBackground(new Color(228, 228, 228));
 		pnlTipoCand.setBounds(12, 13, 510, 71);
 		pnlEspecializacion.add(pnlTipoCand);
@@ -244,7 +244,7 @@ public class RegistroOfertaLaboral extends JDialog {
 		rdUniversitario.setBounds(29, 26, 182, 25);
 		pnlTipoCand.add(rdUniversitario);
 
-		rdTecnico = new JRadioButton("Estudiante Técnico");
+		rdTecnico = new JRadioButton("Estudiante Tecnico");
 		rdTecnico.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cambiarEspecializacion("Estudiante Tecnico");
@@ -295,16 +295,16 @@ public class RegistroOfertaLaboral extends JDialog {
 		cmbCarrera.setBounds(150, 34, 305, 29);
 		pnlCarreras.add(cmbCarrera);
 
-		// Técnico
+		// Tecnico
 		pnlTecnico = new JPanel();
 		pnlTecnico.setLayout(null);
 		pnlTecnico.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0)),
-				"Requerimientos Técnicos", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+				"Requerimientos Tecnicos", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		pnlTecnico.setBackground(new Color(228, 228, 228));
 		pnlTecnico.setBounds(12, 97, 510, 265);
 		pnlEspecializacion.add(pnlTecnico);
 
-		JLabel lblreaRequerida = new JLabel("Área requerida:");
+		JLabel lblreaRequerida = new JLabel("Area requerida:");
 		lblreaRequerida.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblreaRequerida.setBounds(12, 33, 123, 29);
 		pnlTecnico.add(lblreaRequerida);
@@ -325,7 +325,7 @@ public class RegistroOfertaLaboral extends JDialog {
 		spnAniosExp.setBounds(181, 89, 274, 22);
 		pnlTecnico.add(spnAniosExp);
 
-		JLabel lblMnimoDeExperiencia = new JLabel("Años de experiencia:");
+		JLabel lblMnimoDeExperiencia = new JLabel("Anios de experiencia:");
 		lblMnimoDeExperiencia.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblMnimoDeExperiencia.setBounds(12, 85, 171, 29);
 		pnlTecnico.add(lblMnimoDeExperiencia);
@@ -363,7 +363,7 @@ public class RegistroOfertaLaboral extends JDialog {
 				"Idiomas Requeridos", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		pnlIdiomas.setBackground(new Color(228, 228, 228));
 
-		chckbxIngls = new JCheckBox("Inglés");
+		chckbxIngls = new JCheckBox("Ingles");
 		chckbxIngls.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chckbxIngls.setBackground(new Color(228, 228, 228));
 		chckbxIngls.setBounds(8, 24, 113, 25);
@@ -375,25 +375,25 @@ public class RegistroOfertaLaboral extends JDialog {
 		chckbxItaliano.setBounds(8, 61, 113, 25);
 		pnlIdiomas.add(chckbxItaliano);
 
-		chckbxEspaol = new JCheckBox("Español");
+		chckbxEspaol = new JCheckBox("Espanol");
 		chckbxEspaol.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chckbxEspaol.setBackground(new Color(228, 228, 228));
 		chckbxEspaol.setBounds(8, 101, 113, 25);
 		pnlIdiomas.add(chckbxEspaol);
 
-		chckbxFrancs = new JCheckBox("Francés");
+		chckbxFrancs = new JCheckBox("Frances");
 		chckbxFrancs.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chckbxFrancs.setBackground(new Color(228, 228, 228));
 		chckbxFrancs.setBounds(181, 101, 113, 25);
 		pnlIdiomas.add(chckbxFrancs);
 
-		chckbxPortugus = new JCheckBox("Portugués");
+		chckbxPortugus = new JCheckBox("Portugues");
 		chckbxPortugus.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chckbxPortugus.setBackground(new Color(228, 228, 228));
 		chckbxPortugus.setBounds(181, 25, 113, 25);
 		pnlIdiomas.add(chckbxPortugus);
 
-		chckbxAlemn = new JCheckBox("Alemán");
+		chckbxAlemn = new JCheckBox("Aleman");
 		chckbxAlemn.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chckbxAlemn.setBackground(new Color(228, 228, 228));
 		chckbxAlemn.setBounds(181, 62, 113, 25);
@@ -411,7 +411,7 @@ public class RegistroOfertaLaboral extends JDialog {
 		chckbxCoreano.setBounds(389, 62, 113, 25);
 		pnlIdiomas.add(chckbxCoreano);
 
-		chckbxJapons = new JCheckBox("Japonés");
+		chckbxJapons = new JCheckBox("Japones");
 		chckbxJapons.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		chckbxJapons.setBackground(new Color(228, 228, 228));
 		chckbxJapons.setBounds(389, 101, 113, 25);
@@ -434,7 +434,7 @@ public class RegistroOfertaLaboral extends JDialog {
 				cargarModalidad();
 			}
 		});
-		cmbModalidad.setModel(new DefaultComboBoxModel(new String[] { "Presencial", "Remoto", "Híbrido" }));
+		cmbModalidad.setModel(new DefaultComboBoxModel(new String[] { "Presencial", "Remoto", "Hibrido" }));
 		cmbModalidad.setMaximumRowCount(11);
 		cmbModalidad.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		cmbModalidad.setBounds(111, 18, 305, 29);
@@ -467,7 +467,7 @@ public class RegistroOfertaLaboral extends JDialog {
 		lblIcoJornada.setBounds(433, 69, 32, 32);
 		pnlCondiciones.add(lblIcoJornada);
 
-		JLabel label_2 = new JLabel("Porcentaje Mínimo:");
+		JLabel label_2 = new JLabel("Porcentaje Minimo:");
 		label_2.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		label_2.setBounds(12, 126, 164, 29);
 		pnlCondiciones.add(label_2);
@@ -483,7 +483,7 @@ public class RegistroOfertaLaboral extends JDialog {
 		separator_1.setBounds(12, 174, 503, 6);
 		pnlCondiciones.add(separator_1);
 
-		JLabel lblesObligatorioSer = new JLabel("¿Es obligatorio ser mayor de edad?");
+		JLabel lblesObligatorioSer = new JLabel("Es obligatorio ser mayor de edad?");
 		lblesObligatorioSer.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblesObligatorioSer.setBounds(12, 189, 269, 29);
 		pnlCondiciones.add(lblesObligatorioSer);
@@ -493,7 +493,7 @@ public class RegistroOfertaLaboral extends JDialog {
 		chkbxMayor.setBounds(289, 193, 39, 25);
 		pnlCondiciones.add(chkbxMayor);
 
-		JLabel lblestaraDispuestoA = new JLabel("¿Ofrece reubicación?");
+		JLabel lblestaraDispuestoA = new JLabel("Ofrece reubicacion?");
 		lblestaraDispuestoA.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblestaraDispuestoA.setBounds(12, 227, 175, 29);
 		pnlCondiciones.add(lblestaraDispuestoA);
@@ -503,7 +503,7 @@ public class RegistroOfertaLaboral extends JDialog {
 		chkReubicacion.setBounds(182, 231, 39, 25);
 		pnlCondiciones.add(chkReubicacion);
 
-		JLabel lblrequiereLicenciaDe = new JLabel("¿Requiere licencia de conducir?");
+		JLabel lblrequiereLicenciaDe = new JLabel("Requiere licencia de conducir?");
 		lblrequiereLicenciaDe.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblrequiereLicenciaDe.setBounds(12, 272, 251, 29);
 		pnlCondiciones.add(lblrequiereLicenciaDe);
@@ -622,11 +622,11 @@ public class RegistroOfertaLaboral extends JDialog {
 
 			if (BolsaLaboral.getInstancia().modificarOfertaLaboral(ofertaAct)) {
 				JOptionPane.showMessageDialog(null, "La oferta: " + txtPuesto.getText()
-						+ " ha sido modificada exitosamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
+						+ " ha sido modificada exitosamente.", "Informacion", JOptionPane.INFORMATION_MESSAGE);
 				ConsultarOfertas.cargarOfertas();
 				dispose();
 			} else {
-				JOptionPane.showMessageDialog(null, "La oferta " + txtPuesto.getText() + " no logró ser modificada.");
+				JOptionPane.showMessageDialog(null, "La oferta " + txtPuesto.getText() + " no logro ser modificada.");
 			}
 		} else {
 			OfertaLaboral nuevaOferta = new OfertaLaboral(
@@ -655,8 +655,8 @@ public class RegistroOfertaLaboral extends JDialog {
 			String cod = nuevaOferta.getCodigo();
 			txtCodigo.setText(cod != null ? cod : "");
 			JOptionPane.showMessageDialog(null,
-					"La oferta laboral ha sido agregada correctamente.\nCódigo asignado: " + (cod != null ? cod : "(no disponible)"),
-					"Información", JOptionPane.INFORMATION_MESSAGE);
+					"La oferta laboral ha sido agregada correctamente.\nCodigo asignado: " + (cod != null ? cod : "(no disponible)"),
+					"Informacion", JOptionPane.INFORMATION_MESSAGE);
 			try { ConsultarOfertas.cargarOfertas(); } catch (Exception ignore) { }
 			limpiar();
 		}
@@ -668,12 +668,12 @@ public class RegistroOfertaLaboral extends JDialog {
 	}
 
 	private void cargarModalidad() {
-		String nombreModalidad = cmbModalidad.getSelectedItem().toString().toLowerCase().replace("í", "i");
+		String nombreModalidad = cmbModalidad.getSelectedItem().toString().toLowerCase().replace("i", "i");
 		lblIcoModalidad.setIcon(new ImageIcon("recursos/" + nombreModalidad + ".png"));
 	}
 
 	private void cargarArea() {
-		String nombreArea = cmbArea.getSelectedItem().toString().toLowerCase().replace("ó", "o").replace(" ", "");
+		String nombreArea = cmbArea.getSelectedItem().toString().toLowerCase().replace("o", "o").replace(" ", "");
 		lblIcoArea.setIcon(new ImageIcon("recursos/" + nombreArea + ".png"));
 	}
 
@@ -686,7 +686,7 @@ public class RegistroOfertaLaboral extends JDialog {
 			pnlObrero.setVisible(false);
 			pnlTecnico.setVisible(false);
 			pnlCarreras.setVisible(true);
-		} else if (especializacion.equalsIgnoreCase("Estudiante Técnico")) {
+		} else if (especializacion.equalsIgnoreCase("Estudiante Tecnico")) {
 			pnlCarreras.setVisible(false);
 			pnlObrero.setVisible(false);
 			pnlTecnico.setVisible(true);
@@ -743,7 +743,7 @@ public class RegistroOfertaLaboral extends JDialog {
 			}
 		} else if (ofertaAct.getNivelAcademico().equals(rdTecnico.getText())) {
 			rdTecnico.setSelected(true);
-			cambiarEspecializacion("Estudiante Técnico");
+			cambiarEspecializacion("Estudiante Tecnico");
 			for (int i = 0; i < cmbAreaTecnica.getItemCount(); i++) {
 				if (ofertaAct.getIdAreaTecnica() != null
 						&& cmbAreaTecnica.getItemAt(i).getIdAreaTecnica() == ofertaAct.getIdAreaTecnica()) {
@@ -792,25 +792,25 @@ public class RegistroOfertaLaboral extends JDialog {
 
 	private boolean verificar() throws FormatException {
 		if (cmbOfertador.getSelectedIndex() == 0) {
-			throw new FormatException("Debe seleccionar un centro empleador válido.");
+			throw new FormatException("Debe seleccionar un centro empleador valido.");
 		}
 		if (txtPuesto.getText().trim().isEmpty()) {
-			throw new FormatException("Debe ingresar un título para el puesto.");
+			throw new FormatException("Debe ingresar un titulo para el puesto.");
 		}
 		if (txtDescripcion.getText().trim().isEmpty()) {
-			throw new FormatException("Debe ingresar una descripción para la oferta.");
+			throw new FormatException("Debe ingresar una descripcion para la oferta.");
 		}
 		if (!idiomaSeleccionado()) {
 			throw new FormatException("Debe seleccionar por lo menos un idioma requerido.");
 		}
 		if (cmbArea.getSelectedIndex() == 0) {
-			throw new FormatException("Debe seleccionar un área.");
+			throw new FormatException("Debe seleccionar un area.");
 		}
 		if (rdUniversitario.isSelected() && cmbCarrera.getSelectedItem() == null) {
 			throw new FormatException("Debe seleccionar una carrera.");
 		}
 		if (rdTecnico.isSelected() && cmbAreaTecnica.getSelectedItem() == null) {
-			throw new FormatException("Debe seleccionar un área técnica.");
+			throw new FormatException("Debe seleccionar un area tecnica.");
 		}
 		if (rdObrero.isSelected() && cmbHabilidad.getSelectedItem() == null) {
 			throw new FormatException("Debe seleccionar una habilidad.");
