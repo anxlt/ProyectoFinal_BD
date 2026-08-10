@@ -2,10 +2,20 @@ package visual;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
@@ -13,20 +23,9 @@ import db.DAO.MunicipioDAO;
 import db.DAO.ProvinciaDAO;
 import db.DAOImpl.MunicipioDAOImpl;
 import db.DAOImpl.ProvinciaDAOImpl;
+import logico.BolsaLaboral;
 import logico.CentroEmpleador;
 import logico.OfertaLaboral;
-
-import javax.swing.JLabel;
-import java.awt.Font;
-import java.awt.Toolkit;
-
-import javax.swing.ImageIcon;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 
 public class VistaCentro extends JDialog {
 
@@ -38,15 +37,13 @@ public class VistaCentro extends JDialog {
 	private JLabel lblCorreo;
 	private JTable table;
 	private JLabel lblNewLabel;
-
 	public static DefaultTableModel modelo = new DefaultTableModel() {
 		@Override
 		public boolean isCellEditable(int row, int column) {
 			return false;
 		}
 
-		public Class getColumnClass(int column)
-		{
+		public Class getColumnClass(int column) {
 			return getValueAt(0, column).getClass();
 		}
 	};
@@ -65,7 +62,7 @@ public class VistaCentro extends JDialog {
 		setResizable(false);
 		setLocationRelativeTo(null);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPanel.setBackground(new Color(255,255,255));
+		contentPanel.setBackground(new Color(255, 255, 255));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 
@@ -122,12 +119,13 @@ public class VistaCentro extends JDialog {
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(12, 187, 643, 339);
-		contentPanel.add(scrollPane, BorderLayout.CENTER);
+		contentPanel.add(scrollPane);
+
 		{
 			table = new JTable();
 			table.setForeground(Color.BLACK);
 			table.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-			String [] headers = {"Código", "Puesto", "Área", "Estado"};
+			String[] headers = { "Código", "Puesto", "Área", "Estado" };
 			modelo.setColumnIdentifiers(headers);
 			table.setModel(modelo);
 			scrollPane.setViewportView(table);
@@ -139,6 +137,7 @@ public class VistaCentro extends JDialog {
 		lblNewLabel.setFont(new Font("Consolas", Font.BOLD, 18));
 		lblNewLabel.setBounds(157, 143, 352, 31);
 		contentPanel.add(lblNewLabel);
+
 		table.setRowHeight(36);
 
 		pnlResumen = new JPanel();
@@ -154,6 +153,7 @@ public class VistaCentro extends JDialog {
 		lblDireccion.setForeground(Color.WHITE);
 		lblDireccion.setFont(new Font("Consolas", Font.PLAIN, 18));
 		pnlResumen.add(lblDireccion);
+
 		table.getTableHeader().setReorderingAllowed(false);
 		cargarCentro(centroVista);
 		cargarOfertas(centroVista);
@@ -165,16 +165,21 @@ public class VistaCentro extends JDialog {
 		lblTelefono.setText(" " + centr.getTelefono());
 		lblTelefono.setToolTipText(centr.getTelefono());
 		lblCorreo.setText(centr.getCorreo());
+
 		MunicipioDAO municipioDAO = new MunicipioDAOImpl();
 		ProvinciaDAO provinciaDAO = new ProvinciaDAOImpl();
 		logico.Municipio municipio = municipioDAO.buscarPorId(centr.getIdMunicipio());
 		logico.Provincia provincia = provinciaDAO.buscarPorId(centr.getIdProvincia());
-		lblDireccion.setText(" " + (municipio != null ? municipio.getNombreMunicipio() : "") + ", " + (provincia != null ? provincia.getNombreProvincia() : ""));
+
+		lblDireccion.setText(" " + (municipio != null ? municipio.getNombreMunicipio() : "") + ", "
+				+ (provincia != null ? provincia.getNombreProvincia() : ""));
+
 		String nombreSector = centr.getSector().toLowerCase();
-		nombreSector = nombreSector.replace(" ","i");
-		nombreSector = nombreSector.replace(" ","o");
-		nombreSector = nombreSector.replace(" ","");
+		nombreSector = nombreSector.replace("í", "i");
+		nombreSector = nombreSector.replace("ó", "o");
+		nombreSector = nombreSector.replace(" ", "");
 		lblIconSec.setIcon(new ImageIcon("recursos/" + nombreSector + ".png"));
+
 		Color fondo = getFondo(centr.getSector());
 		pnlEnfasis.setBackground(fondo);
 		pnlResumen.setBackground(fondo);
@@ -182,38 +187,50 @@ public class VistaCentro extends JDialog {
 
 	public Color getFondo(String sector) {
 		switch (sector) {
-			case "No definido": return new Color(26, 26, 29);
-			case "Turismo": return new Color(31, 125, 83);
-			case "Tecnología": return new Color(17, 63, 103);
-			case "Salud": return new Color(125, 10, 10);
-			case "Comercio": return new Color(117, 14, 33);
-			case "Educación": return new Color(51, 52, 70);
-			case "Construcción": return new Color(84, 18, 18);
-			case "Agricultura": return new Color(57, 153, 24);
-			case "Jurídico": return new Color(68, 54, 39);
-			case "Arte": return new Color(30, 81, 40);
-			case "Transporte": return new Color(23, 49, 62);
+			case "No definido":
+				return new Color(26, 26, 29);
+			case "Turismo":
+				return new Color(31, 125, 83);
+			case "Tecnología":
+				return new Color(17, 63, 103);
+			case "Salud":
+				return new Color(125, 10, 10);
+			case "Comercio":
+				return new Color(117, 14, 33);
+			case "Educación":
+				return new Color(51, 52, 70);
+			case "Construcción":
+				return new Color(84, 18, 18);
+			case "Agricultura":
+				return new Color(57, 153, 24);
+			case "Jurídico":
+				return new Color(68, 54, 39);
+			case "Arte":
+				return new Color(30, 81, 40);
+			case "Transporte":
+				return new Color(23, 49, 62);
 		}
-		return new Color(0,0,0);
-	}
-
-	private static String getImagen(String area) {
-		area = area.replace(" ","o");
-		area = area.replace(" ","");
-		return "recursos/" + area + ".png";
+		return new Color(0, 0, 0);
 	}
 
 	public void cargarOfertas(CentroEmpleador centr) {
 		modelo.setRowCount(0);
-		for (OfertaLaboral ofr : centr.getOfertasLaborales()) {
-			if (ofr.getCodigo() == null) continue;
+
+		// Buscar en el listado global de ofertas las que pertenecen a este centro
+		for (OfertaLaboral ofr : BolsaLaboral.getInstancia().getOfertas()) {
+			if (ofr.getCodigo() == null)
+				continue;
+			if (ofr.getOfertador() == null)
+				continue;
+			if (!ofr.getOfertador().getCodigo().equals(centr.getCodigo()))
+				continue;
+
 			Object[] fila = new Object[4];
 			fila[0] = ofr.getCodigo();
 			fila[1] = ofr.getPuesto();
-			fila[2] = new ImageIcon(getImagen(ofr.getArea() != null ? ofr.getArea().toLowerCase() : ""));
+			fila[2] = ofr.getArea();
 			fila[3] = ofr.getEstado();
 			modelo.addRow(fila);
 		}
 	}
-
 }
