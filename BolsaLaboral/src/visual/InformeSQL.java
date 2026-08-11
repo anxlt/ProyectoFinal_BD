@@ -13,7 +13,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
-import java.text.DecimalFormat;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -99,7 +98,6 @@ public class InformeSQL extends JDialog {
         table.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 14));
         table.getTableHeader().setBackground(new Color(240, 240, 240));
         table.getTableHeader().setForeground(Color.BLACK);
-
         scrollPane.setViewportView(table);
 
         JPanel panelBotones = new JPanel();
@@ -137,65 +135,11 @@ public class InformeSQL extends JDialog {
             }
             modelo.setColumnIdentifiers(headers);
 
-            DecimalFormat df = new DecimalFormat("0.0");
-
-            int idxOfertas = -1, idxCandidatos = -1;
-            for (int i = 1; i <= columnas; i++) {
-                String cn = meta.getColumnLabel(i).toLowerCase();
-                if (idxOfertas < 0 && cn.contains("oferta")) {
-                    idxOfertas = i;
-                }
-                if (idxCandidatos < 0 && (cn.contains("candidato") || cn.contains("interesad")
-                        || cn.contains("hablan") || cn.contains("disponib"))) {
-                    idxCandidatos = i;
-                }
-            }
-
             while (rs.next()) {
                 Vector<Object> fila = new Vector<>();
-
-                Double ofertas = null, candidatos = null;
-                if (idxOfertas > 0) {
-                    Object o = rs.getObject(idxOfertas);
-                    if (o instanceof Number) ofertas = ((Number) o).doubleValue();
-                }
-                if (idxCandidatos > 0) {
-                    Object o = rs.getObject(idxCandidatos);
-                    if (o instanceof Number) candidatos = ((Number) o).doubleValue();
-                }
-
                 for (int i = 1; i <= columnas; i++) {
                     Object valor = rs.getObject(i);
-                    String colName = meta.getColumnLabel(i).toLowerCase();
-
-                    boolean esBalance = colName.contains("desbalance") || colName.contains("deficit")
-                            || colName.contains("déficit") || colName.contains("superavit")
-                            || colName.contains("superávit");
-
-                    if (esBalance) {
-                        if (ofertas != null && candidatos != null) {
-                            fila.add(textoBalancePorcentaje(ofertas, candidatos, df));
-                        } else if (valor instanceof Number) {
-                            double n = ((Number) valor).doubleValue();
-                            if (n < 0) fila.add(df.format(Math.abs(n)) + " déficit (unidades)");
-                            else if (n > 0) fila.add(df.format(n) + " superávit (unidades)");
-                            else fila.add("equilibrio");
-                        } else {
-                            fila.add(valor == null ? "" : valor);
-                        }
-                    } else if (valor instanceof Number) {
-                        double n = ((Number) valor).doubleValue();
-                        if (colName.contains("pct") || colName.contains("porcentaje")
-                                || colName.contains("cobertura") || colName.contains("%")) {
-                            fila.add(df.format(n) + " %");
-                        } else if (n == Math.rint(n) && !(valor instanceof Double || valor instanceof Float)) {
-                            fila.add(((Number) valor).longValue());
-                        } else {
-                            fila.add(df.format(n));
-                        }
-                    } else {
-                        fila.add(valor == null ? "" : valor);
-                    }
+                    fila.add(valor == null ? "" : valor);
                 }
                 modelo.addRow(fila);
             }
@@ -218,26 +162,6 @@ public class InformeSQL extends JDialog {
         }
     }
 
-    private String textoBalancePorcentaje(double ofertas, double candidatos, DecimalFormat df) {
-        if (ofertas <= 0 && candidatos <= 0) {
-            return "Sin actividad";
-        }
-        if (ofertas <= 0) {
-            return "Solo candidatos";
-        }
-        if (candidatos <= 0) {
-            return "100 % déficit ";
-        }
-        if (Math.abs(candidatos - ofertas) < 0.0001) {
-            return "0 % ";
-        }
-        double diffPct = Math.abs(candidatos - ofertas) * 100.0 / ofertas;
-        if (candidatos > ofertas) {
-            return df.format(diffPct) + " % superávit ";
-        }
-        return df.format(diffPct) + " % déficit ";
-    }
-
     private String formatearNombreColumna(String raw) {
         if (raw == null || raw.isEmpty()) return raw;
         String s = raw.replace('_', ' ').trim();
@@ -248,8 +172,6 @@ public class InformeSQL extends JDialog {
             sb.append(Character.toUpperCase(part.charAt(0)));
             if (part.length() > 1) sb.append(part.substring(1).toLowerCase());
         }
-        String out = sb.toString();
-        out = out.replace("Pct", "%").replace("Id ", "ID ");
-        return out;
+        return sb.toString();
     }
 }
