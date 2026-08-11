@@ -1,18 +1,18 @@
 package visual;
 
-import java.awt.Dimension;
-import java.awt.EventQueue;
+import java.awt.*;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.RenderingHints;
+
 import javax.swing.JMenuBar;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
-import java.awt.Font;
-import java.awt.Toolkit;
-import java.awt.Color;
 
 import javax.print.attribute.UnmodifiableSetException;
 import javax.swing.ImageIcon;
@@ -276,16 +276,26 @@ public class Principal extends JFrame {
 			}
 		});
 		mnGestion.add(mntmRankingCentros);
-		contentPane = new JPanel();
-		contentPane.setBackground(new Color(4, 13, 18));
+		contentPane = new JPanel() {
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+
+				Graphics2D g2d = (Graphics2D) g;
+
+				// Mejora la calidad del escalado
+				g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+				g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+				Image img = new ImageIcon("recursos/fondo_logo.jpeg").getImage();
+				g2d.drawImage(img, 0, 0, getWidth(), getHeight(), this);
+			}
+		};
+
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-
-		JLabel lblFondo = new JLabel("");
-		lblFondo.setBounds(0,0, getWidth(),getHeight());
-		lblFondo.setIcon(new ImageIcon("recursos/fondo.png"));
-		contentPane.add(lblFondo);
 
 		userUI();
 
