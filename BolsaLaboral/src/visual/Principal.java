@@ -228,8 +228,8 @@ public class Principal extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				new InformeSQL(
 						"Desbalance Oferta vs Demanda por Área",
-						"Muestra por cada área cuántas ofertas activas hay y cuántos candidatos disponibles existen.",
-						"SELECT * FROM DesbalanceOfertaDemandaPorArea ORDER BY desbalance DESC"
+						"Compara ofertas activas y candidatos por área. El desbalance indica si faltan o sobran personas.",
+						"SELECT * FROM DesbalanceOfertaDemandaPorArea"
 				).setVisible(true);
 			}
 		});
@@ -242,8 +242,8 @@ public class Principal extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				new InformeSQL(
 						"Idiomas más demandados vs oferta de candidatos",
-						"Compara cuántas ofertas piden cada idioma y cuántos candidatos lo hablan.",
-						"SELECT * FROM DemandaVsOfertaIdiomas ORDER BY deficit DESC"
+						"Muestra qué idiomas piden las ofertas y cuántos candidatos los hablan.",
+						"SELECT * FROM DemandaVsOfertaIdiomas"
 				).setVisible(true);
 			}
 		});
@@ -255,8 +255,8 @@ public class Principal extends JFrame {
 		mntmOfertasRiesgo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new InformeSQL(
-						"Ofertas que llevan mucho tiempo sin llenarse",
-						"Lista las ofertas activas sin solicitudes o con más de 30 días abiertas.",
+						"Ofertas en riesgo de pérdida",
+						"Ofertas activas sin solicitudes o con mucho tiempo abiertas sin llenarse.",
 						"SELECT * FROM OfertasSinLlenarRiesgo"
 				).setVisible(true);
 			}
@@ -270,7 +270,7 @@ public class Principal extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				new InformeSQL(
 						"Ranking de centros por éxito de colocación",
-						"Muestra por cada centro el porcentaje de cobertura de vacantes.",
+						"Porcentaje de cobertura de vacantes y colocaciones por centro empleador.",
 						"SELECT * FROM RankingCentrosColocacion ORDER BY cobertura_pct DESC, vacantes_completadas DESC"
 				).setVisible(true);
 			}
