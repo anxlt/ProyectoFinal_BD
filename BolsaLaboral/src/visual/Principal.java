@@ -288,7 +288,7 @@ public class Principal extends JFrame {
 				g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-				Image img = new ImageIcon("recursos/fondo_logo.jpeg").getImage();
+				Image img = new ImageIcon("recursos/fondoA.png").getImage();
 				g2d.drawImage(img, 0, 0, getWidth(), getHeight(), this);
 			}
 		};
